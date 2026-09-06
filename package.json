@@ -1,0 +1,21 @@
+{
+  "name": "123-liuhe-site",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 execute DB --local --file=./schema.sql",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/crypto.test.ts",
+    "build:browser": "node scripts/build-browser.mjs",
+    "build": "pnpm run typecheck && pnpm run test && pnpm run build:browser && wrangler deploy --dry-run --keep-vars --outdir dist"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "esbuild": "latest",
+    "typescript": "latest",
+    "wrangler": "4.125.0"
+  }
+}

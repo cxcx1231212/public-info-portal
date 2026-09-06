@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,viewport-fit=cover"/>
+    <link rel="icon" href="/favicon.ico">
+    <title>挑码助手</title>
+    <link href="/css/pickcode/chunk-vendors.94f0cb23.css" rel="stylesheet">
+    <link href="/css/pickcode/app.eaa50f8c.css?t=4343" rel="stylesheet">
+    <link href="/css/pickcode/287.79d64b81.css" rel="stylesheet">
+    <link href="/css/pickcode/78.6f9cae0f.css" rel="stylesheet">
+    <link href="/css/pickcode/792.88bbdecf.css?t=3411211111111" rel="stylesheet">
+<script src="https://1818servername1.oss-accelerate.aliyuncs.com/gongshi/jquery-3.5.1.min.js"></script>
+<script src="https://1818servername1.oss-accelerate.aliyuncs.com/gongshi/layer.js"></script>
+<style type="text/css">
+body{
+    background: #030304;
+}
+  #xs{
+    display: flex;flex-wrap: wrap;
+  }
+  #xs li{width: 30;background: linear-gradient(180deg,rgba(51,153,255,0),rgba(51,153,255,.2)),#fff;
+text-align: center;cursor: pointer;
+padding: 0.5rem 1rem;margin-left: 1.5rem;margin-top: 1rem}
+#xs .active{color: red;}
+.pickcode-wrap .choose-box {
+  display: grid;
+  grid-template-columns: repeat(1,auto);
+  grid-auto-rows: max-content;
+}
+.pickcode-wrap .choose-box .choose-box-item span {width: calc(16.6% - 9px);}
+.pickcode-wrap .choose-box .choose-box-item:first-of-type, .pickcode-wrap .choose-box .choose-box-item:nth-of-type(2) {
+  border-top: 1px solid #cecece;
+  background: transparent;
+}
+.choose-box .choose-box-item:nth-child(1){
+  width: 50%;
+  float: left;
+}
+.choose-box .choose-box-item:nth-child(2){
+  width: 50%;
+  float: left;
+  position: absolute;
+  right: 0;
+}
+.choose-box .choose-box-item:nth-child(1) span,.choose-box .choose-box-item:nth-child(2) span{
+  width: calc(33% - 9px);
+}
+html,body,#app,.app-site,.pickcode-wrap{width:100%;max-width:100%;overflow-x:hidden}
+.pickcode-wrap .pickcode-result{left:50%;transform:translateX(-50%);width:calc(100% - 20px)!important;box-sizing:border-box}
+.pickcode-wrap .pickcode-result .result-btn-box{width:100%;gap:10px}
+.pickcode-wrap .pickcode-result .result-btn-box>a,.pickcode-wrap .pickcode-result .result-btn-box>div{flex:1;min-width:0;max-width:90px}
+.pickcode-wrap .site-sticky-top-chouti .getright{right:0}
+</style>
+  </head>
+<body>
+<div id="app" data-v-app="">
+<div class="app-site">
+    <div class="pickcode-wrap">
+   <div class="site-sticky" style="width: 100%; height: 48px;max-width: 700px;">
+    <div class="van-sticky van-sticky--fixed" style="width: 100%; height: 48px; top: 0px;max-width: 700px;">
+     <div class="van-row van-row--align-center van-row--justify-space-between site-sticky-top padding-0-10">
+      <div class="van-col qx-nav-arrow">
+       <a href="javascript:history.back();"><i style="color: #fff;" class="van-badge__wrapper van-icon van-icon-arrow-left"></i></a>
+      </div>
+      <div class="van-col van-col--10 qx-nav-titile t-center">
+        挑码助手 
+      </div>
+      <div class="van-col site-sticky-top-chouti">
+       <div class="getright">
+        <span id="bcjsb"> 存到记事本</span>
+        <i id="jishiben" class="van-badge__wrapper van-icon van-icon-records" style="color: rgb(255, 255, 255); font-size: 24px;">
+         <!---->
+         <!---->
+         <!----></i>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="pickcode-result" id="pickcodewarp" style="max-width: 700px;padding: 6px 10px;width: calc(100% - 20px);">
+    <div class="result-content"></div>
+    <div class="result-shama" style="display: none;">
+      
+    </div>
+    <!---->
+    <div class="result-btn-box">
+     <div class="result-btn active" id="shama">
+      杀码
+     </div>
+     <div class="result-btn active" id="qingkong">
+      清空
+     </div>
+     <div class="result-btn active" onclick="copy()" data-clipboard-text="">
+       复制结果 
+     </div>
+    <!-- <a href="" class="result-btn"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAdCAYAAAC0T3x2AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHASURBVHgB3VXNUcJAGH0L4Y53daADSogdYAXAzUMcoQKSCuSgjjdjB3TgdmA6AEwD3pPJun8xgZAQNjnxZvKx7Lfs22/zHh9waSBoC05o87jkj61nKBL2ibdbvz0iJxQEbknWxcuN15zo8WcKRj70Nw9WvJKjqDcFYc96/s5CUzAy0Z8LvF6vcpkVnF0f6Ihqlx00hy1jL/ILGStJiUdtEP3WWNNvg2grY9yZFzKxNdEjai6G+abPNxIiGP/PsWSBXuJrkiekSkzYzIzICdNN+MuWV0f3CPfhcXm75MgmNpTxRnqjzHgPmwEsWYWtV1PE8Qzvw62W+UTnBHmgSahYSA5Iqoy31puoKhjxDuRciUwM4kQZiTDelXyEPxTGmmTN54fnkAhkhq1nvIBfxT0MkJe3LWO18QYwRJ6olvFgiDxRIGO18QIYIlOdkvWXHJcZT/6C+IgiT0raiEiRuVAeOoZM3oxs+WG8tKmdTyRQZTxh2G7X5VWpq8xXV2V0mHZYcZiEy52wAU7/BTXssIfVKZR22Oat3Am/Ia6raHSe27na6LSNfjSS8ZI6bB2j0zbekY1TRjfusEUyF+VGlx32D/gFxrGlwQwbAAAAAElFTkSuQmCC" alt="" /> 分享结果</a> -->
+    </div>
+    <object style="display: block; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: medium none; padding: 0px; margin: 0px; opacity: 0; z-index: -1000; pointer-events: none;" tabindex="-1" type="text/html" aria-hidden="true" data="about:blank"></object>
+   </div>
+   <div class="choose-box clear" id="list" style="margin-top: 208px;">
+      
+   </div>
+   <!---->
+   <!---->
+   <!---->
+   <div id="jsb" style="z-index: 2007; height: 100%; width: 100%;display: none;" role="dialog" tabindex="0" class="van-popup van-popup--right">
+   <div class="comments-two">
+    <div class="van-row van-row--align-center van-row--justify-space-between site-sticky-top padding-0-10">
+     <div class="van-col qx-nav-arrow">
+      <i class="van-badge__wrapper van-icon van-icon-arrow-left" id="jsbfh">
+       <!---->
+       <!---->
+       <!----></i>
+     </div>
+     <div class="van-col van-col--10 qx-nav-titile t-center">
+       记事本 
+     </div>
+     <div class="van-col site-sticky-top-chouti">
+      <div class="getright jsb">
+       <span id="bcjsb1"> 保存</span>
+      </div>
+     </div>
+    </div>
+    <div>
+     <div class="van-cell-group van-hairline--top-bottom">
+      <div class="van-cell van-field">
+       <!---->
+       <!---->
+       <div class="van-cell__value van-cell__value--alone van-field__value">
+        <div class="van-field__body">
+         <textarea id="cun" class="van-field__control van-field__control--min-height" placeholder="请输入留言"></textarea>
+         <!---->
+         <!---->
+         <!---->
+        </div>
+        <!---->
+        <!---->
+       </div>
+       <!---->
+       <!---->
+      </div>
+     </div>
+    </div>
+   </div>
+   <!---->
+  </div>
+   <!---->
+  </div>
+</div>
+<!--  -->
+
+   <!---->
+</div>
+
+<!--  -->
+ <div style="z-index: 2003; position: absolute; margin: 0px;display: none;height: 60%;" role="dialog" tabindex="0" class="van-popup van-popover van-popover--light" data-popper-placement="bottom" id="nianlist">
+   <div class="van-popover__arrow"></div>
+   <div role="menu" class="van-popover__content" id="nian" style="height: 60%;overflow-y: auto;">
+  
+    
+    
+   </div>
+   <!---->
+  </div>
+<!--  -->
+<div id="gb" style="z-index: 2009; background: rgba(255, 255, 255, 0);display: none;" class="shamabox van-overlay " role="button" tabindex="0" ></div>
+ <div style="z-index: 2012; width: 100%;display: none;" role="dialog" tabindex="0" class="shamabox van-popup van-popup--bottom sm-wp ">
+   <div class="shama-warp">
+    <div>
+     <div class="van-sticky">
+      <div class="van-nav-bar van-hairline--bottom">
+       <div class="van-nav-bar__content">
+        <!---->
+        <div class="van-nav-bar__title van-ellipsis">
+         选择杀码或杀肖
+        </div>
+        <!---->
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="sha-content">
+     <span class="">01</span>
+     <span class="">02</span>
+     <span class="">03</span>
+     <span class="">04</span>
+     <span class="">05</span>
+     <span class="">06</span>
+     <span class="">07</span>
+     <span class="">08</span>
+     <span class="">09</span>
+     <span class="">10</span>
+     <span class="">11</span>
+     <span class="">12</span>
+     <span class="">13</span>
+     <span class="">14</span>
+     <span class="">15</span>
+     <span class="">16</span>
+     <span class="">17</span>
+     <span class="">18</span>
+     <span class="">19</span>
+     <span class="">20</span>
+     <span class="">21</span>
+     <span class="">22</span>
+     <span class="">23</span>
+     <span class="">24</span>
+     <span class="">25</span>
+     <span class="">26</span>
+     <span class="">27</span>
+     <span class="">28</span>
+     <span class="">29</span>
+     <span class="">30</span>
+     <span class="">31</span>
+     <span class="">32</span>
+     <span class="">33</span>
+     <span class="">34</span>
+     <span class="">35</span>
+     <span class="">36</span>
+     <span class="">37</span>
+     <span class="">38</span>
+     <span class="">39</span>
+     <span class="">40</span>
+     <span class="">41</span>
+     <span class="">42</span>
+     <span class="">43</span>
+     <span class="">44</span>
+     <span class="">45</span>
+     <span class="">46</span>
+     <span class="">47</span>
+     <span class="">48</span>
+     <span class="">49</span>
+     <span class="">鼠</span>
+     <span class="">牛</span>
+     <span class="">虎</span>
+     <span class="">兔</span>
+     <span class="">龙</span>
+     <span class="">蛇</span>
+     <span class="">马</span>
+     <span class="">羊</span>
+     <span class="">猴</span>
+     <span class="">鸡</span>
+     <span class="">狗</span>
+     <span class="">猪</span>
+    </div>
+   </div>
+  </div>
+<!--  -->
+  <div style="position:fixed;right:0.2rem;bottom: 4.5rem;display:none">
+     <a href="javascript:history.back(-1)">
+         <span style="border-radius: 10rem;background: #fff;box-shadow: 0 0 10px #00000057;height: 2.5rem;width: 2.5rem;display: block;line-height: 3.2rem;text-align: center;">
+             <svg style="width: 1.6rem;height:1.6rem;" t="1715696270647" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5573" width="200" height="200"><path d="M947.4 864C893.2 697.7 736.2 578.9 551 575.5c-23.1-0.4-44.9 0.1-65.6 1.5v164.3c0.1 0.5 0.2 1 0.2 1.5 0 4-3.3 7.3-7.3 7.3-2.7 0-5-1.4-6.2-3.5v0.7L68.8 465.4h2.1c-4 0-7.3-3.3-7.3-7.3 0-2.9 1.7-5.4 4.1-6.6L472 169v0.7c1.3-2.1 3.6-3.5 6.2-3.5 4 0 7.3 3.3 7.3 7.3 0 0.5-0.1 1-0.2 1.5v159.4c18.5-0.9 37.9-1.2 58.3-0.8 230.1 3.9 416.7 196.9 416.7 427.1 0.1 35.5-4.5 70.2-12.9 103.3z m-462-704.4v0.2h-0.4l0.4-0.2z m0 596.9l-0.3-0.2h0.3v0.2z" fill="" p-id="5574"></path></svg>
+             <p style="line-height: 1.1rem;position: absolute;top: 1.2rem;font-size: 0.6rem;height: 1.1rem;width: 2.5rem;background: #e71607;border-radius: 2rem;color: #fff;">返回</p>
+         </span>
+     </a>
+ </div>
+  <!--  -->
+<textarea id="output" style="opacity: 0;width: 0;height: 0"  readonly></textarea>
+<script type="text/javascript">
+var shuju = [];
+var red = [];
+var blue = [];
+var green = [];
+
+$.getJSON("/tmzs.json?v=20260818",function(response){
+        if(response.status == 0){
+            var str = '';
+            var typenum = 0;
+            $.each(response.data,function(k,v){
+              
+              str += `<div class="choose-box-item clear">`;
+                $.each(v,function(k1,v1){
+                  if(v1.huanhang == 2){
+                    str +=  `</div>`;
+                    str += `<div class="choose-box-item clear">`;
+                  }
+                  shuju[v1.name] = v1.numberList;
+                  str += `<span class="" type="`+k+`" sort="`+k1+`">`+v1.name+`</span>`;
+                })
+              str +=  `</div>`;
+              typenum++;
+            })
+            $('#list').html(str);
+            red = response.data.color[0].numberList;
+            blue = response.data.color[1].numberList;
+            green = response.data.color[2].numberList;
+            
+        }
+});
+
+var xuanze = [];
+var intersec = [];
+var types = [];
+var shama = [];
+function yunsuan(){
+  if(xuanze.length == 0){
+      $('.result-content').html('');
+      return false;
+    }
+    var bingji = [];
+   $.each(xuanze, function(key, value) {
+      var setarr = '';
+      if(value.length > 1){
+        $.each(value,function(k1,v1){
+          if(k1==0){
+            setarr = v1;
+          }else{
+            setarr += ','+v1;
+          }
+          
+        })
+        var union = new Set([setarr]);
+        
+        var a = Array.from(union)[0].split(',');
+        a = Array.from(new Set(a));;
+       
+        bingji[key] = a;
+      }else{
+        bingji[key] = value[0];
+      }
+      
+
+  });
+
+   if(bingji.length > 1){
+    for (var i = 0; i < bingji.length - 1; i++) {
+      var a1 = bingji[i];
+      var a2 = bingji[i + 1];
+      intersec = a1.filter(val => a2.indexOf(val) > -1);
+    }
+      
+   }else{
+     intersec = bingji[0];
+   }
+   intersec = intersec.sort((a, b) => a - b);
+
+  var str = '';
+  $.each(intersec,function(k,v){
+    if($.inArray(v, shama) == -1){
+       if(red.includes(v)){
+          var calss = 'red';
+        }
+        if(blue.includes(v)){
+          var calss = 'blue';
+        }
+        if(green.includes(v)){
+          var calss = 'green';
+        }
+        str += `<span class="`+calss+`">`+v+`</span>`;   
+    }
+    
+  })
+  $('.result-content').html(str);
+}
+$('body').on('click','.choose-box-item span',function(){
+  var name = $(this).text();
+  var number = shuju[name];
+  var type = $(this).attr('type');
+  var sort = $(this).attr('sort');
+
+  if($(this).hasClass('active')){
+    $(this).removeClass('active');
+    var index = $.inArray(type, types);
+    xuanze[index] = xuanze[index].filter(item => item !==number);
+    if(xuanze[index].length==0){
+      types = types.filter(item => item !==type);
+      xuanze = xuanze.filter(function(item) {
+          return item && item.length != 0;
+      });
+    }
+  }else{
+    $(this).addClass('active');
+    var index = $.inArray(type, types);
+    if(index == -1){
+      types.push(type);
+      var index = $.inArray(type, types);
+      var aa = [];
+      aa[0] = number;
+      xuanze[index] = aa;
+    }else{
+      var index = $.inArray(type, types);
+      xuanze[index].push(number);
+    }
+    
+  }
+ 
+  yunsuan();
+  
+})
+
+$('#shama').click(function(){
+  $('.shamabox').show();
+
+})
+$('#gb').click(function(){
+  $('.shamabox').hide();
+})
+
+$('.sha-content span').click(function(){
+  var num = $(this).text();
+  if ($.isNumeric(num)) {//单个杀码
+    if($(this).hasClass('active')){
+      shama = shama.filter(item => item !== num);
+      $(this).removeClass('active');
+    }else{
+      shama.push(num);
+      $(this).addClass('active');
+    }
+
+  } else {//生肖杀码
+    var number = shuju[num];
+    if($(this).hasClass('active')){
+      $.each(number,function(k,v){
+        shama = shama.filter(item => item !== v);
+      })
+      $(this).removeClass('active');
+    }else{
+      $.each(number,function(k,v){
+        shama.push(v);   
+      })
+      $(this).addClass('active');
+    }
+  }
+  // 有杀码进行删除
+  if(shama.length > 0){
+    var s = '<div class="font-s">杀码:</div>';
+    $.each(shama,function(k,v){
+      if(red.includes(v)){
+          var calss = 'red';
+        }
+        if(blue.includes(v)){
+          var calss = 'blue';
+        }
+        if(green.includes(v)){
+          var calss = 'green';
+        }
+      s += `<span class="`+calss+`">`+v+`</span>`;
+    })
+    $('.result-shama').html(s).show();
+  }else{
+    $('.result-shama').html('').hide();
+  }
+$('#list').css("margin-top","288px");
+  
+
+  // 删除杀码
+  console.log(shama)
+  if(intersec.length > 0){
+      var str = '';
+      $.each(intersec,function(k,v){
+        if($.inArray(v, shama) == -1){
+            if(red.includes(v)){
+                var calss = 'red';
+              }
+              if(blue.includes(v)){
+                var calss = 'blue';
+              }
+              if(green.includes(v)){
+                var calss = 'green';
+              }
+              str += `<span class="`+calss+`">`+v+`</span>`;
+          }
+        
+      })
+      $('.result-content').html(str);
+  }
+})
+
+
+$('#qingkong').click(function(){
+  $('.result-content').html('');
+  $('.result-shama').html('').hide();
+  xuanze = [];
+  intersec = [];
+  types = [];
+  shama = [];
+  $('.choose-box-item span').removeClass('active');
+  $('.sha-content span').removeClass('active')
+})
+
+function copy() {
+    var aa = $('.result-content span');
+    var b = [];
+    $.each(aa,function(k,v){
+      var c = $(v).text();
+      b.push(c);
+    })
+    $('#output').val(b.join(','));
+    const inputEle = document.querySelector("#output");
+    inputEle.select(); // 鼠标选择的内容
+    document.execCommand("copy"); // 复制
+    layer.msg('复制成功');
+}
+
+$('#jishiben').click(function(){
+  var jilu = localStorage.getItem("jilu");
+  $('#cun').val(jilu);
+  $('#jsb').show();
+  $('body').css('overflow','hidden');
+})
+$('#jsbfh').click(function(){
+  $('#jsb').hide();$('body').css('overflow-y','scroll');
+})
+
+$('#bcjsb').click(function(){
+  var aa = $('.result-content span');
+    var b = [];
+    $.each(aa,function(k,v){
+      var c = $(v).text();
+      b.push(c);
+    })
+    var aaaa = `挑码结果:\n`+b.join(',')+` 共`+b.length+`码\n[`+getdate()+`]`;
+    if(localStorage.getItem("jilu") == null){
+      var jilu = aaaa;
+    }else{
+      var jilu = localStorage.getItem("jilu")+'\n'+aaaa;
+    }
+    
+    localStorage.setItem("jilu", jilu);
+    $('#cun').val(jilu);
+    layer.msg('保存成功');
+})
+$('#bcjsb1').click(function(){
+  localStorage.setItem("jilu", $('#cun').val());layer.msg('保存成功');
+})
+function getdate() {
+  // 获取当前时间
+  let currentTime = new Date();
+  // 获取年份
+  let year = currentTime.getFullYear();
+  // 获取月份（注意月份是从0开始计数的，所以需要加1）
+  let month = currentTime.getMonth() + 1;
+  // 获取日期
+  let day = currentTime.getDate();
+  // 获取小时
+  let hours = currentTime.getHours();
+  // 获取分钟
+  let minutes = currentTime.getMinutes();
+  // 获取秒数
+  let seconds = currentTime.getSeconds();
+  return year+'-'+month+'-'+day+' '+hours+':'+minutes+':'+seconds;
+}
+</script>
+  <script src="/assets/cnzz-stat.js"></script>
+</body></html>

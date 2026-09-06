@@ -1,0 +1,16 @@
+node_modules/
+.pnpm-store/
+.wrangler/
+backups/
+src/
+scripts/
+tests/
+dist/
+schema.sql
+migrations/
+package.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+tsconfig.json
+wrangler.jsonc
+.assetsignore

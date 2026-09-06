@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="100" viewBox="0 0 750 100" role="img" aria-label="横幅广告位">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#17130b"/><stop offset=".5" stop-color="#33270c"/><stop offset="1" stop-color="#17130b"/></linearGradient></defs>
+  <rect width="750" height="100" rx="8" fill="url(#g)"/><rect x="1" y="1" width="748" height="98" rx="7" fill="none" stroke="#8f7022" stroke-dasharray="8 6"/>
+  <text x="375" y="45" fill="#efd06d" font-size="22" font-family="Arial,'Microsoft YaHei',sans-serif" font-weight="700" text-anchor="middle">横幅广告位</text>
+  <text x="375" y="70" fill="#9e8b55" font-size="13" font-family="Arial,'Microsoft YaHei',sans-serif" text-anchor="middle">建议图片尺寸 750 × 100</text>
+</svg>

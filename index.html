@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <title>123六合网</title>
+  <style>
+    :root{
+      --bg:#050505;
+      --panel:#0b0c0d;
+      --panel2:#101214;
+      --line:#2a2d31;
+      --gold:#f5c84b;
+      --text:#f5f5f5;
+      --muted:#a9adb3;
+      --red:#ff2d2d;
+      --purple:#a855f7;
+      --orange:#ff7a00;
+      --green:#7bdc2b;
+      --blue:#2f8cff;
+      --cyan:#1fd4e5;
+      --yellow:#ffd400;
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box}
+    html{background:var(--bg)}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 50% -20%, rgba(245,200,75,.07), transparent 34%),
+        var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .page{
+      width:min(100%, 760px);
+      margin:0 auto;
+      padding:14px 12px 36px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:clamp(28px,7vw,42px);
+      line-height:1.05;
+      font-weight:900;
+      letter-spacing:.5px;
+      text-shadow:0 2px 14px rgba(245,200,75,.14);
+    }
+
+    .brand-name{
+      color:var(--gold);
+    }
+
+    .brand-topic{
+      margin-left:5px;
+      color:#ff5b4d;
+      font-style:normal;
+      text-shadow:0 2px 14px rgba(255,74,61,.18);
+    }
+
+    .brand p{
+      margin:7px 0 0;
+      color:#e9e9e9;
+      font-size:15px;
+      letter-spacing:.3px;
+    }
+
+    .brand-domain{
+      margin-top:7px;
+      color:#f0d57d;
+      font-size:13px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:2.4px;
+      text-transform:uppercase;
+    }
+
+    .brand-lockup{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+    .brand-logo{display:block;width:206px;max-width:100%;height:auto;filter:drop-shadow(0 3px 10px rgba(245,200,75,.16))}
+    .brand-lockup .brand-domain{margin-top:2px;padding-left:4px;font-size:11px;letter-spacing:.15px;color:#d8bf70;white-space:nowrap}
+
+    .lottery-switch{
+      position:relative;
+      flex:0 0 auto;
+    }
+
+    .lottery-btn{
+      height:44px;
+      padding:0 14px;
+      border:1px solid #9f7d0d;
+      border-radius:999px;
+      background:#0a0a0a;
+      color:var(--gold);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .lottery-chevron{width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease;margin-left:2px}
+    .lottery-switch:has(.lottery-menu.open) .lottery-chevron{transform:rotate(225deg) translate(-2px,-2px)}
+
+    .lottery-menu{
+      position:absolute;
+      right:0;top:52px;
+      width:166px;
+      background:#101214;
+      border:1px solid #34373b;
+      border-radius:12px;
+      overflow:hidden;
+      display:none;
+      z-index:20;
+      box-shadow:0 12px 28px rgba(0,0,0,.45);
+    }
+
+    .lottery-menu.open{display:block}
+    .lottery-menu button{
+      width:100%;
+      border:0;
+      border-bottom:1px solid #26292d;
+      background:transparent;
+      color:#fff;
+      text-align:left;
+      padding:12px 14px;
+      font-size:16px;
+      cursor:pointer;
+    }
+    .lottery-menu button:last-child{border-bottom:0}
+    .lottery-menu button:hover{background:#211c0f;color:var(--gold)}
+
+    .draw-row{
+      display:grid;
+      grid-template-columns: .82fr 1.45fr;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .card{
+      background:linear-gradient(180deg,#111315 0%,#0a0b0c 100%);
+      border:1px solid #26292d;
+      border-radius:var(--radius);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
+    }
+
+    .countdown-card{
+      padding:14px 14px 12px;
+      text-align:center;
+      min-height:150px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .period{
+      font-size:19px;
+      font-weight:800;
+    }
+
+    .period strong{color:var(--gold)}
+    .label{
+      margin-top:7px;
+      color:#e7e7e7;
+      font-size:14px;
+    }
+    .countdown{
+      margin:4px 0 2px;
+      color:#ffd45b;
+      font-size:clamp(34px,8vw,52px);
+      font-weight:900;
+      letter-spacing:1px;
+      line-height:1;
+    }
+    .draw-time{
+      color:#efefef;
+      font-size:14px;
+      margin-top:6px;
+    }
+
+    .result-card{
+      padding:14px 14px 12px;
+      min-height:150px;
+      position:relative;
+    }
+
+    .result-title{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+    .result-title small{
+      color:#c0c3c8;
+      font-size:13px;
+      font-weight:500;
+      margin-left:4px;
+    }
+    .balls{
+      display:flex;
+      flex-wrap:nowrap;
+      align-items:center;
+      gap:6px;
+      padding-right:2px;
+      overflow:visible;
+    }
+    .ball{
+      width:40px;height:40px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:18px;
+      color:white;
+      background:linear-gradient(180deg,#ef3737,#c91717);
+      box-shadow:inset 0 -3px 0 rgba(0,0,0,.16);
+    }
+    .ball.blue{background:linear-gradient(180deg,#3479ff,#114dcc)}
+    .plus{
+      color:#f6d15a;
+      font-size:25px;
+      font-weight:800;
+      padding:0 2px;
+    }
+    .history-link{
+      position:absolute;
+      right:14px;
+      bottom:12px;
+      color:var(--gold);
+      font-size:15px;
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    .site-network{
+      margin-top:9px;
+      padding:10px;
+    }
+    .site-network-head{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin-bottom:9px;
+      color:var(--gold);
+      font-size:17px;
+      font-weight:900;
+      justify-content:center;
+      text-align:center;
+    }
+    .site-network-list{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:7px;
+    }
+    .site-network-list a{
+      min-width:0;
+      padding:10px 5px;
+      border:1px solid #3a3020;
+      border-radius:8px;
+      background:#0a0b0c;
+      color:#f2d271;
+      text-align:center;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .site-network-list a:hover{
+      border-color:#a78329;
+      background:#211c0f;
+    }
+
+    .study-title{
+      margin:0 0 9px;
+      padding:8px 5px;
+      border-radius:7px;
+      background:linear-gradient(90deg,#371008,#771c10,#371008);
+      color:#ffe27c;
+      text-align:center;
+      font-size:17px;
+      line-height:1.35;
+      font-weight:900;
+    }
+    .study-period-nav{
+      display:flex;
+      gap:6px;
+      margin:0 0 8px;
+      padding-bottom:1px;
+      overflow-x:auto;
+      scroll-snap-type:x proximity;
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+      -webkit-overflow-scrolling:touch;
+    }
+    .study-period-nav::-webkit-scrollbar{display:none;width:0;height:0}
+    .study-period-btn{
+      flex:0 0 auto;
+      min-width:58px;
+      height:31px;
+      padding:0 10px;
+      border:1px solid #50431f;
+      border-radius:7px;
+      background:#11110f;
+      color:#bdbdbd;
+      font-family:inherit;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      scroll-snap-align:start;
+    }
+    .study-period-btn.active{
+      border-color:#c59b2c;
+      background:linear-gradient(180deg,#3b2d0a,#211905);
+      color:#ffe06f;
+    }
+    .study-list{
+      border:1px solid #3a3020;
+      border-radius:8px;
+      overflow:hidden;
+      background:#090a0b;
+    }
+    .study-row{
+      display:grid;
+      grid-template-columns:52px 46px minmax(0,1fr) 72px;
+      align-items:center;
+      min-height:39px;
+      border-bottom:1px solid #29251d;
+      font-size:15px;
+    }
+    .study-row:last-child{border-bottom:0}
+    .study-row span{padding:7px 5px;white-space:nowrap}
+    .study-period{color:#b8bbc0;text-align:center}
+    .study-kind{color:#ffd45b;font-weight:900}
+    .study-pick{color:#f4f4f4;font-weight:800;letter-spacing:1px}
+    .study-open{color:#ff5757;text-align:center;font-weight:900;overflow:visible;letter-spacing:0}
+    .study-empty{padding:28px 10px;text-align:center;color:#92969c;font-size:14px}
+
+    .sixcode-title{
+      margin:0 0 9px;
+      padding:8px 5px;
+      border-radius:7px;
+      background:linear-gradient(90deg,#221038,#572073,#221038);
+      color:#e9c4ff;
+      text-align:center;
+      font-size:18px;
+      line-height:1.3;
+      font-weight:900;
+    }
+    .sixcode-nav{display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch}
+    .sixcode-nav::-webkit-scrollbar{display:none;width:0;height:0}
+    .sixcode-page-btn{flex:0 0 auto;height:31px;padding:0 11px;border:1px solid #533861;border-radius:7px;background:#121013;color:#bdb4c3;font-family:inherit;font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer}
+    .sixcode-page-btn.active{border-color:#aa61cf;background:linear-gradient(180deg,#412052,#281332);color:#ecc7ff}
+    .sixcode-list{border:1px solid #3b2d42;border-radius:8px;overflow:hidden;background:#09090a}
+    .sixcode-period{border-bottom:3px solid #211925}
+    .sixcode-period:last-child{border-bottom:0}
+    .sixcode-slogan{padding:8px 6px;border-top:1px solid #684276;border-bottom:1px solid #684276;background:linear-gradient(90deg,#231128,#4a1b55,#231128);color:#ffe06f;text-align:center;font-size:14px;font-weight:900;letter-spacing:.3px}
+    .sixcode-row{display:grid;grid-template-columns:76px minmax(0,.78fr) minmax(0,1.22fr) 66px;align-items:center;min-height:42px;border-bottom:1px solid #2b2430;font-size:14px}
+    .sixcode-period .sixcode-row:last-child{border-bottom:0}
+    .sixcode-row span{padding:8px 5px;white-space:nowrap}
+    .sixcode-label{color:#d4a5ef;text-align:center;font-weight:900}
+    .sixcode-zodiac{color:#f6f6f6;font-weight:800}
+    .sixcode-numbers{color:#ffd45b;font-weight:900;letter-spacing:.2px}
+    .sixcode-open{color:#f2b6b6;font-weight:900;text-align:right}.matched-value{display:inline;font-style:normal;color:#ff3b3f!important;font-weight:1000;text-shadow:0 0 7px rgba(255,59,63,.28)}
+
+    .doublewave-title{margin:0 0 9px;padding:8px 5px;border-radius:7px;background:linear-gradient(90deg,#0d2535,#13516a,#0d2535);color:#71e5ff;text-align:center;font-size:18px;line-height:1.3;font-weight:900}
+    .doublewave-list{border:1px solid #254454;border-radius:8px;overflow:hidden;background:#090a0b}
+    .doublewave-row{display:grid;grid-template-columns:48px minmax(0,1fr) 65px 30px;align-items:center;min-height:42px;border-bottom:1px solid #26343b;font-size:15px}
+    .doublewave-row:last-child{border-bottom:0}
+    .doublewave-row span{padding:8px 4px;white-space:nowrap}
+    .doublewave-period{color:#aebac0;text-align:center}
+    .doublewave-pick{color:#72ddf5;font-weight:900}
+    .doublewave-open{color:#f1f1f1;text-align:center;font-weight:800}
+    .doublewave-status{text-align:center;font-weight:1000}
+    .doublewave-status.win{color:#53dd7c}.doublewave-status.lose{color:#ff5c5c}
+    .doublewave-status:not(.win):not(.lose),.feature-status:not(.win):not(.lose){visibility:hidden}
+
+    .feature-title{margin:0 0 9px;padding:8px 5px;border-radius:7px;background:linear-gradient(90deg,#2c1808,#70400d,#2c1808);color:#ffd36b;text-align:center;font-size:18px;line-height:1.3;font-weight:900}
+    .feature-list{border:1px solid #4b3820;border-radius:8px;overflow:hidden;background:#090a0b}
+    .feature-row{display:grid;grid-template-columns:48px minmax(0,1fr) 65px 30px;align-items:center;min-height:42px;border-bottom:1px solid #302b22;font-size:15px}
+    .feature-row:last-child{border-bottom:0}
+    .feature-row span{padding:8px 4px;white-space:nowrap}
+    .feature-period{color:#adb0b5;text-align:center}.feature-pick{color:#ffd46a;font-weight:900}.feature-open{color:#f1f1f1;text-align:center;font-weight:800}.feature-status{text-align:center;font-weight:1000}.feature-status.win{color:#53dd7c}.feature-status.lose{color:#ff5c5c}
+    .three-period-group{display:grid;grid-template-columns:62px minmax(0,1fr) 82px;border-bottom:3px solid #33280f}
+    .three-period-group:last-child{border-bottom:0}
+    .three-period-issues,.three-period-opens{display:grid;grid-template-rows:repeat(3,1fr)}
+    .three-period-issues span,.three-period-opens span{display:grid;place-items:center;min-height:36px;border-bottom:1px solid #302b22;white-space:nowrap}
+    .three-period-issues span:last-child,.three-period-opens span:last-child{border-bottom:0}
+    .three-period-issues{color:#b6b8bc}.three-period-opens{color:#f2f2f2;font-weight:800}
+    .three-period-pick{display:grid;place-items:center;padding:10px 6px;border-left:1px solid #302b22;border-right:1px solid #302b22;color:#ffe06f;text-align:center;font-size:16px;font-weight:900}
+    .nine-row{display:grid;grid-template-columns:52px 48px minmax(0,1fr) 66px;align-items:center;min-height:42px;border-bottom:1px solid #302b22;font-size:15px}
+    .nine-row:last-child{border-bottom:0}
+    .nine-row span{padding:8px 4px;white-space:nowrap}
+    .nine-period{color:#adb0b5;text-align:center}.nine-kind{color:#ffe078;text-align:center;font-weight:900}.nine-pick{color:#f4f4f4;font-weight:900;letter-spacing:1px}.nine-status{color:#f0a84f;text-align:center;font-weight:900}
+    .loseall-row{display:grid;grid-template-columns:48px minmax(0,1fr) 72px;align-items:center;min-height:42px;border-bottom:1px solid #302b22;font-size:15px}
+    .loseall-row:last-child{border-bottom:0}.loseall-row span{padding:8px 5px;white-space:nowrap}.loseall-period{color:#adb0b5;text-align:center}.loseall-pick{color:#f4c968;font-weight:900}.loseall-open{color:#f1f1f1;text-align:center;font-weight:800}
+    .kill-row{display:grid;grid-template-columns:48px repeat(4,minmax(0,1fr)) 52px;align-items:center;min-height:42px;border-bottom:1px solid #302b22;font-size:14px}
+    .kill-row:last-child{border-bottom:0}.kill-row span{padding:8px 2px;text-align:center;white-space:nowrap}.kill-period{color:#adb0b5}.kill-pick{color:#ffe078;font-weight:900}.kill-open{color:#f1f1f1;font-weight:900}
+    .kill-head{display:grid;grid-template-columns:48px repeat(4,minmax(0,1fr)) 52px;align-items:center;min-height:34px;border-bottom:1px solid #765b1d;background:#211a09;color:#f5ca58;font-size:13px;font-weight:900}
+    .kill-head span{padding:7px 2px;text-align:center;white-space:nowrap}
+    .material-pending{padding:28px 10px;text-align:center;color:#f0a84f;font-size:15px;font-weight:800}
+    .thirty-wrap{padding:11px}
+    .thirty-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;color:#c7c7c7;font-size:14px}
+    .thirty-meta strong{color:#ffe078;font-size:16px}.thirty-state{color:#f0a84f;font-weight:900}
+    .thirty-numbers{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+    .thirty-ball{aspect-ratio:1;border:1px solid #76591a;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#31250a,#151004);color:#ffe078;font-size:13px;font-weight:900}
+    .thirty-ball.hit{border-color:#ff6b6b;background:linear-gradient(180deg,#dc3b3b,#941c1c);color:#fff;box-shadow:0 0 0 2px rgba(220,59,59,.15)}
+    @media(max-width:520px){.thirty-numbers{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}.thirty-ball{font-size:12px}}
+    .master-grid{display:grid;grid-template-columns:1fr;gap:6px}
+    .master-card{display:grid;grid-template-columns:30px 42px minmax(72px,.7fr) minmax(120px,1.4fr) auto;align-items:center;gap:8px;min-width:0;padding:9px 11px;border:1px solid #55401f;border-radius:9px;background:linear-gradient(145deg,#11100d,#080909);box-shadow:inset 0 0 0 1px rgba(255,211,91,.025);cursor:pointer;transition:border-color .18s ease,transform .18s ease}
+    .master-card:hover,.master-card:focus-visible{border-color:#c08d25;transform:translateY(-1px);outline:none}
+    .master-top{display:contents}
+    .master-avatar{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border:1px solid #a8781a;border-radius:50%;background:#2c210a;color:#f4c856;font-size:19px;font-weight:900}
+    .master-name{min-width:0;color:#f3d070;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .master-rank{display:grid;place-items:center;width:28px;height:28px;border:1px solid #b78725;border-radius:50%;background:#382b0c;color:#ffe07a;font-size:12px;font-weight:900}
+    .master-specialty{min-width:0;color:#ffd45b;text-align:center;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .master-foot{display:contents}
+    .master-section .master-foot>span:first-child{display:none}
+    .master-free{padding:4px 8px;border-radius:999px;background:#073e20;color:#58df83;font-weight:900;white-space:nowrap}
+    .master-card.master-line-card{display:block;padding:0}
+    .master-line{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin:auto;padding:9px 8px;text-align:center;white-space:nowrap;overflow:hidden}
+    .master-line-period,.master-line-author,.master-line-category,.master-line-slogan{color:#f2ca63;font-size:16px;font-weight:900;line-height:1.35}
+    .master-line-period,.master-line-author,.master-line-slogan{flex:0 0 auto}.master-line-author{margin-left:10px}.master-line-category{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+    .master-pagination{display:none}
+    .master-page-btn{height:32px;padding:0 13px;border:1px solid #59491f;border-radius:7px;background:#15130e;color:#d0bd83;font-family:inherit;font-size:13px;font-weight:900;cursor:pointer}
+    .master-page-btn:disabled{opacity:.35;cursor:not-allowed}.master-page-info{min-width:54px;color:#ffe078;text-align:center;font-size:13px;font-weight:900}
+    @media(max-width:520px){
+      .master-grid{grid-template-columns:1fr;gap:5px}
+      .master-card{grid-template-columns:25px 34px minmax(52px,.65fr) minmax(105px,1.35fr) auto;gap:5px;padding:8px 7px;border-radius:8px}
+      .master-avatar{width:34px;height:34px;flex-basis:34px;font-size:16px}
+      .master-name{font-size:14px}
+      .master-rank{width:23px;height:23px;font-size:10px}
+      .master-specialty{font-size:14px}
+      .master-foot>span:first-child{display:none}
+      .master-free{padding:3px 6px;font-size:11px}
+      .master-line{min-height:44px;padding:8px 3px}.master-line-period,.master-line-author,.master-line-category,.master-line-slogan{font-size:14px}.master-line-author{margin-left:6px}
+    }
+
+    /* 全站资料板块统一标题与历史切换按钮 */
+    .study-title,.sixcode-title,.doublewave-title,.feature-title{
+      margin:0 0 9px;
+      padding:9px 6px;
+      border:1px solid #785c19;
+      border-radius:8px;
+      background:linear-gradient(90deg,#201906,#5d470e,#201906);
+      color:#ffe078;
+      text-align:center;
+      font-size:18px;
+      line-height:1.3;
+      font-weight:900;
+      box-shadow:inset 0 0 0 1px rgba(255,224,120,.05);
+    }
+    .record-history-nav{display:flex;gap:6px;margin:0 0 8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch}
+    .record-history-nav::-webkit-scrollbar{display:none;width:0;height:0}
+    .record-history-btn{flex:0 0 auto;height:31px;padding:0 11px;border:1px solid #59491f;border-radius:7px;background:#15130e;color:#aaa;font-family:inherit;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer}
+    .record-history-btn.active{border-color:#b28c25;background:linear-gradient(180deg,#34290c,#201907);color:#f5c84b;box-shadow:inset 0 0 0 1px rgba(245,200,75,.08)}
+    .study-period-btn,.sixcode-page-btn{border-color:#59491f;background:#15130e;color:#aaa}
+    .study-period-btn.active,.sixcode-page-btn.active{border-color:#b28c25;background:linear-gradient(180deg,#34290c,#201907);color:#f5c84b}
+    .study-period-btn,.sixcode-page-btn,.five-history-nav button{font-size:12px}
+    .study-row,.sixcode-row,.doublewave-row,.feature-row,.three-period-group{font-size:15px}
+
+    .section{
+      margin-top:9px;
+      padding:10px;
+    }
+
+    .section::after{
+      content:"123LH.COM";
+      display:block;
+      margin-top:8px;
+      padding-top:6px;
+      border-top:1px solid rgba(197,166,72,.13);
+      color:rgba(240,213,125,.55);
+      font-size:10px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:1.7px;
+      text-align:right;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin:0 0 8px;
+    }
+
+    .section-title .left{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      min-width:0;
+    }
+
+    .section-title h2{
+      margin:0;
+      font-size:19px;
+      line-height:1;
+      font-weight:900;
+    }
+
+    .count{
+      display:none;
+      color:#c5c6ca;
+      font-size:13px;
+      font-weight:600;
+      white-space:nowrap;
+    }
+
+    .more{
+      color:var(--gold);
+      text-decoration:none;
+      font-size:14px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .fire{font-size:20px}
+    .c-red{color:#ff4b4b}.c-purple{color:#b561ff}.c-orange{color:#ff8a1f}
+    .c-green{color:#84db3d}.c-blue{color:#4aa3ff}.c-cyan{color:#25d6e8}
+    .c-yellow{color:#ffd51a}
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+    }
+
+    .material{
+      min-height:76px;
+      border:1px solid #3a3020;
+      border-radius:8px;
+      background:#0a0b0c;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:7px 4px;
+      text-align:center;
+    }
+    .material .name{
+      font-size:14px;
+      color:#f1f1f1;
+      margin-bottom:4px;
+      white-space:nowrap;
+    }
+    .material .pick{
+      font-size:26px;
+      font-weight:900;
+      line-height:1.1;
+      letter-spacing:2px;
+    }
+
+    .six-table{
+      display:flex;
+      flex-direction:column;
+      border:1px solid #273025;
+      border-radius:8px;
+      overflow:hidden;
+    }
+    .six-row{
+      display:grid;
+      grid-template-columns:1.15fr 2.3fr;
+      min-height:41px;
+      align-items:center;
+      border-bottom:1px solid #22262a;
+    }
+    .six-row:last-child{border-bottom:0}
+    .six-row .name{
+      padding:0 12px;
+      font-size:15px;
+    }
+    .six-row .pick{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:4px;
+      padding:0 10px;
+      color:var(--green);
+      font-size:18px;
+      font-weight:800;
+      text-align:center;
+    }
+
+    .five-title{
+      color:#ffd56a;
+    }
+    .five-panel{
+      border-color:#4a171d;
+    }
+    .five-grid{
+      border-top:1px solid #2b2f32;
+      margin-top:4px;
+    }
+    .five-row{
+      display:grid;
+      grid-template-columns:64px 1fr;
+      align-items:center;
+      min-height:42px;
+      border-bottom:1px solid #202326;
+    }
+    .five-row:last-child{border-bottom:0}
+    .issue{
+      padding-left:8px;
+      font-size:16px;
+      color:#f1f1f1;
+      white-space:nowrap;
+    }
+    .numline{
+      display:grid;
+      grid-template-columns:repeat(8,minmax(28px,1fr));
+      gap:5px;
+      align-items:center;
+      padding:4px 2px 4px 4px;
+    }
+    .num{
+      aspect-ratio:1;
+      max-width:34px;
+      min-width:28px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      margin:auto;
+      border:1px solid #8d2630;
+      color:#fff;
+      font-size:13px;
+      font-weight:800;
+      background:#0d0d0e;
+    }
+    .num.hit{
+      background:#ff3855;
+      border-color:#ff3855;
+      box-shadow:0 0 14px rgba(255,56,85,.25);
+    }
+
+    .tail-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+    }
+    .tail{
+      min-height:80px;
+      border:1px solid #26384c;
+      border-radius:8px;
+      background:#090b0e;
+      padding:8px 4px;
+      text-align:center;
+    }
+    .tail .name{font-size:13px;color:#f0f0f0;margin-bottom:7px}
+    .tail .value{font-size:24px;color:var(--blue);font-weight:900}
+
+    .combo-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
+    }
+    .combo-card{
+      border:1px solid #16424a;
+      border-radius:9px;
+      background:#070a0b;
+      padding:9px 9px 10px;
+    }
+    .combo-card.yellow{border-color:#5b5117}
+    .combo-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:6px;
+      font-size:14px;
+      margin-bottom:7px;
+    }
+    .chip{
+      padding:2px 7px;
+      border-radius:999px;
+      font-size:11px;
+      border:1px solid currentColor;
+      opacity:.9;
+      white-space:nowrap;
+    }
+    .combo-nums{
+      display:flex;
+      flex-wrap:wrap;
+      gap:5px;
+    }
+    .combo-num{
+      width:32px;
+      height:32px;
+      flex:0 0 32px;
+      padding:0;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#0c1112;
+      border:1px solid #1f5e68;
+      color:var(--cyan);
+      font-weight:800;
+      font-size:13px;
+      line-height:1;
+    }
+    .combo-card.yellow .combo-num{
+      border-color:#65590d;
+      color:var(--yellow);
+    }
+
+    .idiom-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
+    }
+    .idiom{
+      border:1px solid #5b3d12;
+      border-radius:9px;
+      background:linear-gradient(180deg,#120c05,#090807);
+      padding:10px 10px 11px;
+      min-height:98px;
+    }
+    .idiom .period-tag{
+      display:inline-block;
+      background:#8c1f1f;
+      color:#fff;
+      border-radius:999px;
+      padding:2px 7px;
+      font-size:11px;
+      margin-bottom:5px;
+    }
+    .idiom .title{
+      color:#ffd04c;
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .idiom .line{
+      color:#e6e6e6;
+      font-size:13px;
+      line-height:1.7;
+    }
+    .idiom .green{color:#7ee23e}
+
+    @media (max-width:520px){
+      .page{padding:12px 8px 28px}
+      .brand-logo{width:170px}
+      .brand-lockup .brand-domain{font-size:10px;margin-top:1px}
+      .brand h1{font-size:29px}
+      .brand p{font-size:13px}
+      .lottery-btn{height:40px;padding:0 12px;font-size:14px}
+      .draw-row{grid-template-columns:1fr 1.55fr;gap:7px}
+      .countdown-card,.result-card{min-height:136px;padding:11px}
+      .period{font-size:16px}
+      .label,.draw-time{font-size:12px}
+      .result-title{font-size:15px}
+      .ball{width:32px;height:32px;font-size:14px;flex:0 0 32px}
+      .history-link{right:10px;bottom:10px;font-size:13px}
+      .section{padding:8px}
+      .section-title h2{font-size:17px}
+      .count{font-size:12px}
+      .more{font-size:13px}
+      .material{min-height:70px}
+      .material .name{font-size:12px}
+      .material .pick{font-size:22px}
+      .six-row{grid-template-columns:1.1fr 2.5fr;min-height:39px}
+      .six-row .name{font-size:13px;padding:0 8px}
+      .six-row .pick{font-size:16px;padding:0 6px}
+      .tail .name{font-size:11px}
+      .tail .value{font-size:20px}
+      .tail-grid{gap:5px}
+      .combo-num{width:30px;height:30px;flex-basis:30px;font-size:12px}
+      .idiom .title{font-size:18px}
+    }
+
+    @media (max-width:390px){
+      .topbar{align-items:center}
+      .lottery-btn{padding:0 10px}
+      .draw-row{grid-template-columns:.82fr 1.55fr}
+      .countdown-card{min-height:122px}
+      .result-card{min-height:138px}
+      .grid-3{gap:5px}
+      .material{min-height:66px}
+      .material .name{font-size:11.5px}
+      .material .pick{font-size:21px}
+      .tail-grid{grid-template-columns:repeat(2,1fr)}
+      .combo-grid{grid-template-columns:1fr}
+      .idiom-grid{grid-template-columns:1fr}
+    }
+  
+    @media (max-width:390px){
+      .result-card .balls{gap:4px}
+      .result-card .ball{width:29px;height:29px;flex-basis:29px;font-size:12px}
+      .result-card .plus{font-size:19px;padding:0}
+      .result-title{margin-bottom:9px}
+    }
+
+  
+    .draw-unified{
+      display:grid;
+      grid-template-columns:35% 65%;
+      margin-bottom:10px;
+      min-height:150px;
+      overflow:hidden;
+    }
+    .draw-left{
+      padding:14px 10px 12px;
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      border-right:1px solid #2a2d31;
+    }
+    .draw-right{
+      position:relative;
+      padding:14px 12px 34px;
+      min-width:0;
+    }
+    .draw-right .balls{
+      width:100%;
+      justify-content:flex-start;
+    }
+    @media (max-width:520px){
+      .draw-unified{grid-template-columns:35% 65%;min-height:138px}
+      .draw-left{padding:11px 6px}
+      .draw-right{padding:11px 8px 31px}
+      .draw-left .countdown{font-size:30px}
+      .draw-right .balls{gap:4px}
+      .draw-right .ball{width:29px;height:29px;flex:0 0 29px;font-size:12px}
+      .draw-right .plus{font-size:18px;padding:0}
+    }
+    @media (max-width:390px){
+      .draw-unified{grid-template-columns:34% 66%}
+      .draw-left .period{font-size:14px}
+      .draw-left .countdown{font-size:27px}
+      .draw-left .draw-time{font-size:10px}
+      .draw-right .result-title{font-size:13px}
+      .draw-right .result-title small{font-size:10px}
+      .draw-right .balls{gap:3px}
+      .draw-right .ball{width:26px;height:26px;flex-basis:26px;font-size:11px}
+      .draw-right .plus{font-size:16px}
+      .draw-right .draw-time{font-size:10px}
+      .draw-right .history-link{font-size:12px}
+    }
+
+  
+    .draw-left .compact-countdown{
+      margin-top:10px;
+      color:#d7d9dc;
+      font-size:14px;
+      line-height:1.2;
+      white-space:nowrap;
+    }
+    .draw-left .compact-countdown strong{
+      color:#ffd45b;
+      font-size:18px;
+      margin-left:3px;
+      letter-spacing:.2px;
+    }
+    @media (max-width:520px){
+      .draw-left .compact-countdown{font-size:12px;margin-top:8px}
+      .draw-left .compact-countdown strong{font-size:16px}
+    }
+    @media (max-width:390px){
+      .draw-left .compact-countdown{font-size:11px}
+      .draw-left .compact-countdown strong{font-size:14px}
+    }
+
+  
+    .draw-strip{
+      min-height:74px;
+      margin-bottom:10px;
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      overflow:hidden;
+    }
+    .draw-strip-period{
+      flex:0 0 auto;
+      padding-right:12px;
+      border-right:1px solid #2a2d31;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      white-space:nowrap;
+    }
+    .draw-strip-period>strong{
+      font-size:16px;
+      color:#f5f5f5;
+    }
+    .draw-strip-period span{
+      color:#bfc2c6;
+      font-size:12px;
+    }
+    .draw-strip-period b{
+      color:#ffd45b;
+      font-size:14px;
+    }
+    .draw-strip-result{
+      min-width:0;
+      flex:1;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .draw-strip-label{
+      color:#f4f4f4;
+      font-size:14px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .draw-strip-result .balls{
+      flex:1;
+      flex-wrap:nowrap;
+      gap:5px;
+      min-width:0;
+    }
+    .draw-strip-result .ball{
+      width:32px;
+      height:32px;
+      flex:0 0 32px;
+      font-size:13px;
+    }
+    .draw-strip-result .plus{
+      font-size:18px;
+      padding:0;
+    }
+    .draw-strip-history{
+      flex:0 0 auto;
+      color:var(--gold);
+      font-size:13px;
+      font-weight:800;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    @media (max-width:520px){
+      .draw-strip{
+        padding:9px 8px;
+        gap:7px;
+      }
+      .draw-strip-period{
+        padding-right:7px;
+        gap:3px;
+      }
+      .draw-strip-period>strong{font-size:13px}
+      .draw-strip-period span{font-size:10px}
+      .draw-strip-period b{font-size:11px}
+      .draw-strip-label{font-size:12px}
+      .draw-strip-result{gap:5px}
+      .draw-strip-result .balls{gap:3px}
+      .draw-strip-result .ball{
+        width:27px;height:27px;flex-basis:27px;font-size:11px;
+      }
+      .draw-strip-result .plus{font-size:15px}
+      .draw-strip-history{font-size:11px}
+    }
+
+    @media (max-width:390px){
+      .draw-strip{gap:5px;padding:8px 6px}
+      .draw-strip-period{padding-right:5px}
+      .draw-strip-period>strong{font-size:12px}
+      .draw-strip-period span{font-size:9px}
+      .draw-strip-period b{font-size:10px}
+      .draw-strip-label{font-size:11px}
+      .draw-strip-result{gap:3px}
+      .draw-strip-result .balls{gap:2px}
+      .draw-strip-result .ball{
+        width:24px;height:24px;flex-basis:24px;font-size:10px;
+      }
+      .draw-strip-result .plus{font-size:13px}
+      .draw-strip-history{font-size:10px}
+    }
+
+  
+    .draw-box{
+      margin-bottom:10px;
+      padding:0 12px;
+      overflow:hidden;
+    }
+    .draw-box-top{
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      border-bottom:1px solid #292c30;
+    }
+    .draw-period{
+      font-size:16px;
+      font-weight:900;
+      color:#f5f5f5;
+      white-space:nowrap;
+    }
+    .draw-countdown{
+      font-size:13px;
+      color:#c6c8cb;
+      white-space:nowrap;
+    }
+    .draw-countdown strong{
+      color:#ffd45b;
+      font-size:15px;
+      margin-left:3px;
+    }
+    .draw-history{
+      margin-left:auto;
+      color:var(--gold);
+      font-size:13px;
+      font-weight:800;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+    .draw-box-bottom{
+      min-height:58px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .draw-result-label{
+      flex:0 0 auto;
+      color:#f3f3f3;
+      font-size:15px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .draw-box-bottom .balls{
+      flex-wrap:nowrap;
+      gap:7px;
+      min-width:0;
+    }
+    .draw-box-bottom .ball{
+      width:34px;
+      height:34px;
+      flex:0 0 34px;
+      font-size:14px;
+    }
+
+    @media(max-width:520px){
+      .draw-box{padding:0 9px}
+      .draw-box-top{min-height:40px;gap:9px}
+      .draw-period{font-size:14px}
+      .draw-countdown{font-size:11px}
+      .draw-countdown strong{font-size:13px}
+      .draw-history{font-size:12px}
+      .draw-box-bottom{min-height:54px;gap:7px}
+      .draw-result-label{font-size:13px}
+      .draw-box-bottom .balls{gap:5px}
+      .draw-box-bottom .ball{
+        width:31px;height:31px;flex-basis:31px;font-size:12px;
+      }
+      .draw-box-bottom .plus{font-size:17px;padding:0}
+    }
+    @media(max-width:390px){
+      .draw-box{padding:0 7px}
+      .draw-box-top{gap:6px}
+      .draw-period{font-size:13px}
+      .draw-countdown{font-size:10px}
+      .draw-countdown strong{font-size:12px}
+      .draw-history{font-size:11px}
+      .draw-box-bottom{gap:5px}
+      .draw-result-label{font-size:12px}
+      .draw-box-bottom .balls{gap:3px}
+      .draw-box-bottom .ball{
+        width:28px;height:28px;flex-basis:28px;font-size:11px;
+      }
+      .draw-box-bottom .plus{font-size:15px}
+    }
+
+  
+    .draw-result-items{
+      flex:1;
+      display:flex;
+      align-items:flex-start;
+      gap:7px;
+      min-width:0;
+      flex-wrap:nowrap;
+    }
+    .draw-number{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      flex:0 0 auto;
+    }
+    .draw-number .zodiac{
+      color:#cfd2d6;
+      font-size:12px;
+      font-weight:700;
+      line-height:1;
+    }
+    .draw-number.special .zodiac{
+      color:#7eb0ff;
+    }
+    .draw-result-items .plus{
+      align-self:center;
+      margin-top:-15px;
+    }
+
+    @media(max-width:520px){
+      .draw-result-items{gap:5px}
+      .draw-number .zodiac{font-size:11px}
+      .draw-result-items .plus{margin-top:-13px}
+    }
+
+    @media(max-width:390px){
+      .draw-result-items{gap:3px}
+      .draw-number .zodiac{font-size:10px}
+      .draw-result-items .plus{margin-top:-12px}
+    }
+
+  
+    .draw-box-centered .draw-box-top{
+      position:relative;
+      justify-content:center;
+    }
+    .draw-box-centered .draw-period,
+    .draw-box-centered .draw-countdown{
+      text-align:center;
+    }
+    .draw-box-centered .draw-history{
+      position:absolute;
+      right:0;
+      margin-left:0;
+    }
+    .draw-box-bottom-centered{
+      min-height:82px;
+      flex-direction:column;
+      justify-content:center;
+      gap:7px;
+      padding:9px 0 10px;
+    }
+    .draw-result-heading{
+      color:#f3f3f3;
+      font-size:14px;
+      font-weight:800;
+      line-height:1;
+      text-align:center;
+    }
+    .draw-box-bottom-centered .draw-result-items{
+      flex:none;
+      justify-content:center;
+      width:100%;
+      gap:9px;
+    }
+    .draw-box-bottom-centered .draw-number .zodiac{
+      font-size:15px;
+      font-weight:900;
+      color:#f2d27d;
+      margin-top:1px;
+    }
+    .draw-box-bottom-centered .draw-number.special .zodiac{
+      color:#f2d27d;
+    }
+    .draw-box-bottom-centered .plus{
+      margin-top:3px;
+      align-self:flex-start;
+      padding-top:7px;
+    }
+
+    @media(max-width:520px){
+      .draw-box-bottom-centered{min-height:78px;gap:6px}
+      .draw-box-bottom-centered .draw-result-items{gap:6px}
+      .draw-box-bottom-centered .draw-number .zodiac{font-size:14px}
+    }
+    @media(max-width:390px){
+      .draw-box-centered .draw-box-top{justify-content:flex-start}
+      .draw-box-centered .draw-period{font-size:12px}
+      .draw-box-centered .draw-countdown{font-size:10px}
+      .draw-box-centered .draw-history{font-size:10px}
+      .draw-box-bottom-centered .draw-result-items{gap:4px}
+      .draw-box-bottom-centered .draw-number .zodiac{font-size:13px}
+    }
+
+  
+    .draw-style5{
+      display:grid;
+      grid-template-columns:24% 62% 14%;
+      min-height:126px;
+      margin-bottom:10px;
+      overflow:hidden;
+      border-color:#80661b;
+    }
+    .draw-style5-left,
+    .draw-style5-center,
+    .draw-style5-right{min-width:0}
+    .draw-style5-left{
+      padding:15px 14px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      border-right:1px solid #80661b;
+    }
+    .s5-period{
+      font-size:17px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .s5-label{
+      margin-top:12px;
+      color:#d6d6d6;
+      font-size:14px;
+    }
+    .s5-countdown{
+      margin-top:3px;
+      color:#ffd23f;
+      font-size:21px;
+      font-weight:900;
+      letter-spacing:.4px;
+    }
+    .draw-style5-center{
+      padding:11px 8px 9px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+    }
+    .s5-title{
+      width:100%;
+      text-align:center;
+      color:#f2c84c;
+      font-size:17px;
+      font-weight:900;
+      margin-bottom:9px;
+      position:relative;
+    }
+    .s5-title:before,.s5-title:after{
+      content:"";
+      position:absolute;
+      top:50%;
+      width:25%;
+      height:1px;
+      background:#80661b;
+    }
+    .s5-title:before{left:3%}
+    .s5-title:after{right:3%}
+    .draw-style5-center .draw-result-items{
+      width:100%;
+      justify-content:center;
+      gap:8px;
+    }
+    .draw-style5-center .draw-number .zodiac{
+      color:#f2d27d;
+      font-size:15px;
+      font-weight:900;
+    }
+    .draw-style5-center .draw-number.special .zodiac{color:#f2d27d}
+    .draw-style5-center .plus{
+      align-self:flex-start;
+      margin-top:8px;
+    }
+    .draw-style5-right{
+      border-left:1px solid #80661b;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:14px;
+      padding:10px 6px;
+    }
+    .draw-style5-right a,
+    .draw-style5-right button{
+      color:var(--gold);
+      font-size:13px;
+      font-weight:800;
+      text-decoration:none;
+      white-space:nowrap;
+      background:none;
+      border:0;
+      padding:0;
+      cursor:pointer;
+      font-family:inherit;
+    }
+    .live-video-wrap{
+      grid-column:1/-1;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:14px 12px 16px;
+      border-top:1px solid #80661b;
+      background:#090909;
+    }
+    .live-video-wrap[hidden]{display:none}
+    .live-video-wrap video{
+      display:block;
+      width:min(100%,760px);
+      aspect-ratio:16/9;
+      background:#000;
+      border-radius:10px;
+      border:1px solid #6d551f;
+    }
+    .live-close{align-self:flex-end;margin-bottom:10px;padding:6px 14px;border:1px solid #806428;border-radius:18px;background:#1d180d;color:#f1cc61;font:800 13px inherit;cursor:pointer}
+    .live-status{width:min(100%,760px);margin-top:10px;text-align:center;color:#cfcfcf;font-size:13px}
+
+    @media(max-width:520px){
+      .draw-style5{grid-template-columns:23% 63% 14%;min-height:116px}
+      .draw-style5-left{padding:11px 8px}
+      .s5-period{font-size:14px}
+      .s5-label{margin-top:8px;font-size:12px}
+      .s5-countdown{font-size:16px}
+      .draw-style5-center{padding:9px 5px 8px}
+      .s5-title{font-size:15px;margin-bottom:7px}
+      .draw-style5-center .draw-result-items{gap:5px}
+      .draw-style5-center .draw-number .zodiac{font-size:14px}
+      .draw-style5-right{gap:10px;padding:8px 3px}
+      .draw-style5-right a,
+      .draw-style5-right button{font-size:11px}
+    }
+    @media(max-width:390px){
+      .draw-style5{grid-template-columns:22% 64% 14%}
+      .draw-style5-left{padding:9px 5px}
+      .s5-period{font-size:12px}
+      .s5-label{font-size:10px}
+      .s5-countdown{font-size:14px}
+      .s5-title{font-size:14px}
+      .draw-style5-center .draw-result-items{gap:3px}
+      .draw-style5-center .draw-number .zodiac{font-size:13px}
+      .draw-style5-right a,
+      .draw-style5-right button{font-size:10px}
+    }
+
+  
+    /* Final phone-safe override: draw area only */
+    .draw-style5{
+      grid-template-columns:22% minmax(0,66%) 12%;
+    }
+    .draw-style5-center .draw-result-items{
+      display:flex;
+      flex-wrap:nowrap;
+      justify-content:center;
+      align-items:flex-start;
+      gap:clamp(2px,1vw,7px);
+      min-width:0;
+    }
+    .draw-style5-center .draw-number{
+      min-width:0;
+      flex:0 1 42px;
+    }
+    .draw-style5-center .draw-number .ball{
+      width:clamp(28px,7.6vw,38px);
+      height:clamp(28px,7.6vw,38px);
+      min-width:0;
+      flex-basis:auto;
+      font-size:clamp(12px,3.5vw,16px);
+    }
+    .draw-style5-center .draw-number .zodiac{
+      font-size:clamp(13px,3.8vw,17px);
+      white-space:nowrap;
+    }
+    .draw-style5-center .plus{
+      flex:0 0 auto;
+      margin:7px 0 0;
+      padding:0;
+      font-size:clamp(16px,4.5vw,22px);
+    }
+    .draw-style5-right a,
+    .draw-style5-right button{
+      white-space:normal;
+      text-align:center;
+      line-height:1.25;
+    }
+    @media(max-width:430px){
+      .draw-style5{
+        grid-template-columns:22% minmax(0,65%) 13%;
+      }
+      .draw-style5-left{padding:10px 5px}
+      .s5-period{font-size:12px}
+      .s5-label{font-size:10px;margin-top:8px}
+      .s5-countdown{font-size:15px}
+      .draw-style5-center{padding:9px 2px 8px}
+      .s5-title{font-size:14px;margin-bottom:7px}
+      .draw-style5-center .draw-result-items{gap:2px}
+      .draw-style5-right{padding:7px 2px;gap:10px}
+      .draw-style5-right a,
+      .draw-style5-right button{font-size:10px}
+    }
+
+  
+    /* ===== Full responsive hardening ===== */
+    html, body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+    }
+    .page{
+      width:100%;
+      max-width:760px;
+      min-width:0;
+    }
+    img, video, iframe{
+      max-width:100%;
+    }
+
+    /* Never allow grid/flex children to force horizontal overflow */
+    .topbar,
+    .draw-style5,
+    .draw-style5-left,
+    .draw-style5-center,
+    .draw-style5-right,
+    .section,
+    .grid-3,
+    .six-table,
+    .six-row,
+    .tail-grid,
+    .combo-grid,
+    .combo-card,
+    .idiom-grid,
+    .idiom{
+      min-width:0;
+      max-width:100%;
+    }
+
+    /* Main material grids: keep the approved 3-column look where possible */
+    .grid-3{
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+    .material{
+      min-width:0;
+      overflow:hidden;
+    }
+    .material .name{
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .material .pick{
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    /* Six-zodiac rows */
+    .six-row{
+      grid-template-columns:minmax(82px,1.05fr) minmax(0,2.5fr);
+    }
+    .six-row .name{
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .six-row .pick{
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      min-width:0;
+    }
+
+    /* Featured 8-number rows */
+    .five-row{
+      grid-template-columns:minmax(50px,64px) minmax(0,1fr);
+    }
+    .numline{
+      grid-template-columns:repeat(8,minmax(0,1fr));
+      min-width:0;
+    }
+    .num{
+      width:100%;
+      min-width:0;
+      max-width:34px;
+    }
+
+    /* Tail / combo / idiom */
+    .tail-grid{
+      grid-template-columns:repeat(4,minmax(0,1fr));
+    }
+    .combo-grid,
+    .idiom-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    .combo-nums{
+      min-width:0;
+    }
+
+    /* Draw area: preserve Style 5, but scale safely */
+    .draw-style5{
+      width:100%;
+      grid-template-columns:minmax(72px,22%) minmax(0,65%) minmax(46px,13%);
+    }
+    .draw-style5-left{
+      min-width:0;
+    }
+    .s5-period,
+    .s5-label,
+    .s5-countdown{
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .draw-style5-center{
+      min-width:0;
+      overflow:hidden;
+    }
+    .draw-style5-center .draw-result-items{
+      width:100%;
+      min-width:0;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      flex-wrap:nowrap;
+      gap:clamp(1px, .8vw, 7px);
+    }
+    .draw-style5-center .draw-number{
+      flex:1 1 0;
+      min-width:0;
+      max-width:42px;
+    }
+    .draw-style5-center .draw-number .ball{
+      width:clamp(24px,7vw,38px);
+      height:clamp(24px,7vw,38px);
+      max-width:100%;
+      aspect-ratio:1;
+      flex:none;
+      font-size:clamp(10px,3vw,16px);
+    }
+    .draw-style5-center .draw-number .zodiac{
+      font-size:clamp(12px,3.4vw,16px);
+      white-space:nowrap;
+      line-height:1.15;
+    }
+    .draw-style5-center .plus{
+      flex:0 0 auto;
+      font-size:clamp(14px,4vw,20px);
+      margin-top:6px;
+    }
+    .draw-style5-right{
+      min-width:0;
+      padding-inline:2px;
+    }
+    .draw-style5-right a,
+    .draw-style5-right button{
+      width:100%;
+      max-width:100%;
+      white-space:normal;
+      overflow-wrap:anywhere;
+      text-align:center;
+      font-size:clamp(9px,2.6vw,12px);
+      line-height:1.25;
+    }
+
+    /* 430 and below */
+    @media (max-width:430px){
+      .page{padding-left:7px;padding-right:7px}
+      .topbar{gap:8px}
+      .brand h1{font-size:27px}
+      .brand p{font-size:12px}
+      .brand-domain{font-size:11px;letter-spacing:1.8px}
+      .lottery-btn{height:38px;font-size:13px;padding:0 9px}
+
+      .draw-style5{
+        grid-template-columns:minmax(68px,21%) minmax(0,66%) minmax(44px,13%);
+      }
+      .draw-style5-left{padding:9px 4px}
+      .s5-period{font-size:12px}
+      .s5-label{font-size:10px;margin-top:7px}
+      .s5-countdown{font-size:14px}
+      .s5-title{font-size:14px}
+
+      .section{padding:8px 7px}
+      .section::after{margin-top:7px;padding-top:5px;font-size:9px;letter-spacing:1.3px}
+      .section-title h2{font-size:16px}
+      .count{font-size:11px}
+      .more{font-size:12px}
+      .material .name{font-size:11px}
+      .material .pick{font-size:20px}
+      .six-row .name{font-size:12px}
+      .six-row .pick{font-size:15px}
+    }
+
+    /* 375 and below: keep structure, reduce density */
+    @media (max-width:375px){
+      .brand-logo{width:140px}
+      .brand-lockup .brand-domain{font-size:8.5px;padding-left:2px}
+      .brand h1{font-size:25px}
+      .lottery-btn{font-size:12px}
+
+      .draw-style5{
+        grid-template-columns:minmax(62px,20%) minmax(0,67%) minmax(42px,13%);
+      }
+      .draw-style5-left{padding:8px 3px}
+      .s5-period{font-size:11px}
+      .s5-label{font-size:9px}
+      .s5-countdown{font-size:13px}
+      .s5-title{font-size:13px;margin-bottom:5px}
+      .draw-style5-center{padding-left:1px;padding-right:1px}
+      .draw-style5-center .draw-result-items{gap:1px}
+      .draw-style5-right{gap:8px}
+
+      .material{padding-inline:3px}
+      .material .name{font-size:10.5px}
+      .material .pick{font-size:19px}
+
+      .tail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .combo-grid,.idiom-grid{grid-template-columns:1fr}
+    }
+
+    /* Very small phones: prevent any overlap, allow only approved content to reflow */
+    @media (max-width:340px){
+      .page{padding-left:5px;padding-right:5px}
+      .topbar{align-items:center}
+      .brand p{display:none}
+      .brand h1{font-size:23px}
+      .brand-domain{font-size:10px;letter-spacing:1.4px}
+      .lottery-btn{height:36px;font-size:11px;padding:0 7px}
+      .lottery-badge{width:22px;height:22px;font-size:12px}
+
+      .draw-style5{
+        grid-template-columns:minmax(58px,19%) minmax(0,67%) minmax(40px,14%);
+      }
+      .s5-period{font-size:10px}
+      .s5-countdown{font-size:12px}
+      .draw-style5-center .draw-number .ball{
+        width:22px;height:22px;font-size:9px;
+      }
+      .draw-style5-center .draw-number .zodiac{font-size:11px}
+      .draw-style5-right a,
+      .draw-style5-right button{font-size:8.5px}
+
+      .grid-3{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .material .name{font-size:11px}
+      .material .pick{font-size:20px}
+      .six-row{
+        grid-template-columns:minmax(72px,.95fr) minmax(0,2.6fr);
+      }
+      .six-row .pick{font-size:13px}
+      .five-row{grid-template-columns:46px minmax(0,1fr)}
+      .issue{font-size:12px;padding-left:4px}
+      .numline{gap:2px}
+      .num{font-size:10px}
+    }
+
+  .five-history-nav{display:flex;align-items:center;gap:6px;padding:9px 10px 10px;border-top:1px solid #302918;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+    .five-history-nav::-webkit-scrollbar{display:none;width:0;height:0}
+    .five-history-nav button{flex:0 0 auto;scroll-snap-align:start;height:30px;padding:0 9px;border:1px solid #59491f;border-radius:7px;background:#15130e;color:#aaa;font-family:inherit;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer}
+    .five-history-nav button.active{border-color:#b28c25;background:linear-gradient(180deg,#34290c,#201907);color:#f5c84b;box-shadow:inset 0 0 0 1px rgba(245,200,75,.08)}
+    .five-result{grid-column:2;justify-self:end;padding:0 6px 6px;font-size:12px;color:#aaa}
+    .five-result strong{margin-left:5px;font-size:13px}.five-result .win{color:#65db87}.five-result .lose{color:#ef6464}
+    .study-title,.sixcode-title,.doublewave-title,.feature-title{font-size:18px}
+    .study-period-btn,.sixcode-page-btn,.record-history-btn,.five-history-nav button{font-size:12px}
+    .five-history-nav{padding:0;margin:0 0 8px;border-top:0}
+    .five-history-nav button{height:31px}
+    @media(max-width:390px){
+      .site-network-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .sixcode-row{grid-template-columns:58px minmax(0,.63fr) minmax(0,1.22fr) 58px;font-size:11px}
+      .sixcode-row span{padding-left:3px;padding-right:3px}
+      .doublewave-row,.feature-row{grid-template-columns:45px minmax(0,1fr) 59px 27px;font-size:13px}
+      .doublewave-row span,.feature-row span{padding-left:2px;padding-right:2px}
+      .study-row{grid-template-columns:46px 40px minmax(0,1fr) 66px;font-size:13px}
+      .study-row span{padding-left:3px;padding-right:3px}
+      .nine-row{grid-template-columns:48px 42px minmax(0,1fr) 58px;font-size:13px}
+      .loseall-row{grid-template-columns:45px minmax(0,1fr) 65px;font-size:13px}
+      .three-period-group{grid-template-columns:55px minmax(0,1fr) 74px;font-size:13px}
+      .three-period-pick{font-size:14px}
+      .kill-row{grid-template-columns:44px repeat(4,minmax(0,1fr)) 48px;font-size:12px}
+      .kill-head{grid-template-columns:44px repeat(4,minmax(0,1fr)) 48px;font-size:12px}
+    }
+  </style>
+  <style>
+    body.backend-loading [data-section-key]:not([data-section-key="five"])>*{visibility:hidden}
+    body.backend-loading [data-section-key]:not([data-section-key="five"]){position:relative;min-height:112px}
+    body.backend-loading [data-section-key]:not([data-section-key="five"])::after{content:'正在加载当期资料…';position:absolute;inset:0;display:grid;place-items:center;color:#c6a85b;font-size:15px;font-weight:800;background:#0d0d0d}
+  </style>
+</head>
+<body class="backend-loading">
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-lockup" aria-label="123六合网">
+          <img class="brand-logo" src="assets/logo-123-v2.png" alt="123六合网" width="2012" height="781">
+          <span class="brand-domain">123LH.COM · 打造良心六合，坚持永久免费</span>
+        </div>
+      </div>
+
+      <div class="lottery-switch">
+        <button class="lottery-btn" id="lotteryBtn">
+          <span id="lotteryText">澳门六合彩</span>
+          <span class="lottery-chevron" aria-hidden="true"></span>
+        </button>
+        <div class="lottery-menu" id="lotteryMenu">
+          <button data-name="香港六合彩" data-lottery-type="1">香港六合彩</button>
+          <button data-name="澳门六合彩" data-lottery-type="5">澳门六合彩</button>
+          <button data-name="天天六合彩" data-lottery-type="8">天天六合彩</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card draw-style5">
+      <div class="draw-style5-left">
+        <div class="s5-period">第2026108期</div>
+        <div class="s5-label">距开奖</div>
+        <div class="s5-countdown" id="countdown">02:18:36</div>
+      </div>
+
+      <div class="draw-style5-center">
+        <div class="s5-title">开奖结果</div>
+        <div class="draw-result-items">
+          <div class="draw-number"><span class="ball">01</span><span class="zodiac">马</span></div>
+          <div class="draw-number"><span class="ball">18</span><span class="zodiac">牛</span></div>
+          <div class="draw-number"><span class="ball">23</span><span class="zodiac">猴</span></div>
+          <div class="draw-number"><span class="ball">36</span><span class="zodiac">羊</span></div>
+          <div class="draw-number"><span class="ball">42</span><span class="zodiac">牛</span></div>
+          <div class="draw-number"><span class="ball">07</span><span class="zodiac">鼠</span></div>
+          <span class="plus">+</span>
+          <div class="draw-number special"><span class="ball blue">16</span><span class="zodiac">兔</span></div>
+        </div>
+
+      </div>
+
+      <div class="draw-style5-right">
+        <a href="history.html">历史记录</a>
+        <button type="button" id="liveToggle">开奖直播</button>
+        <a href="pickcode.html?exact=2">挑码助手</a>
+        <a href="chat.html">在线聊天</a>
+      </div>
+      <div class="live-video-wrap" id="liveVideoWrap" hidden>
+        <button type="button" class="live-close" id="liveClose">收起直播</button>
+        <video id="liveVideo" controls playsinline preload="none"></video>
+        <div class="live-status" id="liveStatus">澳门六合彩攪珠直播開播時間為開獎日晚上21:30-21:38（北京時間），敬請查看</div>
+      </div>
+    </section>
+
+    <nav class="card site-network" aria-label="网站互联">
+      <div class="site-network-head"><span>↓↓★★★澳门连准网站推荐★★★↓↓</span></div>
+      <div class="site-network-list">
+        <a href="https://yilufa-pingte.xcx8088.workers.dev/" target="_blank" rel="noopener">一路发平特</a>
+        <a href="https://lhw.235-from.com/" target="_blank" rel="noopener">六合王</a>
+        <a href="https://paogt06.h6sdeg6.com/" target="_blank" rel="noopener">跑狗论坛</a>
+        <a href="#" aria-label="更多互联网站">更多网站</a>
+      </div>
+    </nav>
+
+    <section class="card section study-section" data-section-key="study">
+      <h2 class="study-title">潜心研究永久免费，资料公开跟必赢</h2>
+      <div class="study-period-nav" id="studyPeriodNav" aria-label="切换历史期数">
+        <button type="button" class="study-period-btn active" data-period="231">231期</button>
+        <button type="button" class="study-period-btn" data-period="230">230期</button>
+        <button type="button" class="study-period-btn" data-period="229">229期</button>
+        <button type="button" class="study-period-btn" data-period="228">228期</button>
+        <button type="button" class="study-period-btn" data-period="227">227期</button>
+        <button type="button" class="study-period-btn" data-period="226">226期</button>
+      </div>
+      <div class="study-list" id="studyList">
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">四肖</span><span class="study-pick">龙鼠狗猴</span><span class="study-open">开:00</span></div>
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">五肖</span><span class="study-pick">龙鼠狗猴马</span><span class="study-open">开:00</span></div>
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">七肖</span><span class="study-pick">龙鼠狗猴马兔牛</span><span class="study-open">开:00</span></div>
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">九肖</span><span class="study-pick">龙鼠狗猴马兔牛虎猪</span><span class="study-open">开:00</span></div>
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">单双</span><span class="study-pick">单数+兔猪</span><span class="study-open">开:00</span></div>
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">波色</span><span class="study-pick">绿波+蓝波</span><span class="study-open">开:00</span></div>
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">家野</span><span class="study-pick">野兽+狗马</span><span class="study-open">开:00</span></div>
+        <div class="study-row"><span class="study-period">231期</span><span class="study-kind">七尾</span><span class="study-pick">5714239</span><span class="study-open">开:00</span></div>
+      </div>
+    </section>
+
+    <section class="card section sixcode-section" data-section-key="sixcode">
+      <h2 class="sixcode-title">123六合网【六肖六码】</h2>
+      <div class="sixcode-nav" aria-label="切换六肖六码历史记录">
+        <button type="button" class="sixcode-page-btn active" data-page="231-230">231-230期</button>
+        <button type="button" class="sixcode-page-btn" data-page="229-228">229-228期</button>
+        <button type="button" class="sixcode-page-btn" data-page="227-226">227-226期</button>
+      </div>
+      <div class="sixcode-list" id="sixcodeList">
+        <div class="sixcode-period">
+          <div class="sixcode-row"><span class="sixcode-label">231期6肖</span><span class="sixcode-zodiac">狗马龙虎牛猪</span><span class="sixcode-numbers">⑥码33.37.03.17.30.44</span></div>
+          <div class="sixcode-row"><span class="sixcode-label">231期4肖</span><span class="sixcode-zodiac">狗马龙虎</span><span class="sixcode-numbers">④码33.37.03.17</span></div>
+          <div class="sixcode-row"><span class="sixcode-label">231期2肖</span><span class="sixcode-zodiac">狗马</span><span class="sixcode-numbers">②码33.37</span></div>
+        </div>
+        <div class="sixcode-slogan">记住: 123LH.COM 赚钱就是这么简单!</div>
+        <div class="sixcode-period">
+          <div class="sixcode-row"><span class="sixcode-label">230期6肖</span><span class="sixcode-zodiac">兔蛇羊鸡鼠猴</span><span class="sixcode-numbers">⑥码14.26.38.21.09.45</span></div>
+          <div class="sixcode-row"><span class="sixcode-label">230期4肖</span><span class="sixcode-zodiac">兔蛇羊鸡</span><span class="sixcode-numbers">④码14.26.38.21</span></div>
+          <div class="sixcode-row"><span class="sixcode-label">230期2肖</span><span class="sixcode-zodiac">兔蛇</span><span class="sixcode-numbers">②码14.26</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section doublewave-section" data-section-key="doublewave">
+      <h2 class="doublewave-title">123六合网【牛逼双波】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="doublewave-list" data-history-list data-history-shift="5">
+        <div class="doublewave-row"><span class="doublewave-period">227期</span><span class="doublewave-pick">牛逼双波【绿波蓝波】</span><span class="doublewave-open">开兔16</span><span class="doublewave-status win">准</span></div>
+        <div class="doublewave-row"><span class="doublewave-period">228期</span><span class="doublewave-pick">牛逼双波【蓝波红波】</span><span class="doublewave-open">开猴23</span><span class="doublewave-status win">准</span></div>
+        <div class="doublewave-row"><span class="doublewave-period">229期</span><span class="doublewave-pick">牛逼双波【绿波蓝波】</span><span class="doublewave-open">开蛇38</span><span class="doublewave-status win">准</span></div>
+        <div class="doublewave-row"><span class="doublewave-period">230期</span><span class="doublewave-pick">牛逼双波【红波蓝波】</span><span class="doublewave-open">开兔16</span><span class="doublewave-status lose">错</span></div>
+        <div class="doublewave-row"><span class="doublewave-period">231期</span><span class="doublewave-pick">牛逼双波【绿波红波】</span><span class="doublewave-open">开？00</span><span class="doublewave-status win">准</span></div>
+      </div>
+    </section>
+
+    <section class="card section master-section" id="masters" data-section-key="masters">
+      <h2 class="feature-title">↓↓≌汇集金榜高手⊙独家免费资料≌↓↓</h2>
+      <div class="master-grid">
+        <div class="master-card"><span class="master-rank">1</span><div class="master-top"><span class="master-avatar">郭</span><span class="master-name">郭靖</span></div><div class="master-specialty">【三期必中】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+        <div class="master-card"><span class="master-rank">2</span><div class="master-top"><span class="master-avatar">陆</span><span class="master-name">陆小凤</span></div><div class="master-specialty">【两期必中】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+        <div class="master-card"><span class="master-rank">3</span><div class="master-top"><span class="master-avatar">杨</span><span class="master-name">杨过</span></div><div class="master-specialty">【顶尖六肖】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+        <div class="master-card"><span class="master-rank">4</span><div class="master-top"><span class="master-avatar">小</span><span class="master-name">小龙女</span></div><div class="master-specialty">【一肖平特】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+        <div class="master-card"><span class="master-rank">5</span><div class="master-top"><span class="master-avatar">任</span><span class="master-name">任盈盈</span></div><div class="master-specialty">【绝杀三肖】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+        <div class="master-card"><span class="master-rank">6</span><div class="master-top"><span class="master-avatar">张</span><span class="master-name">张无忌</span></div><div class="master-specialty">【两波中特】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+        <div class="master-card"><span class="master-rank">7</span><div class="master-top"><span class="master-avatar">周</span><span class="master-name">周芷若</span></div><div class="master-specialty">【三头中特】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+        <div class="master-card"><span class="master-rank">8</span><div class="master-top"><span class="master-avatar">乔</span><span class="master-name">乔峰</span></div><div class="master-specialty">【必中单双】</div><div class="master-foot"><span>第231期资料 · 站内查看</span><span class="master-free">免费公开</span></div></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="homewild">
+      <h2 class="feature-title">123六合网【家野出特】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="feature-row"><span class="feature-period">227期</span><span class="feature-pick">家野出特【野兽+羊牛】</span><span class="feature-open">开兔16</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">228期</span><span class="feature-pick">家野出特【家禽+猴蛇】</span><span class="feature-open">开猴23</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">229期</span><span class="feature-pick">家野出特【家禽+鼠龙】</span><span class="feature-open">开蛇38</span><span class="feature-status lose">错</span></div>
+        <div class="feature-row"><span class="feature-period">230期</span><span class="feature-pick">家野出特【野兽+鸡马】</span><span class="feature-open">开兔16</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">231期</span><span class="feature-pick">家野出特【野兽+猪牛】</span><span class="feature-open">开？00</span><span class="feature-status win">准</span></div>
+      </div>
+    </section>
+
+    <section class="card section five-panel" data-section-key="five">
+      <h2 class="feature-title">五期必中·特码</h2>
+      <div class="five-history-nav"><button class="active" type="button" id="fiveBatchLatest">090–086期</button><button type="button" id="fiveBatchOlder">085–081期</button></div>
+      <div class="five-grid" id="fiveHistoryGrid">
+        <div class="five-row">
+          <div class="issue">090期</div>
+          <div class="numline">
+            <span class="num">04</span><span class="num">08</span><span class="num">13</span><span class="num">20</span>
+            <span class="num">21</span><span class="num">30</span><span class="num">32</span><span class="num">47</span>
+          </div><div class="five-result">开奖特码 39<strong class="lose">未中</strong></div>
+        </div>
+        <div class="five-row">
+          <div class="issue">089期</div>
+          <div class="numline">
+            <span class="num">04</span><span class="num">08</span><span class="num">13</span><span class="num">20</span>
+            <span class="num">21</span><span class="num">30</span><span class="num">32</span><span class="num">47</span>
+          </div><div class="five-result">开奖特码 45<strong class="lose">未中</strong></div>
+        </div>
+        <div class="five-row">
+          <div class="issue">088期</div>
+          <div class="numline">
+            <span class="num">04</span><span class="num">08</span><span class="num">13</span><span class="num">20</span>
+            <span class="num">21</span><span class="num">30</span><span class="num">32</span><span class="num">47</span>
+          </div><div class="five-result">开奖特码 06<strong class="lose">未中</strong></div>
+        </div>
+        <div class="five-row">
+          <div class="issue">087期</div>
+          <div class="numline">
+            <span class="num">04</span><span class="num">08</span><span class="num hit">13</span><span class="num">20</span>
+            <span class="num">21</span><span class="num">30</span><span class="num">32</span><span class="num">47</span>
+          </div><div class="five-result">开奖特码 13<strong class="win">命中</strong></div>
+        </div>
+        <div class="five-row">
+          <div class="issue">086期</div>
+          <div class="numline">
+            <span class="num">04</span><span class="num">08</span><span class="num">13</span><span class="num">20</span>
+            <span class="num">21</span><span class="num">30</span><span class="num">32</span><span class="num hit">47</span>
+          </div><div class="five-result">开奖特码 47<strong class="win">命中</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="threehead">
+      <h2 class="feature-title">123六合网【三头爆特】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="feature-row"><span class="feature-period">227期</span><span class="feature-pick">三头爆特【4头2头3头】</span><span class="feature-open">开兔16</span><span class="feature-status lose">错</span></div>
+        <div class="feature-row"><span class="feature-period">228期</span><span class="feature-pick">三头爆特【4头2头3头】</span><span class="feature-open">开猴23</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">229期</span><span class="feature-pick">三头爆特【0头1头3头】</span><span class="feature-open">开蛇38</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">230期</span><span class="feature-pick">三头爆特【1头4头2头】</span><span class="feature-open">开兔16</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">231期</span><span class="feature-pick">三头爆特【1头3头4头】</span><span class="feature-open">开？00</span><span class="feature-status win">准</span></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="idiom">
+      <h2 class="feature-title">123六合网【成语平特】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="feature-row"><span class="feature-period">230期</span><span class="feature-pick">成语爆平特【守株待兔】</span><span class="feature-open">开兔16</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">231期</span><span class="feature-pick">成语爆平特【猛虎下山】</span><span class="feature-open">开猪20</span><span class="feature-status lose">错</span></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="threeperiod">
+      <h2 class="feature-title">123六合网【三期必中】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-page="226-231">226–231期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="6">
+        <div class="three-period-group">
+          <div class="three-period-issues"><span>226期</span><span>227期</span><span>228期</span></div>
+          <div class="three-period-pick">三期必中<br>（蛇龙羊虎）</div>
+          <div class="three-period-opens"><span>开:虎17</span><span>开:兔16</span><span>开:猴23</span></div>
+        </div>
+        <div class="three-period-group">
+          <div class="three-period-issues"><span>229期</span><span>230期</span><span>231期</span></div>
+          <div class="three-period-pick">三期必中<br>（羊狗猴蛇）</div>
+          <div class="three-period-opens"><span>开:蛇38</span><span>开:兔16</span><span>开:？00</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="sumparity">
+      <h2 class="feature-title">123六合网【合数单双】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="feature-row"><span class="feature-period">227期</span><span class="feature-pick">合数单双【合数双】</span><span class="feature-open">开:兔16</span><span class="feature-status lose">错</span></div>
+        <div class="feature-row"><span class="feature-period">228期</span><span class="feature-pick">合数单双【合数单】</span><span class="feature-open">开:猴23</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">229期</span><span class="feature-pick">合数单双【合数双】</span><span class="feature-open">开:蛇38</span><span class="feature-status lose">错</span></div>
+        <div class="feature-row"><span class="feature-period">230期</span><span class="feature-pick">合数单双【合数双】</span><span class="feature-open">开:兔16</span><span class="feature-status lose">错</span></div>
+        <div class="feature-row"><span class="feature-period">231期</span><span class="feature-pick">合数单双【合数双】</span><span class="feature-open">开:？00</span><span class="feature-status win">准</span></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="ninezodiac">
+      <h2 class="feature-title">123六合网【九肖中特】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231期</button><button type="button" class="record-history-btn" data-view="older">230期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="1">
+        <div class="nine-row"><span class="nine-period">231期</span><span class="nine-kind">③肖</span><span class="nine-pick">蛇马猴</span><span class="nine-status">待开奖</span></div>
+        <div class="nine-row"><span class="nine-period">231期</span><span class="nine-kind">⑤肖</span><span class="nine-pick">蛇马猴兔虎</span><span class="nine-status">待开奖</span></div>
+        <div class="nine-row"><span class="nine-period">231期</span><span class="nine-kind">⑦肖</span><span class="nine-pick">蛇马猴兔虎狗鼠</span><span class="nine-status">待开奖</span></div>
+        <div class="nine-row"><span class="nine-period">231期</span><span class="nine-kind">⑨肖</span><span class="nine-pick">蛇马猴兔虎狗鼠牛羊</span><span class="nine-status">待开奖</span></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="threeelements">
+      <h2 class="feature-title">123六合网【三行中特】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="feature-row"><span class="feature-period">227期</span><span class="feature-pick">三行中特【水土火】</span><span class="feature-open">开兔16</span><span class="feature-status lose">错</span></div>
+        <div class="feature-row"><span class="feature-period">228期</span><span class="feature-pick">三行中特【火金水】</span><span class="feature-open">开猴23</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">229期</span><span class="feature-pick">三行中特【土木火】</span><span class="feature-open">开蛇38</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">230期</span><span class="feature-pick">三行中特【火金木】</span><span class="feature-open">开兔16</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">231期</span><span class="feature-pick">三行中特【水木火】</span><span class="feature-open">开？00</span><span class="feature-status win">准</span></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="loseall">
+      <h2 class="feature-title">123六合网【输尽光生肖】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="loseall-row"><span class="loseall-period">227期</span><span class="loseall-pick">今期买蛇鸡猪输尽光</span><span class="loseall-open">开:兔16</span></div>
+        <div class="loseall-row"><span class="loseall-period">228期</span><span class="loseall-pick">今期买兔鸡狗输尽光</span><span class="loseall-open">开:猴23</span></div>
+        <div class="loseall-row"><span class="loseall-period">229期</span><span class="loseall-pick">今期买猴虎鸡输尽光</span><span class="loseall-open">开:蛇38</span></div>
+        <div class="loseall-row"><span class="loseall-period">230期</span><span class="loseall-pick">今期买猪虎羊输尽光</span><span class="loseall-open">开:兔16</span></div>
+        <div class="loseall-row"><span class="loseall-period">231期</span><span class="loseall-pick">今期买蛇鸡羊输尽光</span><span class="loseall-open">开:？00</span></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="thirty">
+      <h2 class="feature-title">123六合网30码中特</h2>
+      <div class="record-history-nav" id="thirtyPeriodNav"><button type="button" class="record-history-btn active" data-period="231">231期</button><button type="button" class="record-history-btn" data-period="230">230期</button></div>
+      <div class="feature-list" id="thirtyList">
+        <div class="thirty-wrap">
+          <div class="thirty-meta"><strong>231期精选30码</strong><span class="thirty-state">待开奖</span></div>
+          <div class="thirty-numbers">
+            <span class="thirty-ball">01</span><span class="thirty-ball">03</span><span class="thirty-ball">04</span><span class="thirty-ball">06</span><span class="thirty-ball">08</span><span class="thirty-ball">09</span><span class="thirty-ball">11</span><span class="thirty-ball">13</span><span class="thirty-ball">14</span><span class="thirty-ball">16</span>
+            <span class="thirty-ball">18</span><span class="thirty-ball">19</span><span class="thirty-ball">21</span><span class="thirty-ball">22</span><span class="thirty-ball">24</span><span class="thirty-ball">25</span><span class="thirty-ball">27</span><span class="thirty-ball">29</span><span class="thirty-ball">30</span><span class="thirty-ball">32</span>
+            <span class="thirty-ball">33</span><span class="thirty-ball">35</span><span class="thirty-ball">36</span><span class="thirty-ball">38</span><span class="thirty-ball">40</span><span class="thirty-ball">41</span><span class="thirty-ball">43</span><span class="thirty-ball">45</span><span class="thirty-ball">47</span><span class="thirty-ball">49</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="singledouble">
+      <h2 class="feature-title">123六合网【单双中特】</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="feature-row"><span class="feature-period">227期</span><span class="feature-pick">单双中特【双数+狗龙】</span><span class="feature-open">开兔16</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">228期</span><span class="feature-pick">单双中特【双数+虎鼠】</span><span class="feature-open">开猴23</span><span class="feature-status lose">错</span></div>
+        <div class="feature-row"><span class="feature-period">229期</span><span class="feature-pick">单双中特【单数+兔蛇】</span><span class="feature-open">开蛇38</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">230期</span><span class="feature-pick">单双中特【单数+牛兔】</span><span class="feature-open">开兔16</span><span class="feature-status win">准</span></div>
+        <div class="feature-row"><span class="feature-period">231期</span><span class="feature-pick">单双中特【单数+牛羊】</span><span class="feature-open">开？00</span><span class="feature-status win">准</span></div>
+      </div>
+    </section>
+
+    <section class="card section" data-section-key="kill">
+      <h2 class="feature-title">123六合网绝杀专区</h2>
+      <div class="record-history-nav"><button type="button" class="record-history-btn active" data-view="current">231-227期</button><button type="button" class="record-history-btn" data-view="older">226-222期</button></div>
+      <div class="feature-list" data-history-list data-history-shift="5">
+        <div class="kill-head"><span>期数</span><span>杀肖</span><span>杀尾</span><span>杀波</span><span>杀头</span><span>特开</span></div>
+        <div class="kill-row"><span class="kill-period">227期</span><span class="kill-pick">猪肖</span><span class="kill-pick">4尾</span><span class="kill-pick">红单</span><span class="kill-pick">4头</span><span class="kill-open">兔16</span></div>
+        <div class="kill-row"><span class="kill-period">228期</span><span class="kill-pick">兔肖</span><span class="kill-pick">0尾</span><span class="kill-pick">红单</span><span class="kill-pick">1头</span><span class="kill-open">猴23</span></div>
+        <div class="kill-row"><span class="kill-period">229期</span><span class="kill-pick">猴肖</span><span class="kill-pick">7尾</span><span class="kill-pick">蓝单</span><span class="kill-pick">1头</span><span class="kill-open">蛇38</span></div>
+        <div class="kill-row"><span class="kill-period">230期</span><span class="kill-pick">猪肖</span><span class="kill-pick">3尾</span><span class="kill-pick">蓝单</span><span class="kill-pick">2头</span><span class="kill-open">兔16</span></div>
+        <div class="kill-row"><span class="kill-period">231期</span><span class="kill-pick">蛇肖</span><span class="kill-pick">9尾</span><span class="kill-pick">红双</span><span class="kill-pick">4头</span><span class="kill-open">？00</span></div>
+      </div>
+    </section>
+
+    <div id="history" style="height:1px"></div>
+  </main>
+
+  <script src="vendor/flv.min.js?v=1.6.2"></script>
+  <script src="backend-sync.js?v=87"></script>
+  <script>
+    const btn = document.getElementById('lotteryBtn');
+    const menu = document.getElementById('lotteryMenu');
+    const text = document.getElementById('lotteryText');
+
+    btn.addEventListener('click', () => menu.classList.toggle('open'));
+
+    document.querySelectorAll('#lotteryMenu button').forEach(item => {
+      item.addEventListener('click', () => {
+        text.textContent = item.dataset.name;
+        menu.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.lottery-switch')) menu.classList.remove('open');
+    });
+
+    let seconds = 2 * 3600 + 18 * 60 + 36;
+    const cd = document.getElementById('countdown');
+
+    function renderCountdown(){
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      cd.textContent = [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
+      if (seconds > 0) seconds--;
+    }
+    renderCountdown();
+    const fallbackCountdownTimer = setInterval(renderCountdown, 1000);
+  
+    const liveToggle = document.getElementById('liveToggle');
+    const liveVideoWrap = document.getElementById('liveVideoWrap');
+    const liveVideo = document.getElementById('liveVideo');
+    const liveClose = document.getElementById('liveClose');
+    const liveStatus = document.getElementById('liveStatus');
+    let liveStreamUrl = '';
+    let liveDrawDate = '';
+    let livePlayer = null;
+    const liveNames={1:'香港',5:'澳门',8:'天天'};
+    function liveNotice(){return (liveNames[activeLotteryType]||'香港')+'六合彩攪珠直播開播時間為開獎日晚上21:30-21:38（北京時間），敬請查看';}
+    function inLiveWindow(){
+      const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+      const hour=Number(parts.find(item=>item.type==='hour')?.value||0);const minute=Number(parts.find(item=>item.type==='minute')?.value||0);const total=hour*60+minute;
+      return total>=21*60+30&&total<21*60+39;
+    }
+    function stopLive(){
+      if(livePlayer){try{livePlayer.pause();livePlayer.unload();livePlayer.detachMediaElement();livePlayer.destroy();}catch(_){}livePlayer=null;}
+      if(liveVideo){liveVideo.pause();liveVideo.removeAttribute('src');liveVideo.load();}
+    }
+    function closeLive(){stopLive();liveVideoWrap.setAttribute('hidden','');liveToggle.textContent='开奖直播';}
+    function openLive(){liveVideoWrap.removeAttribute('hidden');liveToggle.textContent='收起直播';playLive();}
+    function liveDateKey(){
+      const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+      const value=Object.fromEntries(parts.map(item=>[item.type,item.value]));return value.year+'-'+value.month+'-'+value.day;
+    }
+    function isLiveDrawDay(){return /^\d{4}-\d{2}-\d{2}$/.test(liveDrawDate)&&liveDrawDate===liveDateKey();}
+    function maybeAutoOpenLive(){
+      if(!isLiveDrawDay()||!inLiveWindow()||!liveVideoWrap.hasAttribute('hidden'))return;
+      const key='live-auto-opened:'+activeLotteryType+':'+liveDateKey();
+      if(sessionStorage.getItem(key))return;
+      sessionStorage.setItem(key,'1');openLive();
+    }
+    function playLive(){
+      stopLive();
+      if(!inLiveWindow()){liveStatus.textContent=liveNotice();return;}
+      if(!liveStreamUrl){liveStatus.textContent=liveNotice();return;}
+      liveStatus.textContent='正在连接直播…';
+      if(liveVideo.canPlayType('application/vnd.apple.mpegurl')){
+        liveVideo.src=liveStreamUrl.replace(/\.flv(?:\?.*)?$/i,'.m3u8');
+        liveVideo.play().then(()=>liveStatus.textContent='直播播放中').catch(()=>liveStatus.textContent='点击播放器上的播放按钮开始观看');
+        return;
+      }
+      if(window.flvjs&&flvjs.isSupported()){
+        livePlayer=flvjs.createPlayer({type:'flv',url:liveStreamUrl,isLive:true,hasAudio:true,hasVideo:true},{enableStashBuffer:false,stashInitialSize:128});
+        livePlayer.attachMediaElement(liveVideo);livePlayer.load();
+        livePlayer.on(flvjs.Events.ERROR,()=>{liveStatus.textContent=liveNotice();});
+        liveVideo.play().then(()=>liveStatus.textContent='直播播放中').catch(()=>liveStatus.textContent='点击播放器上的播放按钮开始观看');
+      }else liveStatus.textContent='当前浏览器不支持此直播格式，请使用最新版 Chrome';
+    }
+    if (liveToggle && liveVideoWrap) {
+      liveToggle.addEventListener('click', () => {
+        const isHidden = liveVideoWrap.hasAttribute('hidden');
+        if (isHidden) openLive(); else closeLive();
+      });
+      liveClose.addEventListener('click',closeLive);
+      liveVideoWrap.addEventListener('click',event=>{if(event.target===liveVideoWrap)closeLive();});
+      document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!liveVideoWrap.hasAttribute('hidden'))closeLive();});
+    }
+
+    const lotteryApiBase = '/api/public/lottery-latest?lotteryType=';
+    let activeLotteryType = 5;
+    let nextDrawAt = null;
+    let apiCountdownTimer = null;
+    let apiRefreshTimer = null;
+    let apiFastRefresh = false;
+    const historyLink = document.querySelector('a[href="history.html"]');
+    const apiPeriodNode = document.querySelector('.s5-period');
+    const apiDrawNodes = [...document.querySelectorAll('.draw-style5-center .draw-number')];
+
+    function parseApiNextTime(title) {
+      const match = String(title || '').match(/(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{1,2})点(\d{1,2})分/);
+      if (!match) return null;
+      const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), Number(match[4]), Number(match[5]), 0);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function renderApiCountdown() {
+      if (!nextDrawAt) return;
+      const total = Math.max(0, Math.floor((nextDrawAt.getTime() - Date.now()) / 1000));
+      const h = String(Math.floor(total / 3600)).padStart(2, '0');
+      const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+      const s = String(total % 60).padStart(2, '0');
+      cd.textContent = h + ':' + m + ':' + s;
+    }
+
+    function renderApiLottery(data) {
+      if (!data || !Array.isArray(data.numberList) || data.numberList.length < 7) return false;
+      liveStreamUrl=String(data.videoUrlForH5||'');
+      liveDrawDate=String(data.nextLotteryTime||'').slice(0,10);
+      clearInterval(fallbackCountdownTimer);
+      apiPeriodNode.textContent = '第' + String(data.period || data.intPeriod || '') + '期';
+      data.numberList.slice(0, 7).forEach((item, index) => {
+        const node = apiDrawNodes[index];
+        if (!node) return;
+        const ball = node.querySelector('.ball');
+        const rawNumber = String(item.number ?? '').trim();
+        ball.textContent = /^\d{1,2}$/.test(rawNumber) ? rawNumber.padStart(2, '0') : rawNumber;
+        node.querySelector('.zodiac').textContent = item.shengXiao || '-';
+        const color = Number(item.color);
+        ball.style.background = color === 1 ? 'linear-gradient(180deg,#ef3737,#c91717)' : color === 2 ? 'linear-gradient(180deg,#3479ff,#114dcc)' : 'linear-gradient(180deg,#32aa59,#187438)';
+      });
+      nextDrawAt = parseApiNextTime(data.title);
+      clearInterval(apiCountdownTimer);
+      if (nextDrawAt) {
+        renderApiCountdown();
+        apiCountdownTimer = setInterval(renderApiCountdown, 1000);
+      }
+      maybeAutoOpenLive();
+      return true;
+    }
+
+    async function loadApiLottery(type = activeLotteryType) {
+      try {
+        const response = await fetch(lotteryApiBase + encodeURIComponent(type) + '&_=' + Date.now(), {cache:'no-store'});
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const payload = await response.json();
+        if (!payload || payload.code !== 10000 || !payload.data) throw new Error('Invalid API response');
+        if (type !== activeLotteryType) return;
+        const liveItems = Array.isArray(payload.data.numberList) ? payload.data.numberList.slice(0, 7) : [];
+        apiFastRefresh = inLiveWindow() || liveItems.length < 7 || liveItems.some(item => !/^\d{1,2}$/.test(String(item.number ?? '').trim()));
+        renderApiLottery(payload.data);
+        clearTimeout(apiRefreshTimer);
+        const seconds = apiFastRefresh ? 2 : Math.max(15, Number(payload.data.interval) || 60);
+        apiRefreshTimer = setTimeout(() => loadApiLottery(activeLotteryType), seconds * 1000);
+      } catch (_) {
+        clearTimeout(apiRefreshTimer);
+        apiRefreshTimer = setTimeout(() => loadApiLottery(activeLotteryType), apiFastRefresh ? 2000 : 15000);
+      }
+    }
+
+    document.querySelectorAll('#lotteryMenu button').forEach(item => {
+      item.addEventListener('click', () => {
+        activeLotteryType = Number(item.dataset.lotteryType) || 1;
+        localStorage.setItem('lotteryType', String(activeLotteryType));
+        if (historyLink) historyLink.href = 'history.html?lotteryType=' + activeLotteryType;
+        clearTimeout(apiRefreshTimer);
+        loadApiLottery(activeLotteryType);
+        if(liveStatus)liveStatus.textContent=liveNotice();
+        if(!liveVideoWrap.hasAttribute('hidden'))playLive();
+        maybeAutoOpenLive();
+      });
+    });
+    localStorage.setItem('lotteryType', '5');
+    if (historyLink) historyLink.href = 'history.html?lotteryType=5';
+    loadApiLottery(5);
+    maybeAutoOpenLive();
+    setInterval(maybeAutoOpenLive,10000);
+
+    const fiveHistoryGrid = document.getElementById('fiveHistoryGrid');
+    const fiveBatchLatest = document.getElementById('fiveBatchLatest');
+    const fiveBatchOlder = document.getElementById('fiveBatchOlder');
+    if (fiveHistoryGrid && fiveBatchLatest && fiveBatchOlder) {
+      const fivePages = [fiveHistoryGrid.innerHTML, "<div class=\"five-row\"><div class=\"issue\">085期</div><div class=\"numline\"><span class=\"num\">02</span><span class=\"num\">07</span><span class=\"num\">11</span><span class=\"num\">18</span><span class=\"num\">25</span><span class=\"num\">33</span><span class=\"num\">41</span><span class=\"num\">48</span></div><div class=\"five-result\">开奖特码 39<strong class=\"lose\">未中</strong></div></div><div class=\"five-row\"><div class=\"issue\">084期</div><div class=\"numline\"><span class=\"num\">02</span><span class=\"num\">07</span><span class=\"num\">11</span><span class=\"num\">18</span><span class=\"num hit\">25</span><span class=\"num\">33</span><span class=\"num\">41</span><span class=\"num\">48</span></div><div class=\"five-result\">开奖特码 25<strong class=\"win\">命中</strong></div></div><div class=\"five-row\"><div class=\"issue\">083期</div><div class=\"numline\"><span class=\"num\">02</span><span class=\"num\">07</span><span class=\"num\">11</span><span class=\"num\">18</span><span class=\"num\">25</span><span class=\"num\">33</span><span class=\"num\">41</span><span class=\"num\">48</span></div><div class=\"five-result\">开奖特码 06<strong class=\"lose\">未中</strong></div></div><div class=\"five-row\"><div class=\"issue\">082期</div><div class=\"numline\"><span class=\"num\">02</span><span class=\"num\">07</span><span class=\"num\">11</span><span class=\"num\">18</span><span class=\"num\">25</span><span class=\"num\">33</span><span class=\"num\">41</span><span class=\"num hit\">48</span></div><div class=\"five-result\">开奖特码 48<strong class=\"win\">命中</strong></div></div><div class=\"five-row\"><div class=\"issue\">081期</div><div class=\"numline\"><span class=\"num\">02</span><span class=\"num\">07</span><span class=\"num\">11</span><span class=\"num\">18</span><span class=\"num\">25</span><span class=\"num\">33</span><span class=\"num\">41</span><span class=\"num\">48</span></div><div class=\"five-result\">开奖特码 44<strong class=\"lose\">未中</strong></div></div>"];
+      const renderFiveBatch = (page) => {
+        fiveHistoryGrid.innerHTML = fivePages[page];
+        fiveBatchLatest.classList.toggle('active', page === 0);
+        fiveBatchOlder.classList.toggle('active', page === 1);
+      };
+      fiveBatchLatest.addEventListener('click', () => renderFiveBatch(0));
+      fiveBatchOlder.addEventListener('click', () => renderFiveBatch(1));
+    }
+
+    const studyList = document.getElementById('studyList');
+    const studyPeriodButtons = [...document.querySelectorAll('.study-period-btn')];
+    if (studyList && studyPeriodButtons.length) {
+      const currentStudyContent = studyList.innerHTML;
+      const studyKinds = ['四肖','五肖','七肖','九肖','单双','波色','家野','七尾'];
+      const studyDemoData = {
+        '230': {open:'18', picks:['虎兔蛇鸡','虎兔蛇鸡羊','虎兔蛇鸡羊牛猪','虎兔蛇鸡羊牛猪鼠龙','双数+龙猴','红波+绿波','家禽+牛羊','8261350']},
+        '229': {open:'36', picks:['猴鸡狗猪','猴鸡狗猪鼠','猴鸡狗猪鼠马兔','猴鸡狗猪鼠马兔龙蛇','单数+牛羊','蓝波+红波','野兽+虎猴','4197263']},
+        '228': {open:'07', picks:['鼠牛龙马','鼠牛龙马狗','鼠牛龙马狗兔鸡','鼠牛龙马狗兔鸡蛇羊','双数+蛇鸡','绿波+蓝波','家禽+鸡狗','7351842']},
+        '227': {open:'42', picks:['兔蛇羊猪','兔蛇羊猪虎','兔蛇羊猪虎牛猴','兔蛇羊猪虎牛猴马狗','单数+鼠马','红波+蓝波','野兽+龙蛇','2649037']},
+        '226': {open:'23', picks:['龙马猴狗','龙马猴狗鸡','龙马猴狗鸡鼠牛','龙马猴狗鸡鼠牛兔猪','双数+虎猴','蓝波+绿波','家禽+兔鸡','5083174']}
+      };
+      const renderStudyDemo = period => {
+        const data = studyDemoData[period];
+        if (!data) return '<div class="study-empty">第' + period + '期暂无历史资料</div>';
+        return studyKinds.map((kind,index) =>
+          '<div class="study-row"><span class="study-period">' + period + '期</span>' +
+          '<span class="study-kind">' + kind + '</span>' +
+          '<span class="study-pick">' + data.picks[index] + '</span>' +
+          '<span class="study-open">开:' + data.open + '</span></div>'
+        ).join('');
+      };
+      studyPeriodButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          studyPeriodButtons.forEach(item => item.classList.toggle('active', item === button));
+          studyList.innerHTML = button.dataset.period === '231'
+            ? currentStudyContent
+            : renderStudyDemo(button.dataset.period);
+        });
+      });
+    }
+
+    const sixcodeList = document.getElementById('sixcodeList');
+    const sixcodeButtons = [...document.querySelectorAll('.sixcode-page-btn')];
+    if (sixcodeList && sixcodeButtons.length) {
+      const firstSixcodePage = sixcodeList.innerHTML;
+      const sixcodePages = {
+        '229-228': [
+          ['229',['猴鸡狗猪鼠龙','猴鸡狗猪','猴鸡'],['⑥码08.20.32.44.11.23','④码08.20.32.44','②码08.20']],
+          ['228',['牛虎兔蛇马羊','牛虎兔蛇','牛虎'],['⑥码05.17.29.41.13.25','④码05.17.29.41','②码05.17']]
+        ],
+        '227-226': [
+          ['227',['龙蛇马猴鸡狗','龙蛇马猴','龙蛇'],['⑥码03.15.27.39.18.30','④码03.15.27.39','②码03.15']],
+          ['226',['鼠牛兔羊猪虎','鼠牛兔羊','鼠牛'],['⑥码01.13.25.37.22.34','④码01.13.25.37','②码01.13']]
+        ]
+      };
+      const renderSixcodePage = page => {
+        if (page === '231-230') return firstSixcodePage;
+        return (sixcodePages[page] || []).map((period,periodIndex) => {
+          const sizes = ['6肖','4肖','2肖'];
+          const symbols = ['⑥码','④码','②码'];
+          const periodHtml = '<div class="sixcode-period">' + sizes.map((size,index) =>
+            '<div class="sixcode-row"><span class="sixcode-label">' + period[0] + '期' + size + '</span>' +
+            '<span class="sixcode-zodiac">' + period[1][index] + '</span>' +
+            '<span class="sixcode-numbers">' + symbols[index] + period[2][index].replace(symbols[index],'') + '</span></div>'
+          ).join('') + '</div>';
+          return periodHtml + (periodIndex === 0 ? '<div class="sixcode-slogan">记住: 123LH.COM 赚钱就是这么简单!</div>' : '');
+        }).join('');
+      };
+      sixcodeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          sixcodeButtons.forEach(item => item.classList.toggle('active', item === button));
+          sixcodeList.innerHTML = renderSixcodePage(button.dataset.page);
+        });
+      });
+    }
+
+    const thirtyList = document.getElementById('thirtyList');
+    const thirtyButtons = [...document.querySelectorAll('#thirtyPeriodNav .record-history-btn')];
+    if (thirtyList && thirtyButtons.length) {
+      const thirtyCurrent = thirtyList.innerHTML;
+      const thirty230 = ['01','02','04','05','06','07','10','11','12','15','16','17','18','20','23','25','26','28','31','32','34','37','38','39','42','44','45','46','48','49'];
+      const thirtyOlder = '<div class="thirty-wrap"><div class="thirty-meta"><strong>230期精选30码</strong><span class="thirty-state">已开奖：兔16</span></div><div class="thirty-numbers">' + thirty230.map(number => '<span class="thirty-ball' + (number === '16' ? ' hit' : '') + '">' + number + '</span>').join('') + '</div></div>';
+      thirtyButtons.forEach(button => button.addEventListener('click', () => {
+        thirtyButtons.forEach(item => item.classList.toggle('active', item === button));
+        thirtyList.innerHTML = button.dataset.period === '231' ? thirtyCurrent : thirtyOlder;
+      }));
+    }
+
+    document.querySelectorAll('[data-history-list]').forEach(list => {
+      const section = list.closest('.section');
+      const buttons = section ? [...section.querySelectorAll('.record-history-btn')] : [];
+      if (!buttons.length) return;
+      const currentHtml = list.innerHTML;
+      const shift = Number(list.dataset.historyShift) || 0;
+      const zodiacOrder = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+      const zodiacTokens = zodiacOrder.map((_,index) => '__SX' + index + '__');
+      let olderHtml = currentHtml.replace(/(\d{3})期/g, (_, period) => String(Number(period) - shift).padStart(3, '0') + '期');
+      zodiacOrder.forEach((zodiac,index) => { olderHtml = olderHtml.replaceAll(zodiac,zodiacTokens[index]); });
+      zodiacTokens.forEach((token,index) => { olderHtml = olderHtml.replaceAll(token,zodiacOrder[(index + shift) % zodiacOrder.length]); });
+      olderHtml = olderHtml.replace(/(?<!\d)(\d{2})(?!\d)/g, (_, number) => {
+        const value = Number(number);
+        if (value < 1 || value > 49) return number;
+        return String(((value + shift * 3 - 1) % 49) + 1).padStart(2, '0');
+      }).replaceAll('待开奖','已开奖').replaceAll('开？','开');
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          buttons.forEach(item => item.classList.toggle('active', item === button));
+          list.innerHTML = button.dataset.view === 'older' ? olderHtml : currentHtml;
+        });
+      });
+    });
+
+    const masterGrid = document.querySelector('.master-grid');
+    if (masterGrid) {
+      const prepareMasterCards = () => masterGrid.querySelectorAll('.master-card').forEach(card => { card.setAttribute('role','link'); card.setAttribute('tabindex','0'); });
+      const openMasterDetail = card => {
+        const cards = [...masterGrid.querySelectorAll('.master-card')];
+        const id = Number(card.dataset.masterId) || cards.indexOf(card) + 1;
+        const storedLotteryType = Number(localStorage.getItem('lotteryType'));
+        const lotteryType = [1,5,8].includes(storedLotteryType) ? storedLotteryType : 5;
+        location.href = 'master-detail.html?id=' + id + '&lotteryType=' + lotteryType;
+      };
+      prepareMasterCards();
+      new MutationObserver(prepareMasterCards).observe(masterGrid,{childList:true,subtree:true});
+      masterGrid.addEventListener('click', event => { const card=event.target.closest('.master-card'); if(card)openMasterDetail(card); });
+      masterGrid.addEventListener('keydown', event => { const card=event.target.closest('.master-card'); if(card&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openMasterDetail(card);} });
+    }
+
+  </script>
+<script src="site-sync.js?v=65"></script>  <script src="/assets/cnzz-stat.js"></script>
+</body>
+</html>

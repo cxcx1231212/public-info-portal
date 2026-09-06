@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <title>高手免费资料 - 123六合网</title>
+  <style>
+    *{box-sizing:border-box}html{background:#050505}body{margin:0;background:radial-gradient(circle at 50% -15%,rgba(245,200,75,.08),transparent 34%),#050505;color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif}.page{width:min(100%,760px);margin:auto;padding:12px 12px 34px}.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:11px 12px;border:1px solid #302819;border-radius:10px;background:rgba(12,13,14,.96);backdrop-filter:blur(10px)}.back{color:#f5c84b;text-decoration:none;font-size:15px;font-weight:900}.site{color:#d9bd6b;font-size:14px;font-weight:900}.card{border:1px solid #604815;border-radius:12px;background:linear-gradient(180deg,#11120f,#090a0a);overflow:hidden}.profile{padding:0}.profile-main,.profile-tags,.rank{display:none}.profile-headline{display:flex;align-items:center;justify-content:center;min-height:58px;padding:12px 8px;color:#f2ca63;font-size:17px;font-weight:900;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.section{margin-top:10px;padding:10px}.period-nav{display:none}.content{border:1px solid #3a3020;border-radius:9px;overflow:hidden;background:#090a0a}.history-head,.history-row{display:grid;grid-template-columns:62px minmax(0,1fr) 82px 48px;align-items:center;text-align:center}.history-head{min-height:38px;border-bottom:1px solid #775919;background:#211a09;color:#f2ca63;font-size:14px;font-weight:900}.history-row{min-height:48px;border-bottom:1px solid #29261f;font-size:15px}.history-row:last-child{border-bottom:0}.history-row span,.history-head span{padding:8px 5px}.history-period{color:#bbb}.history-pick{color:#f2ca63;font-weight:900;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.5}.history-open{color:#eee;font-weight:800;white-space:normal;overflow-wrap:anywhere}.history-status{color:#d8a848;font-weight:900}.history-row.is-win .history-pick,.history-row.is-win .history-open,.history-status.win{color:#ff555f}.history-status.lose{color:#8e8e8e}.notice{margin-top:10px;color:#817b70;text-align:center;font-size:12px;line-height:1.6}.domain{margin-top:10px;color:#8d773c;text-align:right;font-size:11px;font-weight:900;letter-spacing:1.5px}@media(max-width:420px){.page{padding:8px 8px 26px}.profile-headline{min-height:52px;font-size:14px}.history-head,.history-row{grid-template-columns:52px minmax(0,1fr) 68px 40px}.history-head{font-size:13px}.history-row{font-size:14px}.history-row span,.history-head span{padding:8px 3px}}
+    .profile-headline.archived{color:#999;background:#121212}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar"><a class="back" id="backToMasters" href="/#masters">‹ 返回高手榜</a><span class="site">123六合网</span></header>
+    <section class="card profile">
+      <div class="profile-headline" id="profileHeadline">231期: 郭靖→【三期必中】←免费公开</div>
+      <span class="rank" id="rank">1</span>
+      <div class="profile-main"><span class="avatar" id="avatar">郭</span><div><h1 class="name" id="name">郭靖</h1><div class="sub">金榜高手 · 独家免费资料</div></div></div>
+      <div class="profile-tags"><div class="specialty" id="specialty">【三期必中】</div><span class="free">免费公开</span></div>
+    </section>
+    <section class="card section">
+      <div class="period-nav"><button class="period-btn active" type="button" data-period="231">231期</button><button class="period-btn" type="button" data-period="230">230期</button></div>
+      <div class="content" id="detailContent"></div>
+      <div class="domain">123LH.COM</div>
+    </section>
+    <p class="notice">资料仅供参考，请以实际开奖结果为准。</p>
+  </main>
+  <script>
+    const profiles = [
+      {name:'郭靖',avatar:'郭',specialty:'【三期必中】',data:{231:['推荐','蛇 龙 羊 虎','状态','待开奖'],230:['推荐','羊 狗 猴 蛇','结果','开兔16'] }},
+      {name:'陆小凤',avatar:'陆',specialty:'【两期必中】',data:{231:['推荐','狗 马 猴 蛇','状态','待开奖'],230:['推荐','兔 虎 龙 羊','结果','开兔16'] }},
+      {name:'杨过',avatar:'杨',specialty:'【顶尖六肖】',data:{231:['六肖','狗 马 龙 虎 牛 猪','六码','33 37 03 17 30 44'],230:['六肖','兔 蛇 羊 鸡 鼠 猴','六码','14 26 38 21 09 45'] }},
+      {name:'小龙女',avatar:'小',specialty:'【一肖平特】',data:{231:['推荐生肖','蛇','状态','待开奖'],230:['推荐生肖','兔','结果','开兔16'] }},
+      {name:'任盈盈',avatar:'任',specialty:'【绝杀三肖】',data:{231:['绝杀生肖','蛇 鸡 羊','状态','待开奖'],230:['绝杀生肖','猪 虎 羊','结果','开兔16'] }},
+      {name:'张无忌',avatar:'张',specialty:'【两波中特】',data:{231:['推荐波色','绿波 + 红波','状态','待开奖'],230:['推荐波色','红波 + 蓝波','结果','开兔16'] }},
+      {name:'周芷若',avatar:'周',specialty:'【三头中特】',data:{231:['推荐头数','1头 3头 4头','状态','待开奖'],230:['推荐头数','1头 4头 2头','结果','开兔16'] }},
+      {name:'乔峰',avatar:'乔',specialty:'【必中单双】',data:{231:['推荐','单数 + 牛羊','状态','待开奖'],230:['推荐','单数 + 牛兔','结果','开兔16'] }}
+    ];
+    const params = new URLSearchParams(location.search);
+    const requestedId = Math.max(1,Number(params.get('id'))||1);
+    const lotteryType = [1,5,8].includes(Number(params.get('lotteryType'))) ? Number(params.get('lotteryType')) : 5;
+    const slogans=['免费公开','独家好料','期期精选','稳定公开','实力推荐','原创资料','长期验证','精准分享','高手推荐','每期更新','精品资料','免费参考','连续公开','热门推荐','今日精选','诚意分享','一手资料','每日更新','重点推荐','稳定资料','实战参考','用心整理','准时公开','精选好料','独门资料','公开验证','走势参考','高手心得','认真筛选','长期分享','精心推荐','王牌资料','倾力奉献','实力公开','持续更新','精选发布','独家推荐','天天好彩','免费分享'];
+    document.getElementById('backToMasters').addEventListener('click',event=>{
+      let sameSite=false;try{sameSite=Boolean(document.referrer)&&new URL(document.referrer).origin===location.origin}catch{}
+      if(sameSite&&history.length>1){event.preventDefault();history.back();}
+    });
+    const fallbackId = Math.min(8,requestedId);
+    let profile = profiles[fallbackId-1];
+    let activePeriod = params.get('period') || Object.keys(profile.data).sort((a,b)=>Number(b)-Number(a))[0];
+    document.getElementById('rank').textContent=fallbackId;
+    document.getElementById('avatar').textContent=profile.avatar;
+    document.getElementById('name').textContent=profile.name;
+    document.getElementById('specialty').textContent=profile.specialty;
+    document.title=profile.name+'高手资料 - 123六合网';
+    const periodNav=document.querySelector('.period-nav');
+    let buttons=[...document.querySelectorAll('.period-btn')];
+    const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    function bindButtons(){buttons=[...document.querySelectorAll('.period-btn')];buttons.forEach(button=>button.addEventListener('click',()=>render(button.dataset.period)));}
+    function render(period){
+      if(!profile.data[period])period=Object.keys(profile.data).sort((a,b)=>Number(b)-Number(a))[0];
+      activePeriod=period;
+      buttons.forEach(button=>button.classList.toggle('active',button.dataset.period===period));
+      const rows=profile.data[period];
+      document.getElementById('detailContent').innerHTML=rows.reduce((html,item,index)=>index%2?html:html+'<div class="row"><span class="label">'+escapeHtml(item)+'</span><span class="value">'+escapeHtml(rows[index+1])+'</span></div>','');
+      history.replaceState(null,'','?id='+requestedId+'&period='+period+'&lotteryType='+lotteryType);
+    }
+    bindButtons();
+    render(activePeriod);
+    Promise.all([
+      fetch('/api/public/masters?lotteryType='+lotteryType,{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()),
+      fetch('/api/public/master-posts?masterId='+requestedId+'&lotteryType='+lotteryType,{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject())
+    ]).then(([masters,posts])=>{
+      const master=(masters.data||[]).find(item=>Number(item.id)===requestedId);const records=posts.data||[];if(!master||!records.length)return;
+      const cleanName=String(master.name||'').replace(/^(江湖侠客)\d+$/,'$1');profile={name:cleanName,avatar:master.avatar||cleanName.slice(0,1),specialty:'【'+master.specialty+'】',data:{}};
+      document.getElementById('rank').textContent=master.rank_no;document.getElementById('avatar').textContent=profile.avatar;document.getElementById('name').textContent=profile.name;document.getElementById('specialty').textContent=profile.specialty;document.title=profile.name+'高手资料 - 123六合网';
+      const sortedRecords=[...records].sort((a,b)=>Number(b.period)-Number(a.period)),latestPeriod=Number(sortedRecords[0]?.period)||0,slogan=slogans[(Number(master.rank_no)-1)%slogans.length],headline=document.getElementById('profileHeadline');headline.textContent=latestPeriod+'期: '+cleanName+'→【'+master.specialty+'】←'+(master.archived?'已停更':slogan);headline.classList.toggle('archived',Boolean(master.archived));
+      if(latestPeriod)history.replaceState(null,'','?id='+requestedId+'&period='+latestPeriod+'&lotteryType='+lotteryType);
+      periodNav.innerHTML='';
+      document.getElementById('detailContent').innerHTML='<div class="history-head"><span>期数</span><span>内容</span><span>开奖</span><span>核对</span></div>'+sortedRecords.map(record=>{let content={};try{content=JSON.parse(record.content_json||'{}')}catch{}const raw=content.pick||content.value||content.recommendation||Object.values(content)[0]||master.specialty,pick=String(raw).replace(/^([^【]+)【/,'【');const open=record.result_text&&record.result_text!=='待开奖'?record.result_text:'开:？00',status=record.status==='win'?'准':record.status==='lose'?'错':'待开奖',klass=record.status==='win'?' win':record.status==='lose'?' lose':'',rowClass=record.status==='win'?' is-win':'';return '<div class="history-row'+rowClass+'"><span class="history-period">'+escapeHtml(record.period)+'期</span><span class="history-pick">'+escapeHtml(pick)+'</span><span class="history-open">'+escapeHtml(open)+'</span><span class="history-status'+klass+'">'+escapeHtml(status)+'</span></div>';}).join('');
+    }).catch(()=>{});
+  </script>
+  <script src="/assets/cnzz-stat.js"></script>
+</body>
+</html>
