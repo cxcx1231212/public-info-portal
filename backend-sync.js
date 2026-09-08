@@ -42,6 +42,22 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   function renderFeature(list,records,rowClass='feature-row',prefix='feature'){
     list.innerHTML=records.map(record=>{const data=parse(record.content_json),status=record.status||'pending',open=openOf(record,data),state=status==='pending'&&/待开奖|开[:：]?？/.test(open)?'':statusText(status);return '<div class="'+rowClass+'"><span class="'+prefix+'-period">'+esc(record.period)+'期</span><span class="'+prefix+'-pick">'+esc(pickOf(record,data))+'</span><span class="'+prefix+'-open">'+esc(open)+'</span><span class="'+prefix+'-status '+statusClass(status)+'">'+esc(state)+'</span></div>';}).join('');
   }
@@ -70,6 +86,22 @@
     }
     return true;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -130,6 +162,22 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const memberSectionPages={study:'yixiao.html',sixcode:'liuxiao.html',doublewave:'erxiao.html',homewild:'yixiao.html',threehead:'sanzhongsan.html',idiom:'chengyu.html',threeperiod:'sanzhongsan.html',sumparity:'yixiao.html',ninezodiac:'yixiao.html',threeelements:'sanzhongsan.html',loseall:'yixiao.html',thirty:'sanzhongsan.html',singledouble:'erzhonger.html',kill:'erzhonger.html'};
   function memberHost(sectionKey){const page=memberSectionPages[sectionKey],links=[...document.querySelectorAll('.section a.more')];return links.find(link=>(link.getAttribute('href')||'').endsWith(page))?.closest('.section')||null;}
   function renderMemberPosts(records){document.querySelectorAll('.member-post-list').forEach(node=>node.remove());for(const item of records||[]){const section=memberHost(item.section_key);if(!section)continue;let list=section.querySelector('.member-post-list');if(!list){list=document.createElement('div');list.className='member-post-list';(()=>{const anchor=section.querySelector('.section-title,.feature-title,h2');anchor?anchor.after(list):section.prepend(list)})()}const title=(masterCurrentPeriod||'最新')+'期：《'+item.author+'》'+item.post_type;list.insertAdjacentHTML('beforeend','<a class="member-post-row" href="/member-post.html?id='+Number(item.id)+'"><span>'+esc(title)+'</span><b>查看详情 ›</b></a>')}}
@@ -151,11 +199,43 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   document.addEventListener('click',event=>{
     const button=event.target.closest('.record-history-btn,.study-period-btn,.sixcode-page-btn');if(!button||!state.ready)return;
     const section=button.closest('[data-section-key]');if(!section||!state.content.has(section.dataset.sectionKey))return;
     if(renderSection(section,button)){event.preventDefault();event.stopImmediatePropagation();section.querySelectorAll('.record-history-btn,.study-period-btn,.sixcode-page-btn').forEach(item=>item.classList.toggle('active',item===button));}
   },true);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -195,6 +275,9 @@
     else if(Array.isArray(cached)&&cached.length)hydrate(cached,masterRecords);
     else syncAll(true);
   });
+  const memberObserver=new MutationObserver(()=>{if(memberHost()){syncMemberPosts();memberObserver.disconnect();}});
+  memberObserver.observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener('DOMContentLoaded',syncMemberPosts,{once:true});
   syncAll(!state.ready);
   syncMemberPosts();
   setInterval(syncAll,60000);
