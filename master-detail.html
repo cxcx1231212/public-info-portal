@@ -81,7 +81,7 @@
       document.getElementById('detailContent').innerHTML='<div class="history-head"><span>期数</span><span>内容</span><span>开奖</span><span>核对</span></div>'+sortedRecords.map(record=>{let content={};try{content=JSON.parse(record.content_json||'{}')}catch{}const raw=content.pick||content.value||content.recommendation||Object.values(content)[0]||master.specialty,pick=String(raw).replace(/^([^【]+)【/,'【');const open=record.result_text&&record.result_text!=='待开奖'?record.result_text:'开:？00',status=record.status==='win'?'准':record.status==='lose'?'错':'待开奖',klass=record.status==='win'?' win':record.status==='lose'?' lose':'',rowClass=record.status==='win'?' is-win':'';return '<div class="history-row'+rowClass+'"><span class="history-period">'+escapeHtml(record.period)+'期</span><span class="history-pick">'+escapeHtml(pick)+'</span><span class="history-open">'+escapeHtml(open)+'</span><span class="history-status'+klass+'">'+escapeHtml(status)+'</span></div>';}).join('');
     }).catch(()=>{});
   </script>
-  <script src="/assets/cnzz-stat.js">
+  <script src="/assets/cnzz-stat.js"></script><script>
     fetch('/api/public/content-config',{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(payload=>{
       const ad=(payload.data||[]).find(item=>item.position_key==='master-detail-bottom');
       const box=document.getElementById('masterDetailAd');
