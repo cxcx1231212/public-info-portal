@@ -395,6 +395,11 @@ async function kingForecasts(env,lotteryType=5){
   }catch(error){console.error('king_forecasts_failed',error?.message||error);return json({success:false,message:'六合王资料暂时不可用'},502);}
 }
 
+async function ensureMemberPostsSchema(env){
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS member_posts(id INTEGER PRIMARY KEY AUTOINCREMENT,lottery_type INTEGER NOT NULL DEFAULT 5,section_key TEXT NOT NULL DEFAULT 'study',history_count INTEGER NOT NULL DEFAULT 20,author TEXT NOT NULL DEFAULT '',post_type TEXT NOT NULL DEFAULT '',current_data TEXT NOT NULL DEFAULT '注册提前看料',footer_html TEXT NOT NULL DEFAULT '',enabled INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_member_posts_public ON member_posts(enabled,lottery_type,section_key,id DESC)').run();
+}
+
 async function publicApi(request,env,url){
   if(url.pathname==='/api/public/lottery-latest'&&request.method==='GET'){
     const lotteryType=cleanInt(url.searchParams.get('lotteryType'),5);
@@ -407,6 +412,16 @@ async function publicApi(request,env,url){
       console.error('lottery_latest_failed',lotteryType,error?.message||error);
       return json({success:false,message:'开奖接口暂时不可用'},502,{'cache-control':'no-store'});
     }
+  }
+  if(url.pathname==='/api/public/lottery-history'&&request.method==='GET'){
+    const lotteryType=cleanInt(url.searchParams.get('lotteryType'),5),pageNum=Math.max(1,cleanInt(url.searchParams.get('pageNum'),1)),year=cleanInt(url.searchParams.get('year'),new Date().getFullYear());
+    if(![1,5,8].includes(lotteryType))return json({success:false,message:'彩种参数错误'},422);
+    try{const response=await fetch('https://6htv70.com/gallerynew/h5/lottery/search?pageNum='+pageNum+'&pageSize=50&year='+year+'&sort=1&lotteryType='+lotteryType,{headers:{accept:'application/json','user-agent':'Mozilla/5.0'}});if(!response.ok)throw new Error('HTTP '+response.status);return new Response(response.body,{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});}catch(error){console.error('lottery_history_failed',error?.message||error);return json({success:false,message:'开奖记录暂时不可用'},502);}
+  }
+  if(url.pathname==='/api/public/member-posts'&&request.method==='GET'){
+    await ensureMemberPostsSchema(env);const lotteryType=validLotteryType(url.searchParams.get('lotteryType')),section=cleanText(url.searchParams.get('section'),60),id=cleanInt(url.searchParams.get('id'));let query='SELECT * FROM member_posts WHERE enabled=1',binds=[];
+    if(id){query+=' AND id=?';binds.push(id);}else{query+=' AND lottery_type=?';binds.push(lotteryType);if(section){query+=' AND section_key=?';binds.push(section);}}
+    query+=' ORDER BY id DESC LIMIT 200';const result=await env.DB.prepare(query).bind(...binds).all();return json({success:true,data:result.results||[]});
   }
   if(url.pathname==='/api/public/king-forecasts'&&request.method==='GET')return kingForecasts(env,cleanInt(url.searchParams.get('lotteryType'),5));
   if(url.pathname==='/api/public/king-thirty-raw'&&request.method==='GET')return kingThirtyRaw(env,cleanInt(url.searchParams.get('lotteryType'),5));
@@ -461,12 +476,13 @@ const resources={
   content:{table:'content_items',fields:['lottery_type','section_key','period','title','content_json','result_text','status','sort_order','enabled']},
   masters:{table:'masters',fields:['name','avatar','rank_no','specialty','enabled']},
   posts:{table:'master_posts',fields:['lottery_type','master_id','period','content_json','result_text','status']},
+  memberposts:{table:'member_posts',fields:['lottery_type','section_key','history_count','author','post_type','current_data','footer_html','enabled']},
   ads:{table:'ads',fields:['position_key','image_url','link_url','display_mode','delay_seconds','start_at','end_at','enabled']},
   textads:{table:'text_ads',fields:['ad_text','text_color','sort_order','enabled']},
   textdomains:{table:'text_ad_domains',fields:['domain_url','sort_order','enabled']},
   links:{table:'recommended_sites',fields:['name','site_url','sort_order','enabled']}
 };
-function normalize(resource,input){const output={};for(const field of resource.fields){if(!(field in input))continue;if(['period','sort_order','enabled','rank_no','master_id','delay_seconds'].includes(field))output[field]=cleanInt(input[field]);else if(field==='lottery_type')output[field]=validLotteryType(input[field]);else if(field==='status')output[field]=allowedStatus(input[field]);else if(['start_at','end_at'].includes(field))output[field]=cleanText(input[field],40).replace('T',' ');else output[field]=cleanText(input[field]);}if('site_url'in output&&!/^https?:\/\//i.test(output.site_url))delete output.site_url;return output;}
+function normalize(resource,input){const output={};for(const field of resource.fields){if(!(field in input))continue;if(['period','sort_order','enabled','rank_no','master_id','delay_seconds','history_count'].includes(field))output[field]=cleanInt(input[field]);else if(field==='lottery_type')output[field]=validLotteryType(input[field]);else if(field==='status')output[field]=allowedStatus(input[field]);else if(['start_at','end_at'].includes(field))output[field]=cleanText(input[field],40).replace('T',' ');else output[field]=cleanText(input[field]);}if('site_url'in output&&!/^https?:\/\//i.test(output.site_url))delete output.site_url;return output;}
 
 async function adminApi(request,env,url){
   if(url.pathname==='/api/admin/login'&&request.method==='POST'){
@@ -526,9 +542,10 @@ async function adminApi(request,env,url){
     await ensureTextAdsSchema(env);const input=(await body(request))||{},ids=[...new Set((Array.isArray(input.ids)?input.ids:[]).map(value=>cleanInt(value)).filter(value=>value>0))];if(!ids.length)return json({success:false,message:'请选择要删除的内容'},422);
     const table=bulkDelete[1]==='textads'?'text_ads':'text_ad_domains';for(let offset=0;offset<ids.length;offset+=50){const chunk=ids.slice(offset,offset+50);await env.DB.prepare('DELETE FROM '+table+' WHERE id IN ('+chunk.map(()=>'?').join(',')+')').bind(...chunk).run();}return json({success:true,count:ids.length});
   }
-  const match=url.pathname.match(/^\/api\/admin\/(content|masters|posts|ads|textads|textdomains|links)(?:\/(\d+))?$/);if(!match)return null;
+  const match=url.pathname.match(/^\/api\/admin\/(content|masters|posts|memberposts|ads|textads|textdomains|links)(?:\/(\d+))?$/);if(!match)return null;
   const resource=resources[match[1]],id=cleanInt(match[2]);
   if(match[1]==='links')await ensureRecommendedSites(env);
+  if(match[1]==='memberposts')await ensureMemberPostsSchema(env);
   if(match[1]==='ads')await ensureAdsSchema(env);
   if(['textads','textdomains'].includes(match[1]))await ensureTextAdsSchema(env);
   if(request.method==='GET'){if(match[1]==='ads'){await env.DB.prepare("INSERT OR IGNORE INTO ads(position_key,image_url,link_url,display_mode,delay_seconds,start_at,end_at,enabled) SELECT 'banner',image_url,link_url,display_mode,delay_seconds,start_at,end_at,enabled FROM ads WHERE position_key NOT IN ('popup','master-detail-bottom') AND image_url<>'' ORDER BY CASE WHEN position_key='home-1' THEN 0 ELSE 1 END,id LIMIT 1").run();const result=await env.DB.prepare("SELECT a.*,COALESCE(s.impressions,0) impressions,COALESCE(s.clicks,0) clicks FROM ads a LEFT JOIN ad_stats s USING(position_key) WHERE a.position_key IN ('banner','master-detail-bottom','popup') ORDER BY CASE WHEN a.position_key='banner' THEN 0 WHEN a.position_key='master-detail-bottom' THEN 1 ELSE 2 END").all();return json({success:true,data:result.results});}const order=match[1]==='masters'?'rank_no,id':['links','textads','textdomains'].includes(match[1])?'sort_order,id':'id DESC';const result=await env.DB.prepare('SELECT * FROM '+resource.table+' ORDER BY '+order+' LIMIT 500').all();return json({success:true,data:result.results});}
