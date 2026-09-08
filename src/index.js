@@ -7,6 +7,14 @@ import {encryptJsonPayload} from './aes-gcm.ts';
 
 
 
+
+
+
+
+
+
+
+
 const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store',...headers}});
 const isBusinessError=payload=>payload&&typeof payload==='object'&&(payload.success===false||payload.ok===false||(typeof payload.code==='number'&&![0,10000].includes(payload.code))||(typeof payload.status==='number'&&payload.status!==0));
 async function maybeEncryptJsonResponse(request,response){
@@ -36,6 +44,14 @@ async function maybeEncryptHtmlResponse(response){
 const textEncoder=new TextEncoder();
 const b64url=bytes=>btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let value=0;for(let i=0;i<a.length;i++)value|=a.charCodeAt(i)^b.charCodeAt(i);return value===0;};
+
+
+
+
+
+
+
+
 
 
 
@@ -104,6 +120,14 @@ async function ensureTextAdsSchema(env){
 
 
 
+
+
+
+
+
+
+
+
 async function trackVisit(request,env){
   const ip=cleanText(request.headers.get('CF-Connecting-IP')||'unknown',80),cf=request.cf||{},date=new Date().toISOString().slice(0,10),country=cleanText(cf.country||'',80),region=cleanText(cf.region||'',120),city=cleanText(cf.city||'',120);
   const unique=await env.DB.prepare('INSERT OR IGNORE INTO analytics_uniques(visit_date,ip_address) VALUES(?,?)').bind(date,ip).run(),isNew=Number(unique.meta?.changes||0);
@@ -112,6 +136,14 @@ async function trackVisit(request,env){
     env.DB.prepare('INSERT INTO analytics_visitors(ip_address,country,region_name,city,views,first_seen,last_seen) VALUES(?,?,?,?,1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP) ON CONFLICT(ip_address) DO UPDATE SET country=excluded.country,region_name=excluded.region_name,city=excluded.city,views=analytics_visitors.views+1,last_seen=CURRENT_TIMESTAMP').bind(ip,country,region,city)
   ]);
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -430,10 +462,26 @@ async function kingForecasts(env,lotteryType=5){
 
 
 
+
+
+
+
+
+
+
+
 async function ensureMemberPostsSchema(env){
   await env.DB.prepare("CREATE TABLE IF NOT EXISTS member_posts(id INTEGER PRIMARY KEY AUTOINCREMENT,lottery_type INTEGER NOT NULL DEFAULT 5,section_key TEXT NOT NULL DEFAULT 'study',history_count INTEGER NOT NULL DEFAULT 20,author TEXT NOT NULL DEFAULT '',post_type TEXT NOT NULL DEFAULT '',current_data TEXT NOT NULL DEFAULT '注册提前看料',footer_html TEXT NOT NULL DEFAULT '',enabled INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_member_posts_public ON member_posts(enabled,lottery_type,section_key,id DESC)').run();
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -521,6 +569,14 @@ async function publicApi(request,env,url){
 
 
 
+
+
+
+
+
+
+
+
 const resources={
   content:{table:'content_items',fields:['lottery_type','section_key','period','title','content_json','result_text','status','sort_order','enabled']},
   masters:{table:'masters',fields:['name','avatar','rank_no','specialty','enabled']},
@@ -532,6 +588,14 @@ const resources={
   links:{table:'recommended_sites',fields:['name','site_url','sort_order','enabled']}
 };
 function normalize(resource,input){const output={};for(const field of resource.fields){if(!(field in input))continue;if(['period','sort_order','enabled','rank_no','master_id','delay_seconds','history_count'].includes(field))output[field]=cleanInt(input[field]);else if(field==='lottery_type')output[field]=validLotteryType(input[field]);else if(field==='status')output[field]=allowedStatus(input[field]);else if(['start_at','end_at'].includes(field))output[field]=cleanText(input[field],40).replace('T',' ');else output[field]=cleanText(input[field]);}if('site_url'in output&&!/^https?:\/\//i.test(output.site_url))delete output.site_url;return output;}
+
+
+
+
+
+
+
+
 
 
 
@@ -640,6 +704,14 @@ async function adminApi(request,env,url){
 
 
 
+
+
+
+
+
+
+
+
 export default {async scheduled(controller,env,ctx){
   ctx.waitUntil(Promise.all([
     maybeRunResultCheck(env).catch(error=>console.error('scheduled_result_check_failed',error?.stack||error?.message||error)),
@@ -656,7 +728,7 @@ export default {async scheduled(controller,env,ctx){
     if(request.method==='GET'&&!url.pathname.startsWith('/admin')&&!url.pathname.startsWith('/api/')&&(request.headers.get('accept')||'').includes('text/html'))ctx.waitUntil(Promise.all([trackVisit(request,env).catch(()=>{}),maybeRunResultCheck(env).catch(()=>{})]));
     const asset=await env.ASSETS.fetch(request);
     if(request.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')&&asset.ok){
-      try{const initial=await homepageInitialData(env),serialized=JSON.stringify(initial).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace('<script src="backend-sync.js?v=90"></script>','<script id="initialBackendData" type="application/json">'+serialized+'</script><script src="backend-sync.js?v=90"></script>');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));}catch(error){console.error('homepage_initial_data_failed',error?.message||error);}
+      try{const initial=await homepageInitialData(env),serialized=JSON.stringify(initial).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace('<script src="backend-sync.js?v=91"></script>','<script id="initialBackendData" type="application/json">'+serialized+'</script><script src="backend-sync.js?v=91"></script>');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));}catch(error){console.error('homepage_initial_data_failed',error?.message||error);}
     }
     if(request.method==='GET'&&(url.pathname==='/admin'||url.pathname==='/admin.html')&&asset.ok){
       let html=await asset.text();
