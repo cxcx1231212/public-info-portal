@@ -82,7 +82,7 @@
     }).catch(()=>{});
   </script>
   <script src="/assets/cnzz-stat.js">
-    fetch('/api/public/banner-data',{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(payload=>{
+    fetch('/api/public/content-config',{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(payload=>{
       const ad=(payload.data||[]).find(item=>item.position_key==='master-detail-bottom');
       const box=document.getElementById('masterDetailAd');
       if(!box||!ad||!ad.image_url)return;
