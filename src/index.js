@@ -396,7 +396,9 @@ async function kingForecasts(env,lotteryType=5){
 }
 
 async function ensureMemberPostsSchema(env){
-  await env.DB.prepare("CREATE TABLE IF NOT EXISTS member_posts(id INTEGER PRIMARY KEY AUTOINCREMENT,lottery_type INTEGER NOT NULL DEFAULT 5,section_key TEXT NOT NULL DEFAULT 'study',history_count INTEGER NOT NULL DEFAULT 20,author TEXT NOT NULL DEFAULT '',post_type TEXT NOT NULL DEFAULT '',current_data TEXT NOT NULL DEFAULT '注册提前看料',footer_html TEXT NOT NULL DEFAULT '',enabled INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS member_posts(id INTEGER PRIMARY KEY AUTOINCREMENT,lottery_type INTEGER NOT NULL DEFAULT 5,section_key TEXT NOT NULL DEFAULT 'study',history_count INTEGER NOT NULL DEFAULT 20,author TEXT NOT NULL DEFAULT '',post_type TEXT NOT NULL DEFAULT '',extract_mode TEXT NOT NULL DEFAULT 'regular',current_data TEXT NOT NULL DEFAULT '注册提前看料',footer_html TEXT NOT NULL DEFAULT '',enabled INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  const columns=new Set(((await env.DB.prepare('PRAGMA table_info(member_posts)').all()).results||[]).map(row=>row.name));
+  if(!columns.has('extract_mode'))await env.DB.prepare("ALTER TABLE member_posts ADD COLUMN extract_mode TEXT NOT NULL DEFAULT 'regular'").run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_member_posts_public ON member_posts(enabled,lottery_type,section_key,id DESC)').run();
 }
 
@@ -476,7 +478,7 @@ const resources={
   content:{table:'content_items',fields:['lottery_type','section_key','period','title','content_json','result_text','status','sort_order','enabled']},
   masters:{table:'masters',fields:['name','avatar','rank_no','specialty','enabled']},
   posts:{table:'master_posts',fields:['lottery_type','master_id','period','content_json','result_text','status']},
-  memberposts:{table:'member_posts',fields:['lottery_type','section_key','history_count','author','post_type','current_data','footer_html','enabled']},
+  memberposts:{table:'member_posts',fields:['lottery_type','section_key','history_count','author','post_type','extract_mode','current_data','footer_html','enabled']},
   ads:{table:'ads',fields:['position_key','image_url','link_url','display_mode','delay_seconds','start_at','end_at','enabled']},
   textads:{table:'text_ads',fields:['ad_text','text_color','sort_order','enabled']},
   textdomains:{table:'text_ad_domains',fields:['domain_url','sort_order','enabled']},
