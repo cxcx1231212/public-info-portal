@@ -106,7 +106,7 @@
       ]);
       if(token!==syncToken||type!==currentLotteryType())return;
       initialByType[type]=content.data||[];hydrate(content.data||[],masters.data||[]);
-      await syncKingForecasts();await syncKingThirtyRaw();await syncRecommendedSites();await syncMemberPosts();
+      await syncMemberPosts();await Promise.all([syncKingForecasts(),syncKingThirtyRaw(),syncRecommendedSites()]);
       if(token===syncToken)document.body.classList.remove('backend-loading');
     }catch{if(token===syncToken){document.body.classList.remove('backend-loading');document.querySelectorAll('[data-section-key]').forEach(section=>{if(!section.querySelector('.backend-load-error')){const note=document.createElement('div');note.className='backend-load-error';note.textContent='资料加载失败，请刷新重试';section.appendChild(note);}});}}
   }
