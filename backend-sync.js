@@ -28,6 +28,8 @@
   const markMatched=(value,open)=>{const text=String(value??''),result=String(open??''),zodiac=result.match(/[鼠牛虎兔龙蛇马羊猴鸡狗猪]/)?.[0]||'',numberMatch=result.match(/(?:开|:|：)[^0-9]*(0?[1-9]|[1-4]\d)/),number=numberMatch?Number(numberMatch[1]):0;if(!zodiac&&!number)return esc(text);let html='',last=0;for(const match of text.matchAll(/\d{1,2}|[鼠牛虎兔龙蛇马羊猴鸡狗猪]/g)){html+=esc(text.slice(last,match.index));const token=match[0],hit=token===zodiac||(number&&/^\d+$/.test(token)&&Number(token)===number);html+=hit?'<em class="matched-value">'+esc(token)+'</em>':esc(token);last=match.index+token.length;}return html+esc(text.slice(last));};
 
 
+
+
   function renderFeature(list,records,rowClass='feature-row',prefix='feature'){
     list.innerHTML=records.map(record=>{const data=parse(record.content_json),status=record.status||'pending',open=openOf(record,data),state=status==='pending'&&/待开奖|开[:：]?？/.test(open)?'':statusText(status);return '<div class="'+rowClass+'"><span class="'+prefix+'-period">'+esc(record.period)+'期</span><span class="'+prefix+'-pick">'+esc(pickOf(record,data))+'</span><span class="'+prefix+'-open">'+esc(open)+'</span><span class="'+prefix+'-status '+statusClass(status)+'">'+esc(state)+'</span></div>';}).join('');
   }
@@ -56,6 +58,8 @@
     }
     return true;
   }
+
+
 
 
   let masterRecords=[],masterCurrentPeriod=0;
@@ -88,6 +92,8 @@
   async function syncRecommendedSites(){try{const response=await fetch('/api/public/recommended-sites?_='+Date.now(),{cache:'no-store'}),payload=await response.json();if(!response.ok||!payload.success||!Array.isArray(payload.data))return;const list=document.querySelector('.site-network-list');if(!list)return;list.innerHTML=payload.data.map(item=>'<a href="'+esc(item.site_url||'#')+'" target="_blank" rel="noopener">'+esc(item.name||'推荐网站')+'</a>').join('');}catch{}}
 
 
+
+
   const memberSectionPages={study:'yixiao.html',sixcode:'liuxiao.html',doublewave:'erxiao.html',homewild:'yixiao.html',threehead:'sanzhongsan.html',idiom:'chengyu.html',threeperiod:'sanzhongsan.html',sumparity:'yixiao.html',ninezodiac:'yixiao.html',threeelements:'sanzhongsan.html',loseall:'yixiao.html',thirty:'sanzhongsan.html',singledouble:'erzhonger.html',kill:'erzhonger.html'};
   function memberHost(sectionKey){const page=memberSectionPages[sectionKey],links=[...document.querySelectorAll('.section a.more')];return links.find(link=>(link.getAttribute('href')||'').endsWith(page))?.closest('.section')||null;}
   function renderMemberPosts(records){document.querySelectorAll('.member-post-list').forEach(node=>node.remove());for(const item of records||[]){const section=memberHost(item.section_key);if(!section)continue;let list=section.querySelector('.member-post-list');if(!list){list=document.createElement('div');list.className='member-post-list';(()=>{const anchor=section.querySelector('.section-title,.feature-title,h2');anchor?anchor.after(list):section.prepend(list)})()}const title=(masterCurrentPeriod||'最新')+'期：《'+item.author+'》'+item.post_type;list.insertAdjacentHTML('beforeend','<a class="member-post-row" href="/member-post.html?id='+Number(item.id)+'"><span>'+esc(title)+'</span><b>查看详情 ›</b></a>')}}
@@ -95,11 +101,15 @@
   if(!document.getElementById('memberPostStyles')){const style=document.createElement('style');style.id='memberPostStyles';style.textContent='.member-post-list{border-bottom:1px solid #30291d}.member-post-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;color:#f0cf69;text-decoration:none;border-top:1px solid #29251d;background:#0c0d0e;font-weight:800}.member-post-row:nth-child(even){background:#101112}.member-post-row b{flex:0 0 auto;color:#ff5050;font-size:12px}@media(max-width:520px){.member-post-row{font-size:13px;padding:9px 8px}.member-post-row b{font-size:11px}}';document.head.appendChild(style)}
 
 
+
+
   document.addEventListener('click',event=>{
     const button=event.target.closest('.record-history-btn,.study-period-btn,.sixcode-page-btn');if(!button||!state.ready)return;
     const section=button.closest('[data-section-key]');if(!section||!state.content.has(section.dataset.sectionKey))return;
     if(renderSection(section,button)){event.preventDefault();event.stopImmediatePropagation();section.querySelectorAll('.record-history-btn,.study-period-btn,.sixcode-page-btn').forEach(item=>item.classList.toggle('active',item===button));}
   },true);
+
+
 
 
   let syncToken=0;
@@ -126,5 +136,7 @@
     else syncAll(true);
   });
   syncAll(!state.ready);
+  syncMemberPosts();
   setInterval(syncAll,60000);
+  setInterval(syncMemberPosts,30000);
 })();
