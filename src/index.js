@@ -433,8 +433,8 @@ async function publicApi(request,env,url){
     await ensureAdsSchema(env);
     const result=await env.DB.prepare("SELECT position_key,image_url,link_url,display_mode,delay_seconds,start_at,end_at FROM ads WHERE enabled=1 AND image_url<>'' AND (start_at IS NULL OR start_at='' OR start_at<=CURRENT_TIMESTAMP) AND (end_at IS NULL OR end_at='' OR end_at>=CURRENT_TIMESTAMP) ORDER BY CASE WHEN position_key='popup' THEN 0 WHEN position_key='banner' THEN 1 ELSE 2 END,position_key").all();
     const absoluteAd=item=>item&&({...item,image_url:/^\/ad-image\//.test(item.image_url)?'https://123-liuhe-site.xcx8088.workers.dev'+item.image_url:item.image_url});
-    const rows=result.results||[],popup=absoluteAd(rows.find(item=>item.position_key==='popup')),banner=absoluteAd(rows.find(item=>item.position_key==='banner')||rows.find(item=>item.position_key!=='popup'));
-    const data=[];if(banner){data.push({...banner,position_key:'banner'});for(let index=1;index<=20;index++)data.push({...banner,position_key:'home-'+index});data.push({...banner,position_key:'list'},{...banner,position_key:'detail'});}if(popup)data.push(popup);
+    const rows=result.results||[],popup=absoluteAd(rows.find(item=>item.position_key==='popup')),masterDetailBottom=absoluteAd(rows.find(item=>item.position_key==='master-detail-bottom')),banner=absoluteAd(rows.find(item=>item.position_key==='banner')||rows.find(item=>!['popup','master-detail-bottom'].includes(item.position_key)));
+    const data=[];if(banner){data.push({...banner,position_key:'banner'});for(let index=1;index<=20;index++)data.push({...banner,position_key:'home-'+index});data.push({...banner,position_key:'list'},{...banner,position_key:'detail'});}if(masterDetailBottom)data.push({...masterDetailBottom,position_key:'master-detail-bottom'});if(popup)data.push(popup);
     return json({success:true,data},200,{'access-control-allow-origin':'*'});
   }
   if(url.pathname==='/api/public/text-ads'){
@@ -531,7 +531,7 @@ async function adminApi(request,env,url){
   if(match[1]==='links')await ensureRecommendedSites(env);
   if(match[1]==='ads')await ensureAdsSchema(env);
   if(['textads','textdomains'].includes(match[1]))await ensureTextAdsSchema(env);
-  if(request.method==='GET'){if(match[1]==='ads'){await env.DB.prepare("INSERT OR IGNORE INTO ads(position_key,image_url,link_url,display_mode,delay_seconds,start_at,end_at,enabled) SELECT 'banner',image_url,link_url,display_mode,delay_seconds,start_at,end_at,enabled FROM ads WHERE position_key<>'popup' AND image_url<>'' ORDER BY CASE WHEN position_key='home-1' THEN 0 ELSE 1 END,id LIMIT 1").run();const result=await env.DB.prepare("SELECT a.*,COALESCE(s.impressions,0) impressions,COALESCE(s.clicks,0) clicks FROM ads a LEFT JOIN ad_stats s USING(position_key) WHERE a.position_key IN ('banner','popup') ORDER BY CASE WHEN a.position_key='banner' THEN 0 ELSE 1 END").all();return json({success:true,data:result.results});}const order=match[1]==='masters'?'rank_no,id':['links','textads','textdomains'].includes(match[1])?'sort_order,id':'id DESC';const result=await env.DB.prepare('SELECT * FROM '+resource.table+' ORDER BY '+order+' LIMIT 500').all();return json({success:true,data:result.results});}
+  if(request.method==='GET'){if(match[1]==='ads'){await env.DB.prepare("INSERT OR IGNORE INTO ads(position_key,image_url,link_url,display_mode,delay_seconds,start_at,end_at,enabled) SELECT 'banner',image_url,link_url,display_mode,delay_seconds,start_at,end_at,enabled FROM ads WHERE position_key NOT IN ('popup','master-detail-bottom') AND image_url<>'' ORDER BY CASE WHEN position_key='home-1' THEN 0 ELSE 1 END,id LIMIT 1").run();const result=await env.DB.prepare("SELECT a.*,COALESCE(s.impressions,0) impressions,COALESCE(s.clicks,0) clicks FROM ads a LEFT JOIN ad_stats s USING(position_key) WHERE a.position_key IN ('banner','master-detail-bottom','popup') ORDER BY CASE WHEN a.position_key='banner' THEN 0 WHEN a.position_key='master-detail-bottom' THEN 1 ELSE 2 END").all();return json({success:true,data:result.results});}const order=match[1]==='masters'?'rank_no,id':['links','textads','textdomains'].includes(match[1])?'sort_order,id':'id DESC';const result=await env.DB.prepare('SELECT * FROM '+resource.table+' ORDER BY '+order+' LIMIT 500').all();return json({success:true,data:result.results});}
   if(request.method==='POST'){
     const raw=(await body(request))||{};if(match[1]==='links'&&(!cleanText(raw.name,100)||!/^https?:\/\//i.test(cleanText(raw.site_url))))return json({success:false,message:'请填写网站名称和以 http:// 或 https:// 开头的网址'},422);
     if(match[1]==='textads'){
@@ -543,7 +543,7 @@ async function adminApi(request,env,url){
       const values=[...new Set(String(raw.domain_url||'').split(/\r?\n/).map(value=>cleanText(value,1000)).filter(value=>/^https?:\/\//i.test(value)))];if(!values.length)return json({success:false,message:'请填写以 http:// 或 https:// 开头的域名，每行一个'},422);
       const base=cleanInt(raw.sort_order),enabled=cleanInt(raw.enabled,1);await env.DB.batch(values.map((value,index)=>env.DB.prepare('INSERT OR IGNORE INTO text_ad_domains(domain_url,sort_order,enabled) VALUES(?,?,?)').bind(value,base+index,enabled)));return json({success:true,count:values.length});
     }
-    if(match[1]==='ads'&&raw.position_key!=='popup')raw.position_key='banner';
+    if(match[1]==='ads'&&!['popup','master-detail-bottom'].includes(raw.position_key))raw.position_key='banner';
     const input=normalize(resource,raw);const fields=Object.keys(input);if(!fields.length)return json({success:false,message:'没有可保存的内容'},400);
     if(match[1]==='ads'){
       if(!input.position_key)return json({success:false,message:'请选择广告位置'},422);const updates=fields.filter(field=>field!=='position_key');
