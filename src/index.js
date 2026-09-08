@@ -445,7 +445,7 @@ async function publicApi(request,env,url){
     const lotteryType=validLotteryType(url.searchParams.get('lotteryType')),masterId=cleanInt(url.searchParams.get('masterId'));const period=cleanInt(url.searchParams.get('period'));
     let query='SELECT p.*,m.name,m.avatar,m.rank_no,m.specialty FROM master_posts p JOIN masters m ON m.id=p.master_id WHERE m.enabled=1 AND p.lottery_type=?';const binds=[lotteryType];
     if(masterId){query+=' AND p.master_id=?';binds.push(masterId);}if(period){query+=' AND p.period=?';binds.push(period);}
-    query+=' ORDER BY p.period DESC,m.rank_no LIMIT 200';const result=await env.DB.prepare(query).bind(...binds).all();return json({success:true,data:result.results});
+    query+=' ORDER BY p.period DESC,m.rank_no LIMIT 200';const [result,footer]=await Promise.all([env.DB.prepare(query).bind(...binds).all(),env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_footer_html'").first()]);return json({success:true,data:(result.results||[]).map(row=>({...row,global_footer_html:footer?.setting_value||''}))});
   }
   if(['/api/public/ads','/api/public/content-config'].includes(url.pathname)){
     await ensureAdsSchema(env);
