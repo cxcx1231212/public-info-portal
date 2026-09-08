@@ -399,6 +399,7 @@ async function ensureMemberPostsSchema(env){
   await env.DB.prepare("CREATE TABLE IF NOT EXISTS member_posts(id INTEGER PRIMARY KEY AUTOINCREMENT,lottery_type INTEGER NOT NULL DEFAULT 5,section_key TEXT NOT NULL DEFAULT 'study',history_count INTEGER NOT NULL DEFAULT 20,author TEXT NOT NULL DEFAULT '',post_type TEXT NOT NULL DEFAULT '',extract_mode TEXT NOT NULL DEFAULT 'regular',current_data TEXT NOT NULL DEFAULT '注册提前看料',footer_html TEXT NOT NULL DEFAULT '',enabled INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   const columns=new Set(((await env.DB.prepare('PRAGMA table_info(member_posts)').all()).results||[]).map(row=>row.name));
   if(!columns.has('extract_mode'))await env.DB.prepare("ALTER TABLE member_posts ADD COLUMN extract_mode TEXT NOT NULL DEFAULT 'regular'").run();
+  await env.DB.prepare("INSERT INTO site_settings(setting_key,setting_value,updated_at) SELECT 'member_post_footer_html',footer_html,CURRENT_TIMESTAMP FROM member_posts WHERE footer_html<>'' ORDER BY id DESC LIMIT 1 ON CONFLICT(setting_key) DO NOTHING").run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_member_posts_public ON member_posts(enabled,lottery_type,section_key,id DESC)').run();
 }
 
@@ -423,7 +424,7 @@ async function publicApi(request,env,url){
   if(url.pathname==='/api/public/member-posts'&&request.method==='GET'){
     await ensureMemberPostsSchema(env);const lotteryType=validLotteryType(url.searchParams.get('lotteryType')),section=cleanText(url.searchParams.get('section'),60),id=cleanInt(url.searchParams.get('id'));let query='SELECT * FROM member_posts WHERE enabled=1',binds=[];
     if(id){query+=' AND id=?';binds.push(id);}else{query+=' AND lottery_type=?';binds.push(lotteryType);if(section){query+=' AND section_key=?';binds.push(section);}}
-    query+=' ORDER BY id DESC LIMIT 200';const result=await env.DB.prepare(query).bind(...binds).all();return json({success:true,data:result.results||[]});
+    query+=' ORDER BY id DESC LIMIT 200';const [result,footer]=await Promise.all([env.DB.prepare(query).bind(...binds).all(),env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_footer_html'").first()]);return json({success:true,data:(result.results||[]).map(row=>({...row,global_footer_html:footer?.setting_value||''}))});
   }
   if(url.pathname==='/api/public/king-forecasts'&&request.method==='GET')return kingForecasts(env,cleanInt(url.searchParams.get('lotteryType'),5));
   if(url.pathname==='/api/public/king-thirty-raw'&&request.method==='GET')return kingThirtyRaw(env,cleanInt(url.searchParams.get('lotteryType'),5));
@@ -514,8 +515,8 @@ async function adminApi(request,env,url){
   if(url.pathname==='/api/admin/settings'){
     if(request.method==='GET'){const result=await env.DB.prepare('SELECT setting_key,setting_value,updated_at FROM site_settings ORDER BY setting_key').all();return json({success:true,data:result.results});}
     if(request.method==='PUT'){
-      const input=(await body(request))||{},allowed=['site_name','site_domain','site_slogan'];
-      for(const key of allowed){if(key in input)await env.DB.prepare('INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value,updated_at=CURRENT_TIMESTAMP').bind(key,cleanText(input[key],200)).run();}
+      const input=(await body(request))||{},allowed=['site_name','site_domain','site_slogan','member_post_footer_html'];
+      for(const key of allowed){if(key in input)await env.DB.prepare('INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value,updated_at=CURRENT_TIMESTAMP').bind(key,cleanText(input[key],key==='member_post_footer_html'?5000:200)).run();}
       return json({success:true});
     }
     return json({success:false,message:'请求方式不支持'},405);
