@@ -85,6 +85,12 @@
   }
   async function syncRecommendedSites(){try{const response=await fetch('/api/public/recommended-sites?_='+Date.now(),{cache:'no-store'}),payload=await response.json();if(!response.ok||!payload.success||!Array.isArray(payload.data))return;const list=document.querySelector('.site-network-list');if(!list)return;list.innerHTML=payload.data.map(item=>'<a href="'+esc(item.site_url||'#')+'" target="_blank" rel="noopener">'+esc(item.name||'推荐网站')+'</a>').join('');}catch{}}
 
+  const memberSectionPages={study:'yixiao.html',sixcode:'liuxiao.html',doublewave:'erxiao.html',homewild:'yixiao.html',threehead:'sanzhongsan.html',idiom:'chengyu.html',threeperiod:'sanzhongsan.html',sumparity:'yixiao.html',ninezodiac:'yixiao.html',threeelements:'sanzhongsan.html',loseall:'yixiao.html',thirty:'sanzhongsan.html',singledouble:'erzhonger.html',kill:'erzhonger.html'};
+  function memberHost(sectionKey){const page=memberSectionPages[sectionKey],links=[...document.querySelectorAll('.section a.more')];return links.find(link=>(link.getAttribute('href')||'').endsWith(page))?.closest('.section')||null;}
+  function renderMemberPosts(records){document.querySelectorAll('.member-post-list').forEach(node=>node.remove());for(const item of records||[]){const section=memberHost(item.section_key);if(!section)continue;let list=section.querySelector('.member-post-list');if(!list){list=document.createElement('div');list.className='member-post-list';section.querySelector('.section-title')?.after(list)}const title=(masterCurrentPeriod||'最新')+'期：《'+item.author+'》'+item.post_type;list.insertAdjacentHTML('beforeend','<a class="member-post-row" href="/member-post.html?id='+Number(item.id)+'"><span>'+esc(title)+'</span><b>查看详情 ›</b></a>')}}
+  async function syncMemberPosts(){try{const response=await fetch('/api/public/member-posts?lotteryType='+currentLotteryType()+'&_='+Date.now(),{cache:'no-store'}),payload=await response.json();if(response.ok&&payload.success)renderMemberPosts(payload.data||[])}catch{}}
+  if(!document.getElementById('memberPostStyles')){const style=document.createElement('style');style.id='memberPostStyles';style.textContent='.member-post-list{border-bottom:1px solid #30291d}.member-post-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;color:#f0cf69;text-decoration:none;border-top:1px solid #29251d;background:#0c0d0e;font-weight:800}.member-post-row:nth-child(even){background:#101112}.member-post-row b{flex:0 0 auto;color:#ff5050;font-size:12px}@media(max-width:520px){.member-post-row{font-size:13px;padding:9px 8px}.member-post-row b{font-size:11px}}';document.head.appendChild(style)}
+
   document.addEventListener('click',event=>{
     const button=event.target.closest('.record-history-btn,.study-period-btn,.sixcode-page-btn');if(!button||!state.ready)return;
     const section=button.closest('[data-section-key]');if(!section||!state.content.has(section.dataset.sectionKey))return;
@@ -101,7 +107,7 @@
       ]);
       if(token!==syncToken||type!==currentLotteryType())return;
       initialByType[type]=content.data||[];hydrate(content.data||[],masters.data||[]);
-      await syncKingForecasts();await syncKingThirtyRaw();await syncRecommendedSites();
+      await syncKingForecasts();await syncKingThirtyRaw();await syncRecommendedSites();await syncMemberPosts();
       if(token===syncToken)document.body.classList.remove('backend-loading');
     }catch{if(token===syncToken){document.body.classList.remove('backend-loading');document.querySelectorAll('[data-section-key]').forEach(section=>{if(!section.querySelector('.backend-load-error')){const note=document.createElement('div');note.className='backend-load-error';note.textContent='资料加载失败，请刷新重试';section.appendChild(note);}});}}
   }
