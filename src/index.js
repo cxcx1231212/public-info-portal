@@ -429,7 +429,7 @@ async function publicApi(request,env,url){
     if(masterId){query+=' AND p.master_id=?';binds.push(masterId);}if(period){query+=' AND p.period=?';binds.push(period);}
     query+=' ORDER BY p.period DESC,m.rank_no LIMIT 200';const result=await env.DB.prepare(query).bind(...binds).all();return json({success:true,data:result.results});
   }
-  if(['/api/public/ads','/api/public/banner-data'].includes(url.pathname)){
+  if(['/api/public/ads','/api/public/content-config'].includes(url.pathname)){
     await ensureAdsSchema(env);
     const result=await env.DB.prepare("SELECT position_key,image_url,link_url,display_mode,delay_seconds,start_at,end_at FROM ads WHERE enabled=1 AND image_url<>'' AND (start_at IS NULL OR start_at='' OR start_at<=CURRENT_TIMESTAMP) AND (end_at IS NULL OR end_at='' OR end_at>=CURRENT_TIMESTAMP) ORDER BY CASE WHEN position_key='popup' THEN 0 WHEN position_key='banner' THEN 1 ELSE 2 END,position_key").all();
     const absoluteAd=item=>item&&({...item,image_url:/^\/ad-image\//.test(item.image_url)?'https://123-liuhe-site.xcx8088.workers.dev'+item.image_url:item.image_url});
