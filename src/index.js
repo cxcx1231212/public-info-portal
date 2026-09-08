@@ -399,7 +399,7 @@ async function ensureMemberPostsSchema(env){
   await env.DB.prepare("CREATE TABLE IF NOT EXISTS member_posts(id INTEGER PRIMARY KEY AUTOINCREMENT,lottery_type INTEGER NOT NULL DEFAULT 5,section_key TEXT NOT NULL DEFAULT 'study',history_count INTEGER NOT NULL DEFAULT 20,author TEXT NOT NULL DEFAULT '',post_type TEXT NOT NULL DEFAULT '',extract_mode TEXT NOT NULL DEFAULT 'regular',current_data TEXT NOT NULL DEFAULT '注册提前看料',footer_html TEXT NOT NULL DEFAULT '',enabled INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   const columns=new Set(((await env.DB.prepare('PRAGMA table_info(member_posts)').all()).results||[]).map(row=>row.name));
   if(!columns.has('extract_mode'))await env.DB.prepare("ALTER TABLE member_posts ADD COLUMN extract_mode TEXT NOT NULL DEFAULT 'regular'").run();
-  await env.DB.prepare("INSERT INTO site_settings(setting_key,setting_value,updated_at) SELECT 'member_post_footer_html',footer_html,CURRENT_TIMESTAMP FROM member_posts WHERE footer_html<>'' ORDER BY id DESC LIMIT 1 ON CONFLICT(setting_key) DO NOTHING").run();
+  await env.DB.prepare("INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES('member_post_footer_html',COALESCE((SELECT footer_html FROM member_posts WHERE footer_html<>'' ORDER BY id DESC LIMIT 1),'<b>注册后查看当期资料</b>'),CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO NOTHING").run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_member_posts_public ON member_posts(enabled,lottery_type,section_key,id DESC)').run();
 }
 
@@ -437,11 +437,11 @@ async function publicApi(request,env,url){
     query+=' ORDER BY period DESC,sort_order,id LIMIT 500';const result=await env.DB.prepare(query).bind(...binds).all();return json({success:true,data:result.results});
   }
   if(url.pathname==='/api/public/masters'){
-    await ensureMasterCatalog(env);
+    await Promise.all([ensureMasterCatalog(env),ensureMemberPostsSchema(env)]);
     const lotteryType=validLotteryType(url.searchParams.get('lotteryType'));return json({success:true,data:await publicMasters(env,lotteryType)});
   }
   if(url.pathname==='/api/public/master-posts'){
-    await ensureMasterCatalog(env);
+    await Promise.all([ensureMasterCatalog(env),ensureMemberPostsSchema(env)]);
     const lotteryType=validLotteryType(url.searchParams.get('lotteryType')),masterId=cleanInt(url.searchParams.get('masterId'));const period=cleanInt(url.searchParams.get('period'));
     let query='SELECT p.*,m.name,m.avatar,m.rank_no,m.specialty FROM master_posts p JOIN masters m ON m.id=p.master_id WHERE m.enabled=1 AND p.lottery_type=?';const binds=[lotteryType];
     if(masterId){query+=' AND p.master_id=?';binds.push(masterId);}if(period){query+=' AND p.period=?';binds.push(period);}
