@@ -426,6 +426,10 @@ async function publicApi(request,env,url){
     if(id){query+=' AND id=?';binds.push(id);}else{query+=' AND lottery_type=?';binds.push(lotteryType);if(section){query+=' AND section_key=?';binds.push(section);}}
     query+=' ORDER BY id DESC LIMIT 200';const [result,footer,currentLink]=await Promise.all([env.DB.prepare(query).bind(...binds).all(),env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_footer_html'").first(),env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_current_url'").first()]);return json({success:true,data:(result.results||[]).map(row=>({...row,global_footer_html:footer?.setting_value||'',global_current_url:currentLink?.setting_value||''}))});
   }
+  if(url.pathname==='/api/public/member-post-settings'&&request.method==='GET'){
+    const setting=await env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_current_url'").first();
+    return json({success:true,member_post_current_url:setting?.setting_value||''},200,{'access-control-allow-origin':'*'});
+  }
   if(url.pathname==='/api/public/king-forecasts'&&request.method==='GET')return kingForecasts(env,cleanInt(url.searchParams.get('lotteryType'),5));
   if(url.pathname==='/api/public/king-thirty-raw'&&request.method==='GET')return kingThirtyRaw(env,cleanInt(url.searchParams.get('lotteryType'),5));
   if(url.pathname==='/api/public/content'){
