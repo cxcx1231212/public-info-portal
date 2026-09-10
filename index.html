@@ -1767,7 +1767,7 @@
     @media(max-width:600px){.draw-style5 .s5-label,.draw-style5 .s5-countdown{font-size:19px!important;line-height:1!important}.draw-style5-left{gap:7px!important}}
     @media(max-width:390px){.draw-style5 .s5-label,.draw-style5 .s5-countdown{font-size:16px!important}}
     /* 开奖直播白蓝面板 */
-    .live-video-wrap{background:rgba(238,247,255,.96)!important;border:1px solid #8cc9ff!important;box-shadow:0 12px 30px rgba(35,122,190,.20)!important}.live-video-wrap video{background:#fff!important;border:1px solid #cfe8ff!important}.live-close{border-color:#8cc9ff!important;background:#fff!important;color:#0b5cad!important}.live-status{color:#1f3b57!important}
+    .live-video-wrap{background:rgba(238,247,255,.96)!important;border:1px solid #8cc9ff!important;box-shadow:0 12px 30px rgba(35,122,190,.20)!important}.live-video-wrap video{background:#fff!important;border:1px solid #cfe8ff!important}.live-video-wrap video[hidden]{display:none!important}.live-status{min-height:44px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #cfe8ff;border-radius:8px;padding:10px!important}.live-close{border-color:#8cc9ff!important;background:#fff!important;color:#0b5cad!important}.live-status{color:#1f3b57!important}
 </style>
   <style>
     body.backend-loading [data-section-key]:not([data-section-key="five"])>*{visibility:hidden}
@@ -1979,7 +1979,7 @@
     @media(max-width:600px){.draw-style5 .s5-label,.draw-style5 .s5-countdown{font-size:19px!important;line-height:1!important}.draw-style5-left{gap:7px!important}}
     @media(max-width:390px){.draw-style5 .s5-label,.draw-style5 .s5-countdown{font-size:16px!important}}
     /* 开奖直播白蓝面板 */
-    .live-video-wrap{background:rgba(238,247,255,.96)!important;border:1px solid #8cc9ff!important;box-shadow:0 12px 30px rgba(35,122,190,.20)!important}.live-video-wrap video{background:#fff!important;border:1px solid #cfe8ff!important}.live-close{border-color:#8cc9ff!important;background:#fff!important;color:#0b5cad!important}.live-status{color:#1f3b57!important}
+    .live-video-wrap{background:rgba(238,247,255,.96)!important;border:1px solid #8cc9ff!important;box-shadow:0 12px 30px rgba(35,122,190,.20)!important}.live-video-wrap video{background:#fff!important;border:1px solid #cfe8ff!important}.live-video-wrap video[hidden]{display:none!important}.live-status{min-height:44px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #cfe8ff;border-radius:8px;padding:10px!important}.live-close{border-color:#8cc9ff!important;background:#fff!important;color:#0b5cad!important}.live-status{color:#1f3b57!important}
 </style>
 </head>
 <body class="backend-loading">
@@ -2383,7 +2383,7 @@
       if(window.flvjs&&flvjs.isSupported()){
         livePlayer=flvjs.createPlayer({type:'flv',url:liveStreamUrl,isLive:true,hasAudio:true,hasVideo:true},{enableStashBuffer:false,stashInitialSize:128});
         livePlayer.attachMediaElement(liveVideo);livePlayer.load();
-        livePlayer.on(flvjs.Events.ERROR,()=>{liveStatus.textContent=liveNotice();});
+        livePlayer.on(flvjs.Events.ERROR,()=>{liveVideo.hidden=true;liveStatus.textContent=liveNotice();});
         liveVideo.play().then(()=>liveStatus.textContent='直播播放中').catch(()=>liveStatus.textContent='点击播放器上的播放按钮开始观看');
       }else liveStatus.textContent='当前浏览器不支持此直播格式，请使用最新版 Chrome';
     }
