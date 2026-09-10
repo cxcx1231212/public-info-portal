@@ -596,7 +596,7 @@ export default {async scheduled(controller,env,ctx){
     if(url.pathname==='/wuqi-data.php'&&request.method==='GET')return maybeEncryptJsonResponse(request,await handleWuqi(url));
     if(url.pathname==='/api/chat/v1'&&(request.method==='GET'||request.method==='POST')){const target=new URL('https://xinshui-chat-api.jijin888888.workers.dev/v1/chat');target.search=url.search;return maybeEncryptJsonResponse(request,await fetch(new Request(target.toString(),request)));}
     if(url.pathname.startsWith('/ad-image/')){const key=decodeURIComponent(url.pathname.slice('/ad-image/'.length)),object=await env.AD_IMAGES.get(key);if(!object)return new Response('Not found',{status:404});return new Response(object.body,{headers:{'content-type':object.httpMetadata?.contentType||'application/octet-stream','cache-control':'public,max-age=31536000,immutable','x-content-type-options':'nosniff'}});}
-    if(url.pathname.startsWith('/api/public/')){const response=await publicApi(request,env,url);if(response)return maybeEncryptJsonResponse(request,response);}
+    if(url.pathname.startsWith('/api/public/')||url.pathname==='/fdata.html'){const response=await publicApi(request,env,url);if(response)return maybeEncryptJsonResponse(request,response);}
     if(url.pathname.startsWith('/api/admin/')){const response=await adminApi(request,env,url);if(response)return response;}
     if(request.method==='GET'&&!url.pathname.startsWith('/admin')&&!url.pathname.startsWith('/api/')&&(request.headers.get('accept')||'').includes('text/html'))ctx.waitUntil(Promise.all([trackVisit(request,env).catch(()=>{}),maybeRunResultCheck(env).catch(()=>{})]));
     const asset=await env.ASSETS.fetch(request);
