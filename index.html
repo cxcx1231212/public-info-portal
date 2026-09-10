@@ -1744,6 +1744,12 @@
       .draw-style5{grid-template-columns:minmax(0,1fr) 84px!important;grid-template-rows:142px 48px!important;min-height:190px!important}
       .draw-style5 .s5-title{font-size:19px!important}.draw-style5-center .draw-number{max-width:38px!important}.draw-style5-center .draw-number .ball{width:34px!important;height:34px!important}.draw-style5-center .draw-number .zodiac{font-size:14px!important}.draw-style5-right a,.draw-style5-right button{font-size:12px!important}.draw-service-icon{width:18px!important;flex-basis:18px!important;font-size:22px!important}.draw-service-arrow{font-size:23px!important}
     }
+    /* 右侧入口固定单行，避免手机端折字 */
+    @media(max-width:600px){
+      .draw-style5-right a,.draw-style5-right button{white-space:nowrap!important;word-break:keep-all!important;font-size:13px!important;letter-spacing:0!important;gap:2px!important;padding:0 4px!important}
+      .draw-service-icon{width:17px!important;height:26px!important;flex:0 0 17px!important;font-size:22px!important}
+      .draw-service-arrow{font-size:22px!important;margin-left:auto!important}
+    }
 </style>
   <style>
     body.backend-loading [data-section-key]:not([data-section-key="five"])>*{visibility:hidden}
@@ -1931,6 +1937,12 @@
     @media(max-width:390px){
       .draw-style5{grid-template-columns:minmax(0,1fr) 84px!important;grid-template-rows:142px 48px!important;min-height:190px!important}
       .draw-style5 .s5-title{font-size:19px!important}.draw-style5-center .draw-number{max-width:38px!important}.draw-style5-center .draw-number .ball{width:34px!important;height:34px!important}.draw-style5-center .draw-number .zodiac{font-size:14px!important}.draw-style5-right a,.draw-style5-right button{font-size:12px!important}.draw-service-icon{width:18px!important;flex-basis:18px!important;font-size:22px!important}.draw-service-arrow{font-size:23px!important}
+    }
+    /* 右侧入口固定单行，避免手机端折字 */
+    @media(max-width:600px){
+      .draw-style5-right a,.draw-style5-right button{white-space:nowrap!important;word-break:keep-all!important;font-size:13px!important;letter-spacing:0!important;gap:2px!important;padding:0 4px!important}
+      .draw-service-icon{width:17px!important;height:26px!important;flex:0 0 17px!important;font-size:22px!important}
+      .draw-service-arrow{font-size:22px!important;margin-left:auto!important}
     }
 </style>
 </head>
