@@ -1696,6 +1696,34 @@
       .draw-style5 .s5-countdown{font-size:17px!important}
       .draw-style5-right a,.draw-style5-right button{font-size:11px!important}
     }
+    /* 参考图定稿：大圆球结果区 + 右侧功能格 */
+    .lottery-tabs{grid-template-columns:repeat(3,1fr)!important;gap:10px!important;margin:4px 0 12px!important}
+    .lottery-tab{height:52px!important;border-radius:16px!important;font-size:20px!important;border:2px solid #3aa8f7!important;background:#fff!important;color:#093f7c!important}
+    .lottery-tab.active{background:linear-gradient(135deg,#168df0,#39adff)!important;color:#fff!important;border-color:#168df0!important}
+    .draw-style5{grid-template-columns:minmax(0,1fr) 28%!important;grid-template-rows:minmax(168px,auto) 60px!important;min-height:228px!important;border:2px solid #92d2ff!important;border-radius:22px!important}
+    .draw-style5-center{grid-column:1!important;grid-row:1!important;padding:18px 12px 8px!important}
+    .draw-style5 .s5-title{font-size:28px!important;margin:0 0 17px!important;color:#063e7b!important;letter-spacing:1px!important}
+    .draw-style5 .s5-title:before,.draw-style5 .s5-title:after{display:none!important}
+    .draw-style5-center .draw-result-items{gap:clamp(4px,1.2vw,12px)!important}
+    .draw-style5-center .draw-number{flex:0 1 62px!important;max-width:62px!important}
+    .draw-style5-center .draw-number .ball{width:clamp(38px,11vw,58px)!important;height:clamp(38px,11vw,58px)!important;font-size:clamp(17px,5vw,25px)!important;border-width:2px!important}
+    .draw-style5-center .draw-number .zodiac{margin-top:7px!important;font-size:clamp(16px,4.8vw,23px)!important;color:#063e7b!important}
+    .draw-style5-center .plus{margin-top:11px!important;font-size:29px!important}
+    .draw-style5-left{grid-column:1!important;grid-row:2!important;justify-content:center!important;gap:14px!important;background:#fff!important;padding:0 8px!important}
+    .draw-style5 .s5-label{font-size:19px!important;color:#063e7b!important;font-weight:900!important}
+    .draw-style5 .s5-countdown{font-size:29px!important;color:#168df0!important}
+    .draw-style5-right{grid-column:2!important;grid-row:1 / span 2!important;border-left:2px solid #b7e3ff!important}
+    .draw-style5-right a,.draw-style5-right button{justify-content:flex-start!important;gap:5px!important;padding:0 9px!important;font-size:17px!important;color:#063e7b!important;font-weight:900!important}
+    .draw-service-icon{font-size:27px!important;color:#168df0!important;line-height:1!important}.draw-service-arrow{margin-left:auto;font-size:32px!important;color:#8bb6df!important;font-weight:400!important}
+    .live-video-wrap{grid-column:1 / -1!important}
+    @media(max-width:520px){
+      .lottery-tabs{gap:8px!important;margin:2px 0 9px!important}.lottery-tab{height:40px!important;border-radius:12px!important;font-size:16px!important}
+      .draw-style5{grid-template-columns:minmax(0,1fr) 96px!important;grid-template-rows:minmax(132px,auto) 48px!important;min-height:180px!important;border-radius:16px!important}
+      .draw-style5-center{padding:12px 5px 5px!important}.draw-style5 .s5-title{font-size:20px!important;margin-bottom:10px!important}
+      .draw-style5-center .draw-number{max-width:42px!important}.draw-style5-center .draw-number .ball{width:34px!important;height:34px!important;font-size:14px!important}.draw-style5-center .draw-number .zodiac{font-size:15px!important;margin-top:5px!important}.draw-style5-center .plus{font-size:21px!important;margin-top:8px!important}
+      .draw-style5 .s5-label{font-size:14px!important}.draw-style5 .s5-countdown{font-size:21px!important}.draw-style5-left{gap:6px!important}
+      .draw-style5-right a,.draw-style5-right button{padding:0 5px!important;font-size:13px!important;gap:2px!important}.draw-service-icon{font-size:19px!important}.draw-service-arrow{font-size:23px!important}
+    }
 </style>
   <style>
     body.backend-loading [data-section-key]:not([data-section-key="five"])>*{visibility:hidden}
@@ -1836,6 +1864,34 @@
       .draw-style5 .s5-countdown{font-size:17px!important}
       .draw-style5-right a,.draw-style5-right button{font-size:11px!important}
     }
+    /* 参考图定稿：大圆球结果区 + 右侧功能格 */
+    .lottery-tabs{grid-template-columns:repeat(3,1fr)!important;gap:10px!important;margin:4px 0 12px!important}
+    .lottery-tab{height:52px!important;border-radius:16px!important;font-size:20px!important;border:2px solid #3aa8f7!important;background:#fff!important;color:#093f7c!important}
+    .lottery-tab.active{background:linear-gradient(135deg,#168df0,#39adff)!important;color:#fff!important;border-color:#168df0!important}
+    .draw-style5{grid-template-columns:minmax(0,1fr) 28%!important;grid-template-rows:minmax(168px,auto) 60px!important;min-height:228px!important;border:2px solid #92d2ff!important;border-radius:22px!important}
+    .draw-style5-center{grid-column:1!important;grid-row:1!important;padding:18px 12px 8px!important}
+    .draw-style5 .s5-title{font-size:28px!important;margin:0 0 17px!important;color:#063e7b!important;letter-spacing:1px!important}
+    .draw-style5 .s5-title:before,.draw-style5 .s5-title:after{display:none!important}
+    .draw-style5-center .draw-result-items{gap:clamp(4px,1.2vw,12px)!important}
+    .draw-style5-center .draw-number{flex:0 1 62px!important;max-width:62px!important}
+    .draw-style5-center .draw-number .ball{width:clamp(38px,11vw,58px)!important;height:clamp(38px,11vw,58px)!important;font-size:clamp(17px,5vw,25px)!important;border-width:2px!important}
+    .draw-style5-center .draw-number .zodiac{margin-top:7px!important;font-size:clamp(16px,4.8vw,23px)!important;color:#063e7b!important}
+    .draw-style5-center .plus{margin-top:11px!important;font-size:29px!important}
+    .draw-style5-left{grid-column:1!important;grid-row:2!important;justify-content:center!important;gap:14px!important;background:#fff!important;padding:0 8px!important}
+    .draw-style5 .s5-label{font-size:19px!important;color:#063e7b!important;font-weight:900!important}
+    .draw-style5 .s5-countdown{font-size:29px!important;color:#168df0!important}
+    .draw-style5-right{grid-column:2!important;grid-row:1 / span 2!important;border-left:2px solid #b7e3ff!important}
+    .draw-style5-right a,.draw-style5-right button{justify-content:flex-start!important;gap:5px!important;padding:0 9px!important;font-size:17px!important;color:#063e7b!important;font-weight:900!important}
+    .draw-service-icon{font-size:27px!important;color:#168df0!important;line-height:1!important}.draw-service-arrow{margin-left:auto;font-size:32px!important;color:#8bb6df!important;font-weight:400!important}
+    .live-video-wrap{grid-column:1 / -1!important}
+    @media(max-width:520px){
+      .lottery-tabs{gap:8px!important;margin:2px 0 9px!important}.lottery-tab{height:40px!important;border-radius:12px!important;font-size:16px!important}
+      .draw-style5{grid-template-columns:minmax(0,1fr) 96px!important;grid-template-rows:minmax(132px,auto) 48px!important;min-height:180px!important;border-radius:16px!important}
+      .draw-style5-center{padding:12px 5px 5px!important}.draw-style5 .s5-title{font-size:20px!important;margin-bottom:10px!important}
+      .draw-style5-center .draw-number{max-width:42px!important}.draw-style5-center .draw-number .ball{width:34px!important;height:34px!important;font-size:14px!important}.draw-style5-center .draw-number .zodiac{font-size:15px!important;margin-top:5px!important}.draw-style5-center .plus{font-size:21px!important;margin-top:8px!important}
+      .draw-style5 .s5-label{font-size:14px!important}.draw-style5 .s5-countdown{font-size:21px!important}.draw-style5-left{gap:6px!important}
+      .draw-style5-right a,.draw-style5-right button{padding:0 5px!important;font-size:13px!important;gap:2px!important}.draw-service-icon{font-size:19px!important}.draw-service-arrow{font-size:23px!important}
+    }
 </style>
 </head>
 <body class="backend-loading">
@@ -1863,20 +1919,14 @@
 
     <!-- 开奖彩种标签 -->
     <nav class="lottery-tabs" aria-label="选择彩种">
-      <button class="lottery-tab" type="button" data-name="香港六合彩" data-lottery-type="1">香港</button>
       <button class="lottery-tab active" type="button" data-name="澳门六合彩" data-lottery-type="5">澳门</button>
+      <button class="lottery-tab" type="button" data-name="香港六合彩" data-lottery-type="1">香港</button>
       <button class="lottery-tab" type="button" data-name="天天六合彩" data-lottery-type="8">天天</button>
     </nav>
 
     <section class="card draw-style5">
-      <div class="draw-style5-left">
-        <div class="s5-period">第2026108期</div>
-        <div class="s5-label">距开奖</div>
-        <div class="s5-countdown" id="countdown">02:18:36</div>
-      </div>
-
       <div class="draw-style5-center">
-        <div class="s5-title">开奖结果</div>
+        <div class="s5-title"><span class="s5-period">第2026108期</span>开奖结果</div>
         <div class="draw-result-items">
           <div class="draw-number"><span class="ball">01</span><span class="zodiac">马</span></div>
           <div class="draw-number"><span class="ball">18</span><span class="zodiac">牛</span></div>
@@ -1887,14 +1937,16 @@
           <span class="plus">+</span>
           <div class="draw-number special"><span class="ball blue">16</span><span class="zodiac">兔</span></div>
         </div>
-
       </div>
-
+      <div class="draw-style5-left">
+        <span class="s5-label">距离下期开奖还有：</span>
+        <span class="s5-countdown" id="countdown">02:18:36</span>
+      </div>
       <div class="draw-style5-right">
-        <a href="history.html">历史记录</a>
-        <button type="button" id="liveToggle">开奖直播</button>
-        <a href="pickcode.html?exact=2">挑码助手</a>
-        <a href="chat.html">在线聊天</a>
+        <a href="history.html"><span class="draw-service-icon">▧</span>历史记录<span class="draw-service-arrow">›</span></a>
+        <button type="button" id="liveToggle"><span class="draw-service-icon">▻</span>开奖直播<span class="draw-service-arrow">›</span></button>
+        <a href="pickcode.html?exact=2"><span class="draw-service-icon">▥</span>挑码助手<span class="draw-service-arrow">›</span></a>
+        <a href="chat.html"><span class="draw-service-icon">◌</span>在线聊天<span class="draw-service-arrow">›</span></a>
       </div>
       <div class="live-video-wrap" id="liveVideoWrap" hidden>
         <button type="button" class="live-close" id="liveClose">收起直播</button>
@@ -1902,7 +1954,6 @@
         <div class="live-status" id="liveStatus">澳门六合彩攪珠直播開播時間為開獎日晚上21:30-21:38（北京時間），敬請查看</div>
       </div>
     </section>
-
     <nav class="card site-network" aria-label="网站互联">
       <div class="site-network-head"><span>↓↓★★★澳门连准网站推荐★★★↓↓</span></div>
       <div class="site-network-list">
