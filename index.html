@@ -1996,6 +1996,11 @@
     .live-player-frame #liveVideo{display:block!important;width:100%!important;aspect-ratio:16/9!important}
     .live-player-frame .live-watermark{position:absolute!important;top:9px!important;right:9px!important;z-index:10!important;display:block!important;width:38%!important;max-width:145px!important;height:auto!important;margin:0!important;border-radius:7px!important;box-shadow:0 2px 9px rgba(0,0,0,.40)!important;pointer-events:none!important}
     @media(max-width:520px){.live-player-frame .live-watermark{top:7px!important;right:7px!important;width:40%!important}}
+
+    .live-schedule-notice{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:24px 18px;background:#000;color:#fff;text-align:center;font-size:16px;line-height:1.5;font-weight:900;pointer-events:none}
+    .live-schedule-notice[hidden]{display:none!important}
+    .live-schedule-notice strong{display:block;color:#ff294f;font-size:19px;line-height:1.25}
+    @media(max-width:520px){.live-schedule-notice{padding:18px 14px;font-size:14px}.live-schedule-notice strong{font-size:17px}}
 </style>
 </head>
 <body class="backend-loading">
@@ -2053,7 +2058,7 @@
       </div>
       <div class="live-video-wrap" id="liveVideoWrap" hidden>
         <button type="button" class="live-close" id="liveClose">收起直播</button>
-        <div class="live-player-frame"><video id="liveVideo" controls playsinline preload="none"></video><img class="live-watermark" src="live-watermark.jpg" alt="六合直播" /></div>
+        <div class="live-player-frame"><video id="liveVideo" controls playsinline preload="none"></video><div class="live-schedule-notice" id="liveScheduleNotice"></div><img class="live-watermark" src="live-watermark.jpg" alt="六合直播" /></div>
         <div class="live-status" id="liveStatus">澳门六合彩攪珠直播開播時間為開獎日晚上21:30-21:38（北京時間），敬請查看</div>
       </div>
     </section>
@@ -2358,9 +2363,11 @@
     const liveVideo = document.getElementById('liveVideo');
     const liveClose = document.getElementById('liveClose');
     const liveStatus = document.getElementById('liveStatus');
+    const liveScheduleNotice = document.getElementById('liveScheduleNotice');
     let liveStreamUrl = '';
     let liveDrawDate = '';
     let livePlayer = null;
+    let activeLiveStreamUrl = '';
     const liveNames={1:'香港',5:'澳门',8:'天天'};
     function liveNotice(){return (liveNames[activeLotteryType]||'香港')+'六合彩攪珠直播開播時間為開獎日晚上21:30-21:38（北京時間），敬請查看';}
     function inLiveWindow(){
@@ -2372,7 +2379,9 @@
       if(livePlayer){try{livePlayer.pause();livePlayer.unload();livePlayer.detachMediaElement();livePlayer.destroy();}catch(_){}livePlayer=null;}
       if(liveVideo){liveVideo.pause();liveVideo.removeAttribute('src');liveVideo.load();}
     }
-    function closeLive(){stopLive();liveVideoWrap.setAttribute('hidden','');liveToggle.textContent='开奖直播';}
+    function showLiveSchedule(){if(liveScheduleNotice){const name=liveNames[activeLotteryType]||'澳门';liveScheduleNotice.innerHTML=name+'六合彩攪珠直播開播時間為開獎日晚上<br><strong>21:30-21:38（北京时间）</strong>敬請查看';liveScheduleNotice.removeAttribute('hidden');}}
+    function hideLiveSchedule(){if(liveScheduleNotice)liveScheduleNotice.setAttribute('hidden','');}
+    function closeLive(){activeLiveStreamUrl='';stopLive();liveVideoWrap.setAttribute('hidden','');liveToggle.textContent='开奖直播';}
     function openLive(){liveVideoWrap.removeAttribute('hidden');liveToggle.textContent='收起直播';playLive();}
     function liveDateKey(){
       const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -2638,6 +2647,6 @@
     }
 
   </script>
-<script src="site-sync.js?v=78"></script>  <script src="/assets/cnzz-stat.js"></script>
+<script src="site-sync.js?v=79"></script>  <script src="/assets/cnzz-stat.js"></script>
 </body>
 </html>
