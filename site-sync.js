@@ -386,9 +386,7 @@
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
         markPeriodNavigationLoading();
-        renderHomepage();
         refreshTabbedHomeMaterials(selected);
-        [250,900].forEach(delay=>setTimeout(()=>{if(currentType()===selected)refreshTabbedHomeMaterials(selected);},delay));
         loadTextAds();
         track('home');
       }));
