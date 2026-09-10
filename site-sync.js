@@ -352,7 +352,7 @@
       track('home');
       loadRecommendedSites();
       renderHomepage();
-      document.querySelectorAll('#lotteryMenu button').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(button => button.addEventListener('click', () => {
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
         renderHomepage();
