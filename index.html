@@ -1751,6 +1751,13 @@
     .sixcode-numbers{font-size:12px!important;letter-spacing:0!important;white-space:nowrap!important}
     .sixcode-open{font-size:12px!important;text-align:center!important;white-space:nowrap!important}
     .sixcode-period{border-color:#cfe8ff!important}
+
+    /* 开奖彩种标签 */
+    .topbar .lottery-switch{display:none!important}
+    .lottery-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 8px}
+    .lottery-tab{height:40px;border:1px solid #8cc9ff;border-radius:12px;background:#fff;color:#0b5cad;font:900 15px/1 inherit;cursor:pointer;box-shadow:0 2px 7px rgba(35,122,190,.06)}
+    .lottery-tab.active{border-color:#1890ff;background:linear-gradient(135deg,#0b5cad,#1890ff);color:#fff;box-shadow:0 4px 10px rgba(24,144,255,.22)}
+    @media(max-width:420px){.lottery-tabs{gap:6px;margin-bottom:7px}.lottery-tab{height:37px;border-radius:10px;font-size:14px}}
 </style>
 </head>
 <body class="backend-loading">
@@ -1775,6 +1782,13 @@
         </div>
       </div>
     </header>
+
+    <!-- 开奖彩种标签 -->
+    <nav class="lottery-tabs" aria-label="选择彩种">
+      <button class="lottery-tab" type="button" data-name="香港六合彩" data-lottery-type="1">香港</button>
+      <button class="lottery-tab active" type="button" data-name="澳门六合彩" data-lottery-type="5">澳门</button>
+      <button class="lottery-tab" type="button" data-name="天天六合彩" data-lottery-type="8">天天</button>
+    </nav>
 
     <section class="card draw-style5">
       <div class="draw-style5-left">
@@ -2082,8 +2096,9 @@
 
     btn.addEventListener('click', () => menu.classList.toggle('open'));
 
-    document.querySelectorAll('#lotteryMenu button').forEach(item => {
+    document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(item => {
       item.addEventListener('click', () => {
+        if(item.classList.contains('lottery-tab'))document.querySelectorAll('.lottery-tab').forEach(tab=>tab.classList.toggle('active',tab===item));
         text.textContent = item.dataset.name;
         menu.classList.remove('open');
       });
@@ -2236,8 +2251,9 @@
       }
     }
 
-    document.querySelectorAll('#lotteryMenu button').forEach(item => {
+    document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(item => {
       item.addEventListener('click', () => {
+        if(item.classList.contains('lottery-tab'))document.querySelectorAll('.lottery-tab').forEach(tab=>tab.classList.toggle('active',tab===item));
         activeLotteryType = Number(item.dataset.lotteryType) || 1;
         localStorage.setItem('lotteryType', String(activeLotteryType));
         if (historyLink) historyLink.href = 'history.html?lotteryType=' + activeLotteryType;
