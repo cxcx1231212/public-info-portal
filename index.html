@@ -1662,6 +1662,25 @@
     body.backend-loading [data-section-key]:not([data-section-key="five"])>*{visibility:hidden}
     body.backend-loading [data-section-key]:not([data-section-key="five"]){position:relative;min-height:112px}
     body.backend-loading [data-section-key]:not([data-section-key="five"])::after{content:'正在加载当期资料…';position:absolute;inset:0;display:grid;place-items:center;color:#c6a85b;font-size:15px;font-weight:800;background:#0d0d0d}
+    /* 白底天空蓝主题：保留原有版式与资料层级 */
+    :root{--bg:#f6fafe;--panel:#fff;--panel2:#f7fbff;--line:#cfe8ff;--gold:#e5a82b;--text:#0b5cad;--muted:#6b7f93;--blue:#1890ff;--cyan:#1890ff}
+    html,body{background:#f6fafe;color:#0b5cad}
+    body{background:radial-gradient(circle at 50% -20%,rgba(24,144,255,.13),transparent 36%),#f6fafe}
+    .card,.section{background:#fff;border-color:#cfe8ff;box-shadow:0 4px 14px rgba(35,122,190,.08)}
+    .brand h1{color:#0b5cad;text-shadow:0 2px 14px rgba(24,144,255,.15)}
+    .brand-domain,.brand-lockup .brand-domain{color:#0b5cad}.brand-logo{filter:drop-shadow(0 3px 10px rgba(24,144,255,.16))}
+    .lottery-btn{border-color:#8cc9ff;background:#fff;color:#0b5cad}.lottery-menu{background:#fff;border-color:#cfe8ff;box-shadow:0 12px 28px rgba(35,122,190,.18)}.lottery-menu button{border-color:#e2f1ff;color:#0b5cad}.lottery-menu button:hover{background:#eaf5ff;color:#0b5cad}
+    .label,.draw-time,.result-title,.result-title small,.study-period,.doublewave-period,.feature-period,.three-period-issues,.nine-period,.loseall-period,.kill-period,.thirty-meta,.five-result{color:#6b7f93}
+    .countdown,.plus,.history-link,.site-network-head,.study-kind,.sixcode-numbers,.feature-pick,.three-period-pick,.nine-kind,.kill-pick,.thirty-meta strong,.master-page-info{color:#e5a82b}
+    .site-network-list a{border-color:#cfe8ff;background:#f7fbff;color:#0b5cad}.site-network-list a:hover{border-color:#1890ff;background:#eaf5ff}
+    .study-title,.sixcode-title,.doublewave-title,.feature-title{border-color:#0b5cad;background:linear-gradient(90deg,#0b5cad,#1890ff,#0b5cad);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+    .record-history-btn,.study-period-btn,.sixcode-page-btn,.five-history-nav button,.master-page-btn{border-color:#cfe8ff;background:#fff;color:#6b7f93}.record-history-btn.active,.study-period-btn.active,.sixcode-page-btn.active,.five-history-nav button.active{border-color:#1890ff;background:#eaf5ff;color:#0b5cad;box-shadow:inset 0 0 0 1px rgba(24,144,255,.09)}
+    .study-list,.sixcode-list,.doublewave-list,.feature-list{border-color:#cfe8ff;background:#fff}.study-row,.sixcode-row,.doublewave-row,.feature-row,.nine-row,.loseall-row,.kill-row{border-color:#e2f1ff}.study-pick,.sixcode-zodiac,.doublewave-open,.feature-open,.three-period-opens,.nine-pick,.loseall-open,.kill-open{color:#1f3b57}.sixcode-label,.doublewave-pick{color:#0b5cad}.sixcode-slogan,.kill-head{border-color:#8cc9ff;background:#eaf5ff;color:#0b5cad}.three-period-group{border-color:#cfe8ff}.three-period-issues span,.three-period-opens span,.three-period-pick{border-color:#e2f1ff}
+    .thirty-ball{border-color:#8cc9ff;background:#f7fbff;color:#0b5cad}.material-pending,.thirty-state,.nine-status{color:#e5a82b}
+    .master-card,body .member-post-row{border-color:#cfe8ff;background:#fff;color:#0b5cad;box-shadow:0 3px 10px rgba(35,122,190,.06)}.master-card:hover,.master-card:focus-visible,body .member-post-row:hover{border-color:#1890ff;background:#f7fbff}.master-avatar{border-color:#8cc9ff;background:#eaf5ff;color:#0b5cad}.master-name,.master-specialty,.master-line-period,.master-line-author,.master-line-category,.master-line-slogan{color:#0b5cad}.master-rank{border-color:#e5a82b;background:#fff8e8;color:#c78400}.master-free{background:#eaf8ef;color:#228b52}.master-page-btn:disabled{color:#6b7f93}
+    .section::after{border-color:#cfe8ff;color:rgba(11,92,173,.48)}
+    body.backend-loading [data-section-key]:not([data-section-key="five"])::after{color:#0b5cad;background:#fff}
+
   </style>
 </head>
 <body class="backend-loading">
