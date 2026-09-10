@@ -305,7 +305,7 @@
     const lotteryType=currentType(),lotteryNames={1:'香港',5:'澳门',8:'天天'},fullNames={1:'香港六合彩',5:'澳门六合彩',8:'天天六合彩'};
     Promise.all([
       fetch('/api/public/text-ads',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()),
-      fetch('/api/public/content?lotteryType='+lotteryType+'&_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():({data:[]})).catch(()=>({data:[]})),
+      Promise.resolve({data:[]}),
       fetch('/api/public/lottery-latest?lotteryType='+lotteryType+'&_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():({data:{}})).catch(()=>({data:{}}))
     ]).then(([payload,contentPayload,lotteryPayload])=>{
       const texts=Array.isArray(payload.texts)?payload.texts:Array.isArray(payload.data)?payload.data:[],domains=Array.isArray(payload.domains)?payload.domains:[];if(!texts.length)return;
@@ -403,13 +403,11 @@
       track('home');
       loadRecommendedSites();
       renderHomepage();
-      refreshTabbedHomeMaterials(currentType());
       refreshMasterBoard(currentType());
       setTimeout(syncVisiblePeriodNavigation,800);
       document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(button => button.addEventListener('click', () => {
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
-        refreshTabbedHomeMaterials(selected);
         refreshMasterBoard(selected);
         [400,1200].forEach(delay=>setTimeout(()=>{if(currentType()===selected)syncVisiblePeriodNavigation();},delay));
         loadTextAds();
