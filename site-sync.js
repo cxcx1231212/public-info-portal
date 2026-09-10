@@ -355,10 +355,17 @@
       const killRows=latest('kill'),kill=document.querySelector('[data-section-key="kill"] .feature-list');if(kill&&killRows.length){kill.innerHTML='<div class="kill-head"><span>期数</span><span>杀肖</span><span>杀尾</span><span>杀波</span><span>杀头</span><span>特开</span></div>'+killRows.map(row=>{const fields=valueOf(row).fields||[];return '<div class="kill-row"><span class="kill-period">'+escapeHtml(row.period)+'期</span>'+[0,1,2,3].map(index=>'<span class="kill-pick">'+escapeHtml(fields[index]||'')+'</span>').join('')+'<span class="kill-open">'+escapeHtml(open(row))+'</span></div>';}).join('');}
     }).catch(()=>{});
   }
-  function markPeriodNavigationLoading(){
-    document.querySelectorAll('[data-section-key]:not([data-section-key="five"]) .study-period-nav,[data-section-key]:not([data-section-key="five"]) .sixcode-nav,[data-section-key]:not([data-section-key="five"]) .record-history-nav').forEach(nav=>{
-      nav.textContent='';
-      const button=document.createElement('button');button.type='button';button.disabled=true;button.className='record-history-btn active';button.textContent='资料加载中…';nav.appendChild(button);
+  function syncVisiblePeriodNavigation(){
+    document.querySelectorAll('[data-section-key]:not([data-section-key="five"])').forEach(section=>{
+      const nav=section.querySelector('.study-period-nav,.sixcode-nav,.record-history-nav');
+      const content=section.querySelector('.study-list,.sixcode-list,.feature-list,.doublewave-list');
+      const match=content&&content.textContent.match(/(\d{1,6})期/); const latest=match?Number(match[1]):0;
+      if(!nav||!latest)return;
+      const buttons=[...nav.querySelectorAll('button')]; const key=section.dataset.sectionKey;
+      if(nav.classList.contains('study-period-nav')) buttons.forEach((button,index)=>{const period=latest-index;button.textContent=period+'期';button.dataset.period=String(period);button.classList.toggle('active',index===0);});
+      else if(nav.classList.contains('sixcode-nav')) buttons.forEach((button,index)=>{const endPeriod=latest-index*2-1;button.textContent=(latest-index*2)+'–'+endPeriod+'期';button.dataset.page=(latest-index*2)+'-'+endPeriod;button.classList.toggle('active',index===0);});
+      else if(key==='ninezodiac'||key==='thirty') buttons.forEach((button,index)=>{const period=latest-index;button.textContent=period+'期';button.dataset.period=String(period);button.classList.toggle('active',index===0);});
+      else buttons.forEach((button,index)=>{const first=latest-index*5,last=first-4;button.textContent=first+'–'+last+'期';button.dataset.view=index===0?'current':'older';button.classList.toggle('active',index===0);});
     });
   }
   function boot() {
@@ -382,11 +389,12 @@
       loadRecommendedSites();
       renderHomepage();
       refreshTabbedHomeMaterials(currentType());
+      setTimeout(syncVisiblePeriodNavigation,800);
       document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(button => button.addEventListener('click', () => {
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
-        markPeriodNavigationLoading();
         refreshTabbedHomeMaterials(selected);
+        [400,1200].forEach(delay=>setTimeout(()=>{if(currentType()===selected)syncVisiblePeriodNavigation();},delay));
         loadTextAds();
         track('home');
       }));
