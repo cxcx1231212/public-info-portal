@@ -355,6 +355,12 @@
       const killRows=latest('kill'),kill=document.querySelector('[data-section-key="kill"] .feature-list');if(kill&&killRows.length){kill.innerHTML='<div class="kill-head"><span>期数</span><span>杀肖</span><span>杀尾</span><span>杀波</span><span>杀头</span><span>特开</span></div>'+killRows.map(row=>{const fields=valueOf(row).fields||[];return '<div class="kill-row"><span class="kill-period">'+escapeHtml(row.period)+'期</span>'+[0,1,2,3].map(index=>'<span class="kill-pick">'+escapeHtml(fields[index]||'')+'</span>').join('')+'<span class="kill-open">'+escapeHtml(open(row))+'</span></div>';}).join('');}
     }).catch(()=>{});
   }
+  function markPeriodNavigationLoading(){
+    document.querySelectorAll('[data-section-key]:not([data-section-key="five"]) .study-period-nav,[data-section-key]:not([data-section-key="five"]) .sixcode-nav,[data-section-key]:not([data-section-key="five"]) .record-history-nav').forEach(nav=>{
+      nav.textContent='';
+      const button=document.createElement('button');button.type='button';button.disabled=true;button.className='record-history-btn active';button.textContent='资料加载中…';nav.appendChild(button);
+    });
+  }
   function boot() {
     ensureThreeStyles();
     const file = location.pathname.split('/').pop() || 'index.html';
@@ -379,6 +385,7 @@
       document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(button => button.addEventListener('click', () => {
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
+        markPeriodNavigationLoading();
         renderHomepage();
         refreshTabbedHomeMaterials(selected);
         [250,900].forEach(delay=>setTimeout(()=>{if(currentType()===selected)refreshTabbedHomeMaterials(selected);},delay));
