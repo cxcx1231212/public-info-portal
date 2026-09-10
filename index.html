@@ -2371,6 +2371,7 @@
     let liveDrawDate = '';
     let livePlayer = null;
     let activeLiveStreamUrl = '';
+    let loadedLiveStreamUrl = '';
     const liveNames={1:'香港',5:'澳门',8:'天天'};
     function liveNotice(){return (liveNames[activeLotteryType]||'香港')+'六合彩攪珠直播開播時間為開獎日晚上21:30-21:38（北京時間），敬請查看';}
     function inLiveWindow(){
@@ -2379,7 +2380,8 @@
       return total>=21*60+30&&total<21*60+39;
     }
     function stopLive(){
-      if(livePlayer){try{livePlayer.pause();livePlayer.unload();livePlayer.detachMediaElement();livePlayer.destroy();}catch(_){}livePlayer=null;}
+      loadedLiveStreamUrl='';
+            if(livePlayer){try{livePlayer.pause();livePlayer.unload();livePlayer.detachMediaElement();livePlayer.destroy();}catch(_){}livePlayer=null;}
       if(liveVideo){liveVideo.pause();liveVideo.removeAttribute('src');liveVideo.load();}
     }
     function showLiveSchedule(){if(liveScheduleNotice){const name=liveNames[activeLotteryType]||'澳门';liveScheduleNotice.innerHTML=name+'六合彩攪珠直播開播時間為開獎日晚上<br><strong>21:30-21:38（北京时间）</strong>敬請查看';liveScheduleNotice.removeAttribute('hidden');}}
@@ -2392,17 +2394,19 @@
     }
     function isLiveDrawDay(){return /^\d{4}-\d{2}-\d{2}$/.test(liveDrawDate)&&liveDrawDate===liveDateKey();}
     function maybeAutoOpenLive(){
-      if(!isLiveDrawDay()||!inLiveWindow()||!liveVideoWrap.hasAttribute('hidden'))return;
+      if(!inLiveWindow()||!liveStreamUrl)return;
+      if(!liveVideoWrap.hasAttribute('hidden')){playLive();return;}
       const key='live-auto-opened:'+activeLotteryType+':'+liveDateKey();
       if(sessionStorage.getItem(key))return;
       sessionStorage.setItem(key,'1');openLive();
     }
     function playLive(){
-      stopLive();
-      if(!liveStreamUrl){liveStatus.textContent='当前暂无可用直播源，请在开奖时段再试';return;}
-      liveVideo.removeAttribute('hidden');liveStatus.textContent='正在连接直播…';
-      liveVideo.onerror=()=>{liveStatus.textContent='直播源暂时不可用，请稍后重试';};
-      if(liveVideo.canPlayType('application/vnd.apple.mpegurl')){
+      if(!inLiveWindow()){showLiveSchedule();liveStatus.textContent=liveNotice();return;}
+      if(!liveStreamUrl){showLiveSchedule();liveStatus.textContent='当前暂无可用直播源，请在开奖时段再试';return;}
+      if(loadedLiveStreamUrl===liveStreamUrl){hideLiveSchedule();return;}
+      stopLive();loadedLiveStreamUrl=liveStreamUrl;
+      hideLiveSchedule();liveVideo.removeAttribute('hidden');liveStatus.textContent='正在连接直播…';
+      liveVideo.onerror=()=>{loadedLiveStreamUrl='';showLiveSchedule();liveStatus.textContent='直播源暂时不可用，请稍后重试';};      if(liveVideo.canPlayType('application/vnd.apple.mpegurl')){
         liveVideo.src=liveStreamUrl.replace(/\.flv(?:\?.*)?$/i,'.m3u8');
         liveVideo.play().then(()=>liveStatus.textContent='直播播放中').catch(()=>liveStatus.textContent='点击播放器上的播放按钮开始观看');
         return;
@@ -2655,6 +2659,6 @@
     }
 
   </script>
-<script src="site-sync.js?v=90"></script>  <script src="/assets/cnzz-stat.js"></script>
+<script src="site-sync.js?v=91"></script>  <script src="/assets/cnzz-stat.js"></script>
 </body>
 </html>
