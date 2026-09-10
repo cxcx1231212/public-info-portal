@@ -429,6 +429,10 @@ async function publicApi(request,env,url){
   }
   if(url.pathname==='/api/public/king-forecasts'&&request.method==='GET')return kingForecasts(env,cleanInt(url.searchParams.get('lotteryType'),5));
   if(url.pathname==='/api/public/king-thirty-raw'&&request.method==='GET')return kingThirtyRaw(env,cleanInt(url.searchParams.get('lotteryType'),5));
+  if(url.pathname==='/api/public/formula-recommendations'&&request.method==='GET'){
+    const lotteryType=validLotteryType(url.searchParams.get('lotteryType'));
+    try{const response=await fetch('https://txgs888.q3665.com/api/formula-recommendations?lotteryType='+lotteryType,{headers:{accept:'application/json'}});if(!response.ok)throw new Error('HTTP '+response.status);return new Response(response.body,{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});}catch(error){console.error('formula_recommendations_failed',error?.message||error);return json({success:false,data:[]},502);}
+  }
   if(url.pathname==='/api/public/content'){
     await ensureFixedThreePeriodGroups(env);
     await auditStoredIdiomContent(env);
