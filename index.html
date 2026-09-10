@@ -2498,6 +2498,7 @@
       item.addEventListener('click', () => {
         if(item.classList.contains('lottery-tab'))document.querySelectorAll('.lottery-tab').forEach(tab=>tab.classList.toggle('active',tab===item));
         activeLotteryType = Number(item.dataset.lotteryType) || 1;
+        showLiveSchedule();
         localStorage.setItem('lotteryType', String(activeLotteryType));
         if (historyLink) historyLink.href = 'history.html?lotteryType=' + activeLotteryType;
         clearTimeout(apiRefreshTimer);
@@ -2647,6 +2648,6 @@
     }
 
   </script>
-<script src="site-sync.js?v=80"></script>  <script src="/assets/cnzz-stat.js"></script>
+<script src="site-sync.js?v=81"></script>  <script src="/assets/cnzz-stat.js"></script>
 </body>
 </html>
