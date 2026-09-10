@@ -2511,9 +2511,13 @@
         maybeAutoOpenLive();
       });
     });
-    localStorage.setItem('lotteryType', '5');
-    if (historyLink) historyLink.href = 'history.html?lotteryType=5';
-    loadApiLottery(5);
+    const requestedLotteryType=Number(new URLSearchParams(location.search).get('lotteryType'));
+    const initialLotteryType=[1,5,8].includes(requestedLotteryType)?requestedLotteryType:5;
+    activeLotteryType=initialLotteryType;
+    localStorage.setItem('lotteryType',String(initialLotteryType));
+    document.querySelectorAll('.lottery-tab').forEach(tab=>tab.classList.toggle('active',Number(tab.dataset.lotteryType)===initialLotteryType));
+    if (historyLink) historyLink.href = 'history.html?lotteryType='+initialLotteryType;
+    loadApiLottery(initialLotteryType);
     maybeAutoOpenLive();
     setInterval(maybeAutoOpenLive,10000);
 
@@ -2651,6 +2655,6 @@
     }
 
   </script>
-<script src="site-sync.js?v=89"></script>  <script src="/assets/cnzz-stat.js"></script>
+<script src="site-sync.js?v=90"></script>  <script src="/assets/cnzz-stat.js"></script>
 </body>
 </html>
