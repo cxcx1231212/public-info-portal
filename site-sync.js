@@ -355,6 +355,19 @@
       const killRows=latest('kill'),kill=document.querySelector('[data-section-key="kill"] .feature-list');if(kill&&killRows.length){kill.innerHTML='<div class="kill-head"><span>期数</span><span>杀肖</span><span>杀尾</span><span>杀波</span><span>杀头</span><span>特开</span></div>'+killRows.map(row=>{const fields=valueOf(row).fields||[];return '<div class="kill-row"><span class="kill-period">'+escapeHtml(row.period)+'期</span>'+[0,1,2,3].map(index=>'<span class="kill-pick">'+escapeHtml(fields[index]||'')+'</span>').join('')+'<span class="kill-open">'+escapeHtml(open(row))+'</span></div>';}).join('');}
     }).catch(()=>{});
   }
+  let masterBoardRequestToken=0;
+  function refreshMasterBoard(lotteryType){
+    const grid=document.querySelector('#masters .master-grid');if(!grid)return;
+    const requestToken=++masterBoardRequestToken;
+    const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const contentText=row=>{let value={};try{value=JSON.parse(row.content_json||'{}');}catch(_){}return value.pick||value.title||value.content||value.zodiac||row.title||row.content_json||'免费资料';};
+    fetch('/api/public/master-posts?lotteryType='+encodeURIComponent(lotteryType)+'&_='+Date.now(),{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(payload=>{
+      if(requestToken!==masterBoardRequestToken)return;
+      const rows=Array.isArray(payload&&payload.data)?payload.data:[];if(!rows.length)return;
+      const period=Math.max(...rows.map(row=>Number(row.period)||0));const current=rows.filter(row=>Number(row.period)===period).sort((a,b)=>Number(a.rank_no)-Number(b.rank_no)||Number(a.master_id)-Number(b.master_id));if(!current.length)return;
+      grid.innerHTML=current.map(row=>'<a class="master-card master-line-card" data-master-id="'+escapeHtml(row.master_id)+'" href="master-detail.html?id='+encodeURIComponent(row.master_id)+'&lotteryType='+encodeURIComponent(lotteryType)+'"><span class="master-line"><span class="master-line-period">'+escapeHtml(row.period)+'期:</span><span class="master-line-author">'+escapeHtml(row.name||'高手')+'</span><span class="master-line-category">→【'+escapeHtml(contentText(row)).replace(/^【|】$/g,'')+'】</span><span class="master-line-slogan">←独家资料</span></span></a>').join('');
+    }).catch(()=>{});
+  }
   function syncVisiblePeriodNavigation(){
     document.querySelectorAll('[data-section-key]:not([data-section-key="five"])').forEach(section=>{
       const nav=section.querySelector('.study-period-nav,.sixcode-nav,.record-history-nav');
@@ -389,11 +402,13 @@
       loadRecommendedSites();
       renderHomepage();
       refreshTabbedHomeMaterials(currentType());
+      refreshMasterBoard(currentType());
       setTimeout(syncVisiblePeriodNavigation,800);
       document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(button => button.addEventListener('click', () => {
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
         refreshTabbedHomeMaterials(selected);
+        refreshMasterBoard(selected);
         [400,1200].forEach(delay=>setTimeout(()=>{if(currentType()===selected)syncVisiblePeriodNavigation();},delay));
         loadTextAds();
         track('home');
