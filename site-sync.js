@@ -332,6 +332,26 @@
       sites.forEach(site=>{const link=document.createElement('a');link.href=site.site_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=site.name;list.appendChild(link);});
     }).catch(()=>{});
   }
+  function refreshTabbedHomeMaterials(lotteryType){
+    const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const valueOf=row=>{let value={};try{value=JSON.parse(row.content_json||'{}');}catch(_){};return value;};
+    const rowText=row=>{const value=valueOf(row);if(Array.isArray(value.numbers))return value.numbers.map(item=>String(item).padStart(2,'0')).join(' ');if(Array.isArray(value.fields))return value.fields.join(' · ');if(Array.isArray(value.issues))return (value.pick||row.title||'')+'（'+value.issues.join('、')+'期）';return value.pick||value.zodiac||row.title||'';};
+    fetch('/api/public/content?lotteryType='+encodeURIComponent(lotteryType)+'&_='+Date.now(),{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(payload=>{
+      const records=Array.isArray(payload&&payload.data)?payload.data:[];
+      const byKey=key=>records.filter(row=>row.section_key===key);
+      const latest=key=>{const rows=byKey(key);const period=Math.max(0,...rows.map(row=>Number(row.period)||0));return rows.filter(row=>Number(row.period)===period).sort((a,b)=>Number(a.sort_order)-Number(b.sort_order)||Number(a.id)-Number(b.id));};
+      const state=row=>row.status==='win'?'准':row.status==='lose'?'错':'待开奖';
+      const open=row=>row.result_text&&row.result_text!=='待开奖'?row.result_text:'待开奖';
+      const renderFeature=key=>{const section=document.querySelector('[data-section-key="'+key+'"]');const list=section&&section.querySelector('.feature-list,.doublewave-list');const rows=latest(key);if(!list||!rows.length)return;list.innerHTML=rows.map(row=>'<div class="feature-row"><span class="feature-period">'+escapeHtml(row.period)+'期</span><span class="feature-pick">'+escapeHtml(rowText(row))+'</span><span class="feature-open">'+escapeHtml(open(row))+'</span><span class="feature-status '+(row.status==='lose'?'lose':'win')+'">'+state(row)+'</span></div>').join('');};
+      const studyRows=latest('study'),study=document.querySelector('[data-section-key="study"] .study-list');if(study&&studyRows.length){study.innerHTML=studyRows.map(row=>{const data=valueOf(row);return '<div class="study-row"><span class="study-period">'+escapeHtml(row.period)+'期</span><span class="study-kind">'+escapeHtml(data.kind||row.title)+'</span><span class="study-pick">'+escapeHtml(data.pick||'')+'</span><span class="study-open">'+escapeHtml(open(row))+'</span></div>';}).join('');}
+      const sixRows=latest('sixcode'),six=document.querySelector('[data-section-key="sixcode"] .sixcode-list');if(six&&sixRows.length){six.innerHTML=sixRows.map(row=>{const data=valueOf(row);return '<div class="sixcode-row"><span class="sixcode-label">'+escapeHtml(row.period)+'期'+escapeHtml(data.kind||row.title)+'</span><span class="sixcode-zodiac">'+escapeHtml(data.zodiac||'')+'</span><span class="sixcode-numbers">'+escapeHtml(data.numbers||'')+'</span><span class="sixcode-open">'+escapeHtml(open(row))+'</span></div>';}).join('');}
+      ['doublewave','homewild','threehead','idiom','sumparity','threeelements','singledouble'].forEach(renderFeature);
+      const nineRows=latest('ninezodiac'),nine=document.querySelector('[data-section-key="ninezodiac"] .feature-list');if(nine&&nineRows.length){nine.innerHTML=nineRows.map(row=>{const data=valueOf(row);return '<div class="nine-row"><span class="nine-period">'+escapeHtml(row.period)+'期</span><span class="nine-kind">'+escapeHtml(data.kind||row.title)+'</span><span class="nine-pick">'+escapeHtml(data.pick||'')+'</span><span class="nine-status">'+state(row)+'</span></div>';}).join('');}
+      const loseRows=latest('loseall'),lose=document.querySelector('[data-section-key="loseall"] .feature-list');if(lose&&loseRows.length){lose.innerHTML=loseRows.map(row=>'<div class="loseall-row"><span class="loseall-period">'+escapeHtml(row.period)+'期</span><span class="loseall-pick">'+escapeHtml(rowText(row))+'</span><span class="loseall-open">'+escapeHtml(open(row))+'</span></div>').join('');}
+      const thirtyRows=latest('thirty'),thirty=document.getElementById('thirtyList');if(thirty&&thirtyRows.length){const row=thirtyRows[0],data=valueOf(row);thirty.innerHTML='<div class="thirty-wrap"><div class="thirty-meta"><strong>'+escapeHtml(row.period)+'期精选30码</strong><span class="thirty-state">'+escapeHtml(open(row))+'</span></div><div class="thirty-numbers">'+(data.numbers||[]).map(number=>'<span class="thirty-ball">'+escapeHtml(String(number).padStart(2,'0'))+'</span>').join('')+'</div></div>';}
+      const killRows=latest('kill'),kill=document.querySelector('[data-section-key="kill"] .feature-list');if(kill&&killRows.length){kill.innerHTML='<div class="kill-head"><span>期数</span><span>杀肖</span><span>杀尾</span><span>杀波</span><span>杀头</span><span>特开</span></div>'+killRows.map(row=>{const fields=valueOf(row).fields||[];return '<div class="kill-row"><span class="kill-period">'+escapeHtml(row.period)+'期</span>'+[0,1,2,3].map(index=>'<span class="kill-pick">'+escapeHtml(fields[index]||'')+'</span>').join('')+'<span class="kill-open">'+escapeHtml(open(row))+'</span></div>';}).join('');}
+    }).catch(()=>{});
+  }
   function boot() {
     ensureThreeStyles();
     const file = location.pathname.split('/').pop() || 'index.html';
@@ -352,10 +372,12 @@
       track('home');
       loadRecommendedSites();
       renderHomepage();
+      refreshTabbedHomeMaterials(currentType());
       document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(button => button.addEventListener('click', () => {
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
         renderHomepage();
+        refreshTabbedHomeMaterials(selected);
         loadTextAds();
         track('home');
       }));
