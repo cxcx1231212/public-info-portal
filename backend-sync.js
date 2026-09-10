@@ -119,6 +119,6 @@
     else if(Array.isArray(cached)&&cached.length)hydrate(cached,masterRecords);
     else syncAll(true);
   });
-  syncAll(!state.ready);
+  syncAll(false);
   setInterval(syncAll,60000);
 })();
