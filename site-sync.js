@@ -332,11 +332,14 @@
       sites.forEach(site=>{const link=document.createElement('a');link.href=site.site_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=site.name;list.appendChild(link);});
     }).catch(()=>{});
   }
+  let homeMaterialRequestToken=0;
   function refreshTabbedHomeMaterials(lotteryType){
+    const requestToken=++homeMaterialRequestToken;
     const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const valueOf=row=>{let value={};try{value=JSON.parse(row.content_json||'{}');}catch(_){};return value;};
     const rowText=row=>{const value=valueOf(row);if(Array.isArray(value.numbers))return value.numbers.map(item=>String(item).padStart(2,'0')).join(' ');if(Array.isArray(value.fields))return value.fields.join(' · ');if(Array.isArray(value.issues))return (value.pick||row.title||'')+'（'+value.issues.join('、')+'期）';return value.pick||value.zodiac||row.title||'';};
     fetch('/api/public/content?lotteryType='+encodeURIComponent(lotteryType)+'&_='+Date.now(),{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(payload=>{
+      if(requestToken!==homeMaterialRequestToken)return;
       const records=Array.isArray(payload&&payload.data)?payload.data:[];
       const byKey=key=>records.filter(row=>row.section_key===key);
       const latest=key=>{const rows=byKey(key);const period=Math.max(0,...rows.map(row=>Number(row.period)||0));return rows.filter(row=>Number(row.period)===period).sort((a,b)=>Number(a.sort_order)-Number(b.sort_order)||Number(a.id)-Number(b.id));};
@@ -378,6 +381,7 @@
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
         renderHomepage();
         refreshTabbedHomeMaterials(selected);
+        [250,900].forEach(delay=>setTimeout(()=>{if(currentType()===selected)refreshTabbedHomeMaterials(selected);},delay));
         loadTextAds();
         track('home');
       }));
