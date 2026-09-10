@@ -56,13 +56,13 @@
     return true;
   }
 
-  let masterRecords=[],masterCurrentPeriod=0;
+  let masterRecords=[],masterCurrentPeriod=0,masterRenderSignature='';
   const masterSlogans=['免费公开','独家好料','期期精选','稳定公开','实力推荐','原创资料','长期验证','精准分享','高手推荐','每期更新','精品资料','免费参考','连续公开','热门推荐','今日精选','诚意分享','一手资料','每日更新','重点推荐','稳定资料','实战参考','用心整理','准时公开','精选好料','独门资料','公开验证','走势参考','高手心得','认真筛选','长期分享','精心推荐','王牌资料','倾力奉献','实力公开','持续更新','精选发布','独家推荐','天天好彩','免费分享'];
   function renderMasterPage(){
     const grid=document.querySelector('.master-grid');if(!grid)return;const records=masterRecords.filter(master=>!master.archived);
     grid.innerHTML=records.map(master=>'<div class="master-card master-line-card" data-master-id="'+Number(master.id)+'"><div class="master-line"><span class="master-line-period">'+esc(masterCurrentPeriod)+'期:</span><span class="master-line-author">'+esc(cleanMasterName(master.name))+'</span><span class="master-line-category">→【'+esc(master.specialty)+'】</span><span class="master-line-slogan">←'+esc(masterSlogans[(Number(master.rank_no)-1)%masterSlogans.length])+'</span></div></div>').join('');
   }
-  function renderMasters(records){masterRecords=records||[];renderMasterPage();}
+  function renderMasters(records){masterRecords=records||[];const signature=currentLotteryType()+'|'+masterCurrentPeriod+'|'+masterRecords.map(item=>[item.id,item.rank_no,item.name,item.specialty,item.archived].join(':')).join('|'),grid=document.querySelector('.master-grid');if(signature===masterRenderSignature&&grid?.querySelector('.master-card'))return;masterRenderSignature=signature;renderMasterPage();}
   function hydrate(records,masters){state.content.clear();masterCurrentPeriod=Math.max(0,...(records||[]).filter(record=>record.section_key!=='threeperiod').map(record=>Number(record.period)||0));(records||[]).forEach(record=>{if(!state.content.has(record.section_key))state.content.set(record.section_key,[]);state.content.get(record.section_key).push(record);});state.ready=true;document.querySelectorAll('[data-section-key]').forEach(section=>{const key=section.dataset.sectionKey;if(state.content.has(key))renderSection(section,latestButton(section,key));});renderMasters(masters||masterRecords);document.body.classList.remove('backend-loading');}
   async function syncKingForecasts(){
     try{
@@ -87,7 +87,7 @@
 
   function memberHost(){return document.querySelector('.master-grid')?.closest('.section')||null;}
   function renderMemberPosts(records){const grid=document.querySelector('.master-grid');if(!grid)return;grid.querySelectorAll('.member-post-row').forEach(node=>node.remove());[...(records||[])].sort(()=>Math.random()-.5).forEach(item=>{const title=(masterCurrentPeriod||'最新')+'期: '+item.author+' → '+item.post_type+' ←独家资料',html='<a class="member-post-row" href="/member-post.html?id='+Number(item.id)+'&lotteryType='+currentLotteryType()+'">'+esc(title)+'</a>',targets=[...grid.querySelectorAll('.master-card')],target=targets[Math.floor(Math.random()*(targets.length+1))];if(target)target.insertAdjacentHTML('beforebegin',html);else grid.insertAdjacentHTML('beforeend',html);});}
-  async function syncMemberPosts(){try{const response=await fetch('/api/public/member-posts?lotteryType='+currentLotteryType()+'&_='+Date.now(),{cache:'no-store'}),payload=await response.json();if(response.ok&&payload.success)renderMemberPosts(payload.data||[])}catch{}}
+  const memberPostSignatures=new Map();async function syncMemberPosts(){try{const type=currentLotteryType(),response=await fetch('/api/public/member-posts?lotteryType='+type+'&_='+Date.now(),{cache:'no-store'}),payload=await response.json(),records=payload.data||[],signature=records.map(item=>[item.id,item.author,item.post_type,item.current_data,item.enabled].join(':')).join('|'),grid=document.querySelector('.master-grid');if(!response.ok||!payload.success||!grid)return;if(memberPostSignatures.get(type)===signature&&grid.querySelector('.member-post-row'))return;memberPostSignatures.set(type,signature);renderMemberPosts(records)}catch{}}
   if(!document.getElementById('memberPostStyles')){const style=document.createElement('style');style.id='memberPostStyles';style.textContent='.member-post-list{margin:0 0 6px;padding:0 10px}.member-post-row{display:flex;align-items:center;justify-content:center;min-height:49px;padding:11px 8px;color:#f2ca63;text-align:center;text-decoration:none;border:1px solid #55401f;border-radius:9px;background:linear-gradient(145deg,#11100d,#080909);font-size:16px;font-weight:900;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.member-post-row:hover{border-color:#c08d25;background:#13110c}@media(max-width:520px){.member-post-list{padding:0 4px}.member-post-row{min-height:44px;padding:10px 4px;font-size:14px}}';document.head.appendChild(style)}
 
   document.addEventListener('click',event=>{
