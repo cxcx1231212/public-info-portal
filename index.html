@@ -1657,7 +1657,46 @@
       .kill-row{grid-template-columns:44px repeat(4,minmax(0,1fr)) 48px;font-size:12px}
       .kill-head{grid-template-columns:44px repeat(4,minmax(0,1fr)) 48px;font-size:12px}
     }
-  </style>
+      /* 开奖卡重排：彩种在上，结果居中，功能在右 */
+    .draw-style5{
+      position:relative!important;
+      display:grid!important;
+      grid-template-columns:minmax(0,1fr) 82px!important;
+      grid-template-rows:minmax(126px,auto) 48px!important;
+      min-height:174px!important;
+      border:2px solid #9dd6ff!important;
+      border-radius:18px!important;
+      background:#fff!important;
+      overflow:hidden!important;
+      box-shadow:0 7px 20px rgba(39,142,218,.10)!important;
+    }
+    .draw-style5-center{grid-column:1;grid-row:1;padding:13px 7px 8px!important;justify-content:flex-start!important}
+    .draw-style5 .s5-title{font-size:20px!important;line-height:1.15!important;margin:0 0 11px!important;color:#074b91!important}
+    .draw-style5 .s5-title:before,.draw-style5 .s5-title:after{width:18%!important;background:#91cdf8!important}
+    .draw-style5-center .draw-result-items{gap:clamp(3px,1.1vw,8px)!important;align-items:flex-start!important}
+    .draw-style5-center .draw-number{flex:0 1 43px!important;max-width:43px!important}
+    .draw-style5-center .draw-number .ball{width:clamp(30px,8.6vw,42px)!important;height:clamp(30px,8.6vw,42px)!important;font-size:clamp(13px,3.8vw,17px)!important}
+    .draw-style5-center .draw-number .zodiac{margin-top:5px!important;font-size:clamp(13px,3.8vw,17px)!important;line-height:1!important}
+    .draw-style5-center .plus{margin-top:7px!important;font-size:22px!important}
+    .draw-style5-left{grid-column:1;grid-row:2;border-top:1px solid #b9e1ff!important;padding:0 10px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:8px!important;background:#f7fcff!important}
+    .draw-style5 .s5-period{font-size:14px!important;color:#174d7e!important;white-space:nowrap!important}
+    .draw-style5 .s5-label{margin:0!important;font-size:13px!important;color:#174d7e!important;white-space:nowrap!important}
+    .draw-style5 .s5-countdown{font-size:20px!important;color:#168df0!important;white-space:nowrap!important}
+    .draw-style5-right{grid-column:2;grid-row:1 / span 2;border-left:1px solid #9dd6ff!important;padding:0!important;gap:0!important;background:#fff!important;justify-content:stretch!important}
+    .draw-style5-right a,.draw-style5-right button{flex:1!important;display:flex!important;align-items:center!important;justify-content:center!important;border-bottom:1px solid #cfeaff!important;padding:0 3px!important;color:#0b5cad!important;font-size:12px!important;line-height:1.25!important;background:transparent!important}
+    .draw-style5-right > :last-child{border-bottom:0!important}
+    @media(max-width:420px){
+      .draw-style5{grid-template-columns:minmax(0,1fr) 70px!important;grid-template-rows:minmax(118px,auto) 44px!important;min-height:162px!important;border-radius:14px!important}
+      .draw-style5 .s5-title{font-size:17px!important;margin-bottom:8px!important}
+      .draw-style5 .s5-title:before,.draw-style5 .s5-title:after{width:14%!important}
+      .draw-style5-center .draw-number{max-width:38px!important}
+      .draw-style5-center .draw-number .ball{width:30px!important;height:30px!important;font-size:12px!important}
+      .draw-style5-center .draw-number .zodiac{font-size:13px!important}
+      .draw-style5 .s5-period,.draw-style5 .s5-label{font-size:12px!important}
+      .draw-style5 .s5-countdown{font-size:17px!important}
+      .draw-style5-right a,.draw-style5-right button{font-size:11px!important}
+    }
+</style>
   <style>
     body.backend-loading [data-section-key]:not([data-section-key="five"])>*{visibility:hidden}
     body.backend-loading [data-section-key]:not([data-section-key="five"]){position:relative;min-height:112px}
@@ -1758,6 +1797,45 @@
     .lottery-tab{height:40px;border:1px solid #8cc9ff;border-radius:12px;background:#fff;color:#0b5cad;font:900 15px/1 inherit;cursor:pointer;box-shadow:0 2px 7px rgba(35,122,190,.06)}
     .lottery-tab.active{border-color:#1890ff;background:linear-gradient(135deg,#0b5cad,#1890ff);color:#fff;box-shadow:0 4px 10px rgba(24,144,255,.22)}
     @media(max-width:420px){.lottery-tabs{gap:6px;margin-bottom:7px}.lottery-tab{height:37px;border-radius:10px;font-size:14px}}
+    /* 开奖卡重排：彩种在上，结果居中，功能在右 */
+    .draw-style5{
+      position:relative!important;
+      display:grid!important;
+      grid-template-columns:minmax(0,1fr) 82px!important;
+      grid-template-rows:minmax(126px,auto) 48px!important;
+      min-height:174px!important;
+      border:2px solid #9dd6ff!important;
+      border-radius:18px!important;
+      background:#fff!important;
+      overflow:hidden!important;
+      box-shadow:0 7px 20px rgba(39,142,218,.10)!important;
+    }
+    .draw-style5-center{grid-column:1;grid-row:1;padding:13px 7px 8px!important;justify-content:flex-start!important}
+    .draw-style5 .s5-title{font-size:20px!important;line-height:1.15!important;margin:0 0 11px!important;color:#074b91!important}
+    .draw-style5 .s5-title:before,.draw-style5 .s5-title:after{width:18%!important;background:#91cdf8!important}
+    .draw-style5-center .draw-result-items{gap:clamp(3px,1.1vw,8px)!important;align-items:flex-start!important}
+    .draw-style5-center .draw-number{flex:0 1 43px!important;max-width:43px!important}
+    .draw-style5-center .draw-number .ball{width:clamp(30px,8.6vw,42px)!important;height:clamp(30px,8.6vw,42px)!important;font-size:clamp(13px,3.8vw,17px)!important}
+    .draw-style5-center .draw-number .zodiac{margin-top:5px!important;font-size:clamp(13px,3.8vw,17px)!important;line-height:1!important}
+    .draw-style5-center .plus{margin-top:7px!important;font-size:22px!important}
+    .draw-style5-left{grid-column:1;grid-row:2;border-top:1px solid #b9e1ff!important;padding:0 10px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:8px!important;background:#f7fcff!important}
+    .draw-style5 .s5-period{font-size:14px!important;color:#174d7e!important;white-space:nowrap!important}
+    .draw-style5 .s5-label{margin:0!important;font-size:13px!important;color:#174d7e!important;white-space:nowrap!important}
+    .draw-style5 .s5-countdown{font-size:20px!important;color:#168df0!important;white-space:nowrap!important}
+    .draw-style5-right{grid-column:2;grid-row:1 / span 2;border-left:1px solid #9dd6ff!important;padding:0!important;gap:0!important;background:#fff!important;justify-content:stretch!important}
+    .draw-style5-right a,.draw-style5-right button{flex:1!important;display:flex!important;align-items:center!important;justify-content:center!important;border-bottom:1px solid #cfeaff!important;padding:0 3px!important;color:#0b5cad!important;font-size:12px!important;line-height:1.25!important;background:transparent!important}
+    .draw-style5-right > :last-child{border-bottom:0!important}
+    @media(max-width:420px){
+      .draw-style5{grid-template-columns:minmax(0,1fr) 70px!important;grid-template-rows:minmax(118px,auto) 44px!important;min-height:162px!important;border-radius:14px!important}
+      .draw-style5 .s5-title{font-size:17px!important;margin-bottom:8px!important}
+      .draw-style5 .s5-title:before,.draw-style5 .s5-title:after{width:14%!important}
+      .draw-style5-center .draw-number{max-width:38px!important}
+      .draw-style5-center .draw-number .ball{width:30px!important;height:30px!important;font-size:12px!important}
+      .draw-style5-center .draw-number .zodiac{font-size:13px!important}
+      .draw-style5 .s5-period,.draw-style5 .s5-label{font-size:12px!important}
+      .draw-style5 .s5-countdown{font-size:17px!important}
+      .draw-style5-right a,.draw-style5-right button{font-size:11px!important}
+    }
 </style>
 </head>
 <body class="backend-loading">
