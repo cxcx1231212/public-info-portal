@@ -277,8 +277,9 @@ async function homepageInitialData(env){
     const legacy=await env.DB.prepare('SELECT * FROM content_items WHERE enabled=1 ORDER BY period DESC,sort_order,id LIMIT 500').all();
     for(const type of [1,5,8])byType[type]=(legacy.results||[]).map(row=>({...row,lottery_type:type}));
   }
-  let masters=[];try{await ensureMasterRosterSchema(env);masters=(await env.DB.prepare('SELECT id,name,avatar,rank_no,specialty FROM masters WHERE enabled=1 AND lottery_scope=0 ORDER BY rank_no,id').all()).results||[];}catch(error){console.error('homepage_masters_failed',error?.message||error);}
-  return {contentByType:byType,masters};
+  const masterPostsByType={1:[],5:[],8:[]},memberPostsByType={1:[],5:[],8:[]};
+  try{const [posts,members]=await Promise.all([env.DB.prepare('SELECT p.*,m.name,m.avatar,m.rank_no,m.specialty FROM master_posts p JOIN masters m ON m.id=p.master_id WHERE m.enabled=1 AND p.lottery_type IN (1,5,8) ORDER BY p.lottery_type,p.period DESC,m.rank_no LIMIT 600').all(),env.DB.prepare('SELECT * FROM member_posts WHERE enabled=1 AND lottery_type IN (1,5,8) ORDER BY id DESC LIMIT 300').all()]);for(const row of posts.results||[])(masterPostsByType[validLotteryType(row.lottery_type)]||masterPostsByType[5]).push(row);for(const row of members.results||[])(memberPostsByType[validLotteryType(row.lottery_type)]||memberPostsByType[5]).push(row);}catch(error){console.error('homepage_master_posts_failed',error?.message||error);}
+  return {contentByType:byType,masterPostsByType,memberPostsByType};
 }
 const VALID_ZODIACS=new Set(['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪']);
 const DRAW_CHECK_VERSION='v5-all-draw-zodiacs';

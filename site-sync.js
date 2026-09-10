@@ -403,12 +403,10 @@
       track('home');
       loadRecommendedSites();
       renderHomepage();
-      refreshMasterBoard(currentType());
       setTimeout(syncVisiblePeriodNavigation,800);
       document.querySelectorAll('#lotteryMenu button, .lottery-tab').forEach(button => button.addEventListener('click', () => {
         const selected=Number(button.dataset.lotteryType);
         if(validTypes.includes(selected))localStorage.setItem('lotteryType',String(selected));
-        refreshMasterBoard(selected);
         [400,1200].forEach(delay=>setTimeout(()=>{if(currentType()===selected)syncVisiblePeriodNavigation();},delay));
         loadTextAds();
         track('home');
