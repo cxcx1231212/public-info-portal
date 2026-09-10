@@ -2440,8 +2440,10 @@
 
     function renderApiLottery(data) {
       if (!data || !Array.isArray(data.numberList) || data.numberList.length < 7) return false;
+      const previousLiveStreamUrl=liveStreamUrl;
       liveStreamUrl=String(data.videoUrlForH5||'');
       liveDrawDate=String(data.nextLotteryTime||'').slice(0,10);
+      if(!liveVideoWrap.hasAttribute('hidden')&&liveStreamUrl!==previousLiveStreamUrl)playLive();
       clearInterval(fallbackCountdownTimer);
       apiPeriodNode.textContent = '第' + String(data.period || data.intPeriod || '') + '期';
       data.numberList.slice(0, 7).forEach((item, index) => {
@@ -2636,6 +2638,6 @@
     }
 
   </script>
-<script src="site-sync.js?v=77"></script>  <script src="/assets/cnzz-stat.js"></script>
+<script src="site-sync.js?v=78"></script>  <script src="/assets/cnzz-stat.js"></script>
 </body>
 </html>
