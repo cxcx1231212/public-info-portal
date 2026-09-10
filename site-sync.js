@@ -438,6 +438,13 @@ const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{
 })();
 (function(){
   const type=()=>Number(localStorage.getItem('lotteryType'))||5,esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function renderFormula(){const list=document.querySelector('.formula-list');if(!list)return;fetch('/fdata.html?lotteryType='+type(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(payload=>{const raw=payload.data||payload.result||payload.records||[],rows=Array.isArray(raw)?raw:(Array.isArray(raw.list)?raw.list:Object.values(raw).filter(v=>v&&typeof v==='object'));if(!rows.length)return;list.innerHTML=rows.slice(0,8).map((row,i)=>{const period=row.period||row.issue||row.lotteryNo||'最新',pick=row.content||row.recommendation||row.formula||row.title||row.name||JSON.stringify(row),open=row.result||row.open||'待开奖';return '<div class="feature-row"><span class="feature-period">'+esc(period)+'期</span><span class="feature-pick">'+esc(pick)+'</span><span class="feature-open">'+esc(open)+'</span><span class="feature-status"></span></div>';}).join('');}).catch(()=>{list.innerHTML='<div class="feature-row"><span class="feature-period">最新</span><span class="feature-pick">公式推荐资料</span><span class="feature-open">暂未更新</span><span></span></div>';});}
+  function renderFormula(){
+    const list=document.querySelector('.formula-list');if(!list)return;
+    const prediction=value=>Array.isArray(value)?value.join('、'):(value||'本期参考');
+    fetch('/fdata.html?lotteryType='+type(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(payload=>{
+      const rows=Array.isArray(payload.recommendations)?payload.recommendations:[];if(!rows.length)throw new Error('empty');
+      list.innerHTML=rows.slice(0,6).map(row=>{const period=row.issue?row.issue+'期':'最新',pick=(row.typeName||row.cardName||'公式推荐')+'【'+prediction(row.prediction)+'】',status=row.recentStreak?'连中'+row.recentStreak+'期':'公式推荐';return '<div class="feature-row"><span class="feature-period">'+esc(period)+'</span><span class="feature-pick">'+esc(pick)+'</span><span class="feature-open">'+esc(status)+'</span><span class="feature-status"></span></div>';}).join('');
+    }).catch(()=>{list.innerHTML='<div class="feature-row"><span class="feature-period">最新</span><span class="feature-pick">公式推荐资料</span><span class="feature-open">暂未更新</span><span></span></div>';});
+  }
   renderFormula();document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(b=>b.addEventListener('click',()=>setTimeout(renderFormula,0)));
 })();
