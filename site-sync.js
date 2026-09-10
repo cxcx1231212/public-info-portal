@@ -318,7 +318,7 @@
         if(banner.nextElementSibling?.classList.contains('text-ad-grid'))banner.nextElementSibling.remove();
         const count=10,grid=document.createElement('div');grid.className='text-ad-grid';grid.dataset.count=String(count);grid.setAttribute('aria-label','文字广告');
         for(let offset=0;offset<count;offset++){
-          const item=textPool[(sectionIndex*count+offset)%textPool.length],domain=domainPool.length?domainPool[(sectionIndex*count+offset)%domainPool.length]:null,link=document.createElement('a');link.textContent=fill(item.ad_text);link.style.color='#f2cf68';
+          const item=textPool[(sectionIndex*count+offset)%textPool.length],domain=domainPool.length?domainPool[(sectionIndex*count+offset)%domainPool.length]:null,link=document.createElement('a');link.textContent=fill(item.ad_text);link.style.color='#0b5cad';
           if(domain?.domain_url){link.href=fill(domain.domain_url);link.target='_blank';link.rel='noopener noreferrer';}else link.href='#';grid.appendChild(link);
         }
         banner.after(grid);
@@ -381,4 +381,6 @@
     match[2] ? renderDetail(match[1]) : renderList(match[1]);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+
+const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{border-color:#cfe8ff!important;background:#fff!important}.banner-ad img{background:#fff!important}.text-ad-grid{border-color:#cfe8ff!important;background:#eaf5ff!important;box-shadow:0 2px 8px rgba(35,122,190,.10)!important}.text-ad-grid a{background:#fff!important;color:#0b5cad!important}.text-ad-grid a:hover{background:#eaf5ff!important}.site-footer{border-color:#cfe8ff!important;background:linear-gradient(180deg,#fff,#f7fbff)!important;color:#6b7f93!important}.site-footer strong,.site-footer button{color:#0b5cad!important}.site-footer button{border-color:#8cc9ff!important;background:#fff!important}.accuracy-badge{border-color:#8fd6aa!important;background:#eaf8ef!important;color:#228b52!important}.stats-card{border-color:#cfe8ff!important;background:#fff!important}.stats-label,.stat strong{color:#0b5cad!important}.stat{border-color:#e2f1ff!important}.stat span{color:#6b7f93!important}.three-ball{background:#f7fbff!important;border-color:#8cc9ff!important;color:#0b5cad!important}.three-ball.matched{background:#d93636!important;color:#fff!important}';document.head.appendChild(skyTheme);
 })();
