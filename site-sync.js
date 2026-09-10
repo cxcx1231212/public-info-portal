@@ -358,6 +358,7 @@
   let masterBoardRequestToken=0;
   function refreshMasterBoard(lotteryType){
     const grid=document.querySelector('#masters .master-grid');if(!grid)return;
+    const masterTitle=document.querySelector('#masters .feature-title'),lotteryNames={1:'香港六合彩',5:'澳门六合彩',8:'天天六合彩'};if(masterTitle)masterTitle.textContent=(lotteryNames[lotteryType]||'澳门六合彩')+'高手榜 · 独家免费资料';
     const requestToken=++masterBoardRequestToken;
     const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const contentText=row=>{let value={};try{value=JSON.parse(row.content_json||'{}');}catch(_){}return value.pick||value.title||value.content||value.zodiac||row.title||row.content_json||'免费资料';};
