@@ -596,6 +596,22 @@ export default {async scheduled(controller,env,ctx){
     if(url.pathname.startsWith('/api/admin/')){const response=await adminApi(request,env,url);if(response)return response;}
     if(request.method==='GET'&&!url.pathname.startsWith('/admin')&&!url.pathname.startsWith('/api/')&&(request.headers.get('accept')||'').includes('text/html'))ctx.waitUntil(Promise.all([trackVisit(request,env).catch(()=>{}),maybeRunResultCheck(env).catch(()=>{})]));
     const asset=await env.ASSETS.fetch(request);
+    if(request.method==='GET'&&url.pathname==='/master-detail.html'&&asset.ok){
+      try{
+        const lotteryType=validLotteryType(url.searchParams.get('lotteryType')),masterId=cleanInt(url.searchParams.get('id'));
+        await ensureMasterCatalog(env);
+        const [masters,posts]=await Promise.all([
+          env.DB.prepare('SELECT id,name,avatar,rank_no,specialty,archived FROM masters WHERE id=? AND enabled=1 LIMIT 1').bind(masterId).all(),
+          env.DB.prepare('SELECT p.*,m.name,m.avatar,m.rank_no,m.specialty FROM master_posts p JOIN masters m ON m.id=p.master_id WHERE p.master_id=? AND p.lottery_type=? ORDER BY p.period DESC,m.rank_no LIMIT 200').bind(masterId,lotteryType).all()
+        ]);
+        const payload={masters:masters.results||[],posts:posts.results||[]},serialized=JSON.stringify(payload).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace('<script>\n    const profiles','<script>window.__STATIC_MASTER_DETAIL__='+serialized+';\n    const profiles');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));
+      }catch(error){console.error('master_detail_snapshot_failed',error?.message||error);}
+    }
+    if(request.method==='GET'&&url.pathname==='/member-post.html'&&asset.ok){
+      try{
+        const id=cleanInt(url.searchParams.get('id'));await ensureMemberPostsSchema(env);const post=id?await env.DB.prepare('SELECT * FROM member_posts WHERE id=? AND enabled=1 LIMIT 1').bind(id).first():null,serialized=JSON.stringify(post||{}).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace('<script>\nconst $=id=>','<script>window.__STATIC_MEMBER_POST__='+serialized+';\nconst $=id=>');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));
+      }catch(error){console.error('member_detail_snapshot_failed',error?.message||error);}
+    }
     if(request.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')&&asset.ok){
       try{const initial=await homepageInitialData(env),serialized=JSON.stringify(initial).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace(/<script src="backend-sync\.js\?v=[^"]+"><\/script>/,'<script id="initialBackendData" type="application/json">'+serialized+'</script>$&');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));}catch(error){console.error('homepage_initial_data_failed',error?.message||error);}
     }

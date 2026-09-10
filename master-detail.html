@@ -66,10 +66,11 @@
     }
     bindButtons();
     render(activePeriod);
-    Promise.all([
+    const staticDetail=window.__STATIC_MASTER_DETAIL__;
+    (staticDetail?Promise.resolve([{data:staticDetail.masters||[]},{data:staticDetail.posts||[]}]):Promise.all([
       fetch('/api/public/masters?lotteryType='+lotteryType,{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()),
       fetch('/api/public/master-posts?masterId='+requestedId+'&lotteryType='+lotteryType,{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject())
-    ]).then(([masters,posts])=>{
+    ])).then(([masters,posts])=>{
       const master=(masters.data||[]).find(item=>Number(item.id)===requestedId);const records=posts.data||[];if(!master||!records.length)return;const footer=document.getElementById('globalFooter'),footerHtml=records[0]?.global_footer_html||'';if(footerHtml){footer.innerHTML=footerHtml;footer.style.display='block'}
       const cleanName=String(master.name||'').replace(/^(江湖侠客)\d+$/,'$1');profile={name:cleanName,avatar:master.avatar||cleanName.slice(0,1),specialty:'【'+master.specialty+'】',data:{}};
       document.getElementById('rank').textContent=master.rank_no;document.getElementById('avatar').textContent=profile.avatar;document.getElementById('name').textContent=profile.name;document.getElementById('specialty').textContent=profile.specialty;document.title=profile.name+'高手资料 - 123六合网';
