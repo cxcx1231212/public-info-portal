@@ -1980,17 +1980,27 @@
     @media(max-width:390px){.draw-style5 .s5-label,.draw-style5 .s5-countdown{font-size:16px!important}}
     /* 开奖直播白蓝面板 */
     .live-video-wrap{background:rgba(238,247,255,.96)!important;border:1px solid #8cc9ff!important;box-shadow:0 12px 30px rgba(35,122,190,.20)!important}.live-video-wrap video{background:#fff!important;border:1px solid #cfe8ff!important}.live-video-wrap video[hidden]{display:none!important}.live-status{min-height:44px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #cfe8ff;border-radius:8px;padding:10px!important}.live-close{border-color:#8cc9ff!important;background:#fff!important;color:#0b5cad!important}.live-status{color:#1f3b57!important}
-</style>
+    /* 顶部定稿：蓝色字标 + 等宽域名与说明 */
+    .topbar{margin:0!important;padding:12px 10px 10px!important;min-height:82px!important;border:0!important;border-bottom:4px solid #1998ef!important;background:#fff!important;box-shadow:none!important}
+    .topbar .brand{width:100%!important}.brand-lockup-new{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;gap:13px!important}
+    .blue-brand-logo{display:flex;align-items:center;flex:0 0 auto;color:#0756a2;white-space:nowrap}
+    .blue-brand-seal{width:58px;height:58px;display:grid;place-items:center;border:6px solid #168df0;border-radius:50%;font-size:23px;line-height:1;color:#e52b2b;font-weight:950;font-style:italic;letter-spacing:-1.5px;background:radial-gradient(circle at 48% 42%,#fff 0 47%,#e7f5ff 48% 100%);box-shadow:inset 0 0 0 2px #d5efff}
+    .blue-brand-text{margin-left:5px;font-size:34px;line-height:1;font-weight:950;letter-spacing:-3px;color:#0756a2}
+    .brand-copy{display:flex;min-width:0;flex:1;flex-direction:column;align-items:stretch;justify-content:center;padding-left:12px;border-left:1px solid #8fc8f5}
+    .brand-lockup-new .brand-domain,.brand-lockup-new .brand-slogan{display:block;width:100%;text-align:right;white-space:nowrap;color:#0756a2}
+    .brand-lockup-new .brand-domain{margin:0!important;padding:0!important;font-size:13px!important;line-height:1.1!important;font-weight:900!important;letter-spacing:3.5px!important}
+    .brand-slogan{margin-top:7px;font-size:15px;line-height:1;font-weight:900;letter-spacing:.1px}
+    .lottery-tabs{margin-top:9px!important}
+    @media(max-width:420px){.topbar{min-height:76px!important;padding:9px 7px 8px!important}.brand-lockup-new{gap:8px!important}.blue-brand-seal{width:51px;height:51px;border-width:5px;font-size:20px}.blue-brand-text{font-size:29px}.brand-copy{padding-left:8px}.brand-lockup-new .brand-domain{font-size:11px!important;letter-spacing:2.7px!important}.brand-slogan{margin-top:6px;font-size:12px}.lottery-tabs{margin-top:7px!important}}</style>
 </head>
 <body class="backend-loading">
   <main class="page">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-lockup" aria-label="123六合网">
-          <img class="brand-logo" src="assets/logo-123-v2.png" alt="123六合网" width="2012" height="781">
-          <span class="brand-domain">123LH.COM · 打造良心六合，坚持永久免费</span>
-        </div>
-      </div>
+        <div class="brand-lockup brand-lockup-new" aria-label="123六合网">
+          <div class="blue-brand-logo"><span class="blue-brand-seal">123</span><span class="blue-brand-text">六合网</span></div>
+          <div class="brand-copy"><span class="brand-domain">WWW.123LH.COM</span><span class="brand-slogan">打造良心六合，坚持永久免费</span></div>
+        </div>      </div>
 
       <div class="lottery-switch">
         <button class="lottery-btn" id="lotteryBtn">
