@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 260">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e9f6ff"/><stop offset="1" stop-color="#9bd4ff"/></linearGradient></defs>
+  <rect width="360" height="260" fill="url(#g)"/>
+  <circle cx="282" cy="52" r="82" fill="#fff" fill-opacity=".32"/><circle cx="70" cy="218" r="100" fill="#1890ff" fill-opacity=".13"/>
+  <rect x="111" y="63" width="138" height="104" rx="14" fill="#fff" fill-opacity=".9"/>
+  <path d="M144 96h72M144 119h51M144 142h64" stroke="#1890ff" stroke-width="11" stroke-linecap="round"/>
+  <text x="180" y="211" font-family="Arial,Microsoft YaHei,sans-serif" font-size="22" font-weight="700" text-anchor="middle" fill="#0b5cad">缩略图更新中</text>
+</svg>

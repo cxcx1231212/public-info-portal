@@ -386,6 +386,16 @@
 
     .feature-title{margin:0 0 9px;padding:8px 5px;border-radius:7px;background:linear-gradient(90deg,#2c1808,#70400d,#2c1808);color:#ffd36b;text-align:center;font-size:18px;line-height:1.3;font-weight:900}
     .feature-list{border:1px solid #4b3820;border-radius:8px;overflow:hidden;background:#090a0b}
+.formula-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:10px;border:1px solid #cfe8ff;border-radius:10px;background:#eaf5ff}
+    .formula-card{display:block;overflow:hidden;border:1px solid #cfe8ff;border-radius:7px;background:#fff;color:#0b5cad;text-decoration:none;box-shadow:0 2px 6px rgba(35,122,190,.10)}
+    .formula-card:active{transform:scale(.98)}
+    .formula-cover{position:relative;display:grid;min-height:108px;place-items:center;overflow:hidden;background:linear-gradient(145deg,#1f9bf0,#0c5da5)}
+    .formula-cover::before{content:'';position:absolute;width:118px;height:118px;border:16px solid rgba(255,255,255,.12);border-radius:50%;transform:translate(-33px,-22px)}
+    .formula-cover::after{content:'公式';position:absolute;right:8px;bottom:6px;color:rgba(255,255,255,.18);font-size:34px;font-weight:1000}
+    .formula-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#dcecf9}
+    .formula-cover span{position:relative;z-index:1;max-width:92%;padding:5px 7px;border-radius:5px;background:rgba(0,46,93,.45);color:#fff;font-size:13px;font-weight:900;line-height:1.35;text-align:center}
+    .formula-name{display:block;padding:9px 3px 8px;color:#092d52;font-size:20px;font-weight:1000;line-height:1.1;text-align:center}
+    @media (max-width:520px){.formula-grid{gap:7px;padding:7px}.formula-cover{min-height:92px}.formula-name{font-size:17px}.formula-cover span{font-size:12px}}
     .feature-row{display:grid;grid-template-columns:48px minmax(0,1fr) 65px 30px;align-items:center;min-height:42px;border-bottom:1px solid #302b22;font-size:15px}
     .feature-row:last-child{border-bottom:0}
     .feature-row span{padding:8px 4px;white-space:nowrap}
@@ -2251,7 +2261,7 @@
 
     <section class="card section" data-section-key="formula">
       <h2 class="feature-title">123六合网【公式推荐】</h2>
-      <div class="feature-list formula-list"><div class="feature-row"><span class="feature-period">最新</span><span class="feature-pick">公式推荐资料</span><span class="feature-open">加载中</span><span class="feature-status"></span></div></div>
+      <div class="formula-grid formula-list"><div class="formula-card"><div class="formula-cover"><img src="/formula-placeholder.svg" alt="规律一"></div><strong class="formula-name">规律一</strong></div></div>
     </section>
 
     <section class="card section" data-section-key="ninezodiac">

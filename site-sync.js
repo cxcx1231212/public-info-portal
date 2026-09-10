@@ -443,7 +443,7 @@ const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{
     const prediction=value=>Array.isArray(value)?value.join('、'):(value||'本期参考');
     fetch('/fdata.html?lotteryType='+type(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(payload=>{
       const rows=Array.isArray(payload.recommendations)?payload.recommendations:[];if(!rows.length)throw new Error('empty');
-      list.innerHTML=rows.slice(0,6).map(row=>{const period=row.issue?row.issue+'期':'最新',pick=(row.typeName||row.cardName||'公式推荐')+'【'+prediction(row.prediction)+'】',status=row.recentStreak?'连中'+row.recentStreak+'期':'公式推荐';return '<div class="feature-row"><span class="feature-period">'+esc(period)+'</span><span class="feature-pick">'+esc(pick)+'</span><span class="feature-open">'+esc(status)+'</span><span class="feature-status"></span></div>';}).join('');
+      list.innerHTML=rows.map(row=>{const label=row.cardName||'规律推荐',path=String(row.href||''),href=path.startsWith('/posts/')?'https://txgs888.q3665.com'+path:'#',image=row.thumbnailUrl||row.imageUrl||row.image||'/formula-placeholder.svg';return '<a class="formula-card" href="'+esc(href)+'" target="_blank" rel="noopener"><span class="formula-cover"><img src="'+esc(image)+'" alt="'+esc(label)+'"></span><strong class="formula-name">'+esc(label)+'</strong></a>';}).join('');
     }).catch(()=>{list.innerHTML='<div class="feature-row"><span class="feature-period">最新</span><span class="feature-pick">公式推荐资料</span><span class="feature-open">暂未更新</span><span></span></div>';});
   }
   renderFormula();document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(b=>b.addEventListener('click',()=>setTimeout(renderFormula,0)));
