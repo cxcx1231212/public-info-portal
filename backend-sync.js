@@ -111,7 +111,7 @@
     }catch{if(token===syncToken){document.body.classList.remove('backend-loading');document.querySelectorAll('[data-section-key]').forEach(section=>{if(!section.querySelector('.backend-load-error')){const note=document.createElement('div');note.className='backend-load-error';note.textContent='资料加载失败，请刷新重试';section.appendChild(note);}});}}
   }
   try{const initial=JSON.parse(document.getElementById('initialBackendData')?.textContent||'{}');initialByType=initial.contentByType||{};const first=initialByType[currentLotteryType()]||initialByType[String(currentLotteryType())];if(Array.isArray(first)&&first.length)hydrate(first,initial.masters||[]);}catch{}
-  document.querySelectorAll('#lotteryMenu button').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{const type=currentLotteryType(),cached=initialByType[type]||initialByType[String(type)];if(Array.isArray(cached)&&cached.length)hydrate(cached,masterRecords);syncAll(!cached?.length);},0)));
+  document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{const type=currentLotteryType(),cached=initialByType[type]||initialByType[String(type)];if(Array.isArray(cached)&&cached.length)hydrate(cached,masterRecords);syncAll(true);},0)));
   window.addEventListener('pageshow',event=>{
     if(!event.persisted)return;
     const type=currentLotteryType(),cached=initialByType[type]||initialByType[String(type)];
