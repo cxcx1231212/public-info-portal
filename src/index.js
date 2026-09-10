@@ -424,11 +424,7 @@ async function publicApi(request,env,url){
   if(url.pathname==='/api/public/member-posts'&&request.method==='GET'){
     await ensureMemberPostsSchema(env);const lotteryType=validLotteryType(url.searchParams.get('lotteryType')),section=cleanText(url.searchParams.get('section'),60),id=cleanInt(url.searchParams.get('id'));let query='SELECT * FROM member_posts WHERE enabled=1',binds=[];
     if(id){query+=' AND id=?';binds.push(id);}else{query+=' AND lottery_type=?';binds.push(lotteryType);if(section){query+=' AND section_key=?';binds.push(section);}}
-    query+=' ORDER BY id DESC LIMIT 200';const [result,footer,currentLink]=await Promise.all([env.DB.prepare(query).bind(...binds).all(),env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_footer_html'").first(),env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_current_url'").first()]);return json({success:true,data:(result.results||[]).map(row=>({...row,global_footer_html:footer?.setting_value||'',global_current_url:currentLink?.setting_value||''}))});
-  }
-  if(url.pathname==='/api/public/member-post-settings'&&request.method==='GET'){
-    const setting=await env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_current_url'").first();
-    return json({success:true,member_post_current_url:setting?.setting_value||''},200,{'access-control-allow-origin':'*'});
+    query+=' ORDER BY id DESC LIMIT 200';const [result,footer]=await Promise.all([env.DB.prepare(query).bind(...binds).all(),env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='member_post_footer_html'").first()]);return json({success:true,data:(result.results||[]).map(row=>({...row,global_footer_html:footer?.setting_value||''}))});
   }
   if(url.pathname==='/api/public/king-forecasts'&&request.method==='GET')return kingForecasts(env,cleanInt(url.searchParams.get('lotteryType'),5));
   if(url.pathname==='/api/public/king-thirty-raw'&&request.method==='GET')return kingThirtyRaw(env,cleanInt(url.searchParams.get('lotteryType'),5));
@@ -519,9 +515,8 @@ async function adminApi(request,env,url){
   if(url.pathname==='/api/admin/settings'){
     if(request.method==='GET'){const result=await env.DB.prepare('SELECT setting_key,setting_value,updated_at FROM site_settings ORDER BY setting_key').all();return json({success:true,data:result.results});}
     if(request.method==='PUT'){
-      const input=(await body(request))||{},allowed=['site_name','site_domain','site_slogan','member_post_footer_html','member_post_current_url'];
-      if('member_post_current_url' in input){const value=String(input.member_post_current_url??'').trim();if(value){try{const parsed=new URL(value);if(!/^https?:$/.test(parsed.protocol)||value.length>2000)throw Error();}catch{return json({success:false,message:'当期内容链接请填写完整的 http:// 或 https:// 地址（最多2000字符）'},400);}}input.member_post_current_url=value;}
-      for(const key of allowed){if(key in input)await env.DB.prepare('INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value,updated_at=CURRENT_TIMESTAMP').bind(key,cleanText(input[key],key==='member_post_footer_html'?5000:key==='member_post_current_url'?2000:200)).run();}
+      const input=(await body(request))||{},allowed=['site_name','site_domain','site_slogan','member_post_footer_html'];
+      for(const key of allowed){if(key in input)await env.DB.prepare('INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value,updated_at=CURRENT_TIMESTAMP').bind(key,cleanText(input[key],key==='member_post_footer_html'?5000:200)).run();}
       return json({success:true});
     }
     return json({success:false,message:'请求方式不支持'},405);
@@ -601,7 +596,7 @@ export default {async scheduled(controller,env,ctx){
     if(request.method==='GET'&&!url.pathname.startsWith('/admin')&&!url.pathname.startsWith('/api/')&&(request.headers.get('accept')||'').includes('text/html'))ctx.waitUntil(Promise.all([trackVisit(request,env).catch(()=>{}),maybeRunResultCheck(env).catch(()=>{})]));
     const asset=await env.ASSETS.fetch(request);
     if(request.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')&&asset.ok){
-      try{const initial=await homepageInitialData(env),serialized=JSON.stringify(initial).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace('<script src="backend-sync.js?v=90"></script>','<script id="initialBackendData" type="application/json">'+serialized+'</script><script src="backend-sync.js?v=90"></script>');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));}catch(error){console.error('homepage_initial_data_failed',error?.message||error);}
+      try{const initial=await homepageInitialData(env),serialized=JSON.stringify(initial).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace(/<script src="backend-sync\.js\?v=[^"]+"><\/script>/,'<script id="initialBackendData" type="application/json">'+serialized+'</script>$&');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));}catch(error){console.error('homepage_initial_data_failed',error?.message||error);}
     }
     if(request.method==='GET'&&(url.pathname==='/admin'||url.pathname==='/admin.html')&&asset.ok){
       let html=await asset.text();
