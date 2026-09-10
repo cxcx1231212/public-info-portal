@@ -2355,7 +2355,7 @@
     }
     function stopLive(){
       if(livePlayer){try{livePlayer.pause();livePlayer.unload();livePlayer.detachMediaElement();livePlayer.destroy();}catch(_){}livePlayer=null;}
-      if(liveVideo){liveVideo.pause();liveVideo.removeAttribute('src');liveVideo.load();}
+      if(liveVideo){liveVideo.pause();liveVideo.removeAttribute('src');liveVideo.load();liveVideo.hidden=true;}
     }
     function closeLive(){stopLive();liveVideoWrap.setAttribute('hidden','');liveToggle.textContent='开奖直播';}
     function openLive(){liveVideoWrap.removeAttribute('hidden');liveToggle.textContent='收起直播';playLive();}
@@ -2372,9 +2372,9 @@
     }
     function playLive(){
       stopLive();
-      if(!inLiveWindow()){liveStatus.textContent=liveNotice();return;}
-      if(!liveStreamUrl){liveStatus.textContent=liveNotice();return;}
-      liveStatus.textContent='正在连接直播…';
+      if(!inLiveWindow()){liveVideo.hidden=true;liveStatus.textContent=liveNotice();return;}
+      if(!liveStreamUrl){liveVideo.hidden=true;liveStatus.textContent=liveNotice();return;}
+      liveVideo.hidden=false;liveStatus.textContent='正在连接直播…';
       if(liveVideo.canPlayType('application/vnd.apple.mpegurl')){
         liveVideo.src=liveStreamUrl.replace(/\.flv(?:\?.*)?$/i,'.m3u8');
         liveVideo.play().then(()=>liveStatus.textContent='直播播放中').catch(()=>liveStatus.textContent='点击播放器上的播放按钮开始观看');
