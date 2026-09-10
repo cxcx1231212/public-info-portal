@@ -107,18 +107,18 @@
       ]);
       if(token!==syncToken||type!==currentLotteryType())return;
       initialByType[type]=content.data||[];hydrate(content.data||[],masters.data||[]);
-      await syncMemberPosts();await Promise.all([syncKingForecasts(),syncKingThirtyRaw(),syncRecommendedSites()]);
+      await Promise.all([syncKingForecasts(),syncKingThirtyRaw(),syncRecommendedSites()]);
       if(token===syncToken)document.body.classList.remove('backend-loading');
     }catch{if(token===syncToken){document.body.classList.remove('backend-loading');document.querySelectorAll('[data-section-key]').forEach(section=>{if(!section.querySelector('.backend-load-error')){const note=document.createElement('div');note.className='backend-load-error';note.textContent='资料加载失败，请刷新重试';section.appendChild(note);}});}}
   }
   try{const initial=JSON.parse(document.getElementById('initialBackendData')?.textContent||'{}');initialByType=initial.contentByType||{};initialMasterPostsByType=initial.masterPostsByType||{};initialMemberPostsByType=initial.memberPostsByType||{};const first=initialByType[currentLotteryType()]||initialByType[String(currentLotteryType())];if(Array.isArray(first)&&first.length)hydrate(first,[]);}catch{}
-  document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{const type=currentLotteryType(),cached=initialByType[type]||initialByType[String(type)];if(Array.isArray(cached)&&cached.length)hydrate(cached,masterRecords);else syncAll(false);},0)));
+  document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{const type=currentLotteryType(),cached=initialByType[type]||initialByType[String(type)];if(Array.isArray(cached)&&cached.length)hydrate(cached,masterRecords);},0)));
   window.addEventListener('pageshow',event=>{
     if(!event.persisted)return;
     const type=currentLotteryType(),cached=initialByType[type]||initialByType[String(type)];
     if(state.ready&&state.content.size){document.body.classList.remove('backend-loading');document.querySelectorAll('[data-section-key]').forEach(section=>{const key=section.dataset.sectionKey;if(state.content.has(key))renderSection(section,section.querySelector('.active')||latestButton(section,key));});renderMasterPage();}
     else if(Array.isArray(cached)&&cached.length)hydrate(cached,masterRecords);
-    else syncAll(true);
+
   });
-  if(!state.ready)syncAll(false);
+
 })();
