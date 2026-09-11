@@ -442,11 +442,7 @@ const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{
     const list=document.querySelector('.formula-list');if(!list)return;
     const prediction=value=>Array.isArray(value)?value.join('、'):(value||'本期参考');
     const renderDirectCards=()=>{const cards=[['平特一肖','pingte','one'],['三中三','tema','3'],['八码中特','tema','8'],['十码中特','tema','10'],['十八码中特','tema','18'],['一肖中特','zodiac','1'],['三肖中特','zodiac','3'],['六肖中特','zodiac','6']];list.innerHTML=cards.map(([label,board,category])=>{const image='https://txgs888.q3665.com/api/formula-recommendations/thumbnail?lotteryType='+type()+'&board='+board+'&category='+category+'&cardName='+encodeURIComponent(label);return '<a class="formula-card" href="https://txgs888.q3665.com/" target="_blank" rel="noopener"><span class="formula-cover"><img src="'+esc(image)+'" alt="'+esc(label)+'"></span><strong class="formula-name">'+esc(label)+'</strong></a>';}).join('');};
-    renderDirectCards();return;
-    fetch('/api/public/c?lotteryType='+type(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(payload=>{
-      const rows=Array.isArray(payload.recommendations)?payload.recommendations:[];if(!rows.length)throw new Error('empty');
-      list.innerHTML=rows.map(row=>{const label=row.cardName||'规律推荐',path=String(row.href||''),href=path.startsWith('/posts/')?'https://txgs888.q3665.com'+path:'#',image=String(row.thumbnailUrl||row.imageUrl||'/formula-placeholder.svg').replace(/^https?:\\/\\/liuhe-formula-poster(?:\\.workers\\.dev)?/,'https://txgs888.q3665.com');return '<a class="formula-card" href="'+esc(href)+'" target="_blank" rel="noopener"><span class="formula-cover"><img src="'+esc(image)+'" alt="'+esc(label)+'"></span><strong class="formula-name">'+esc(label)+'</strong></a>';}).join('');
-    }).catch(renderDirectCards);
+    renderDirectCards();
   }
   renderFormula();document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(b=>b.addEventListener('click',()=>setTimeout(renderFormula,0)));
 })();
