@@ -441,10 +441,12 @@ const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{
   function renderFormula(){
     const list=document.querySelector('.formula-list');if(!list)return;
     const prediction=value=>Array.isArray(value)?value.join('、'):(value||'本期参考');
+    const renderDirectCards=()=>{const labels=['规律一','规律二','规律三','规律四','规律五','规律六','规律七','规律八','规律九'];list.innerHTML=labels.map(label=>{const image='https://txgs888.q3665.com/api/formula-recommendations/thumbnail?lotteryType='+type()+'&board=pingte&category=one&cardName='+encodeURIComponent(label);return '<a class="formula-card" href="https://txgs888.q3665.com/" target="_blank" rel="noopener"><span class="formula-cover"><img src="'+esc(image)+'" alt="'+esc(label)+'"></span><strong class="formula-name">'+esc(label)+'</strong></a>';}).join('');};
+    renderDirectCards();return;
     fetch('/api/public/c?lotteryType='+type(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(payload=>{
       const rows=Array.isArray(payload.recommendations)?payload.recommendations:[];if(!rows.length)throw new Error('empty');
       list.innerHTML=rows.map(row=>{const label=row.cardName||'规律推荐',path=String(row.href||''),href=path.startsWith('/posts/')?'https://txgs888.q3665.com'+path:'#',image=String(row.thumbnailUrl||row.imageUrl||'/formula-placeholder.svg').replace(/^https?:\\/\\/liuhe-formula-poster(?:\\.workers\\.dev)?/,'https://txgs888.q3665.com');return '<a class="formula-card" href="'+esc(href)+'" target="_blank" rel="noopener"><span class="formula-cover"><img src="'+esc(image)+'" alt="'+esc(label)+'"></span><strong class="formula-name">'+esc(label)+'</strong></a>';}).join('');
-    }).catch(()=>{list.innerHTML='<div class="feature-row"><span class="feature-period">最新</span><span class="feature-pick">公式推荐资料</span><span class="feature-open">暂未更新</span><span></span></div>';});
+    }).catch(renderDirectCards);
   }
   renderFormula();document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(b=>b.addEventListener('click',()=>setTimeout(renderFormula,0)));
 })();
