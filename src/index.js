@@ -410,7 +410,7 @@ async function historyDraws(env,lotteryType){
   const visit=value=>{if(!value||typeof value!=='object')return;if(Array.isArray(value)){value.forEach(visit);return;}const period=Number(value.period||value.issue||value.issueNo||value.intPeriod||0),numbers=Array.isArray(value.numberList)?value.numberList:[];if(period&&numbers.length>=7&&!seen.has(period)){const balls=numbers.map(ball=>({number:Number(ball?.number??ball),zodiac:String(ball?.shengXiao||ball?.zodiac||'').match(/[鼠牛虎兔龙蛇马羊猴鸡狗猪]/)?.[0]||''})).filter(ball=>ball.number>=1&&ball.number<=49);if(balls.length>=7){seen.add(period);found.push({period,balls:balls.slice(0,7)})}}Object.values(value).forEach(visit)};visit(payload);return found.sort((a,b)=>a.period-b.period);
 }
 function specialHistoryRows(board,draws){
-  const historyCount={two_code:8,inside_code:4,sixgroup:2}[board]||0,selected=draws.slice(-historyCount);return selected.map((draw,index)=>{const special=draw.balls[6],prior=selected[Math.max(0,index-1)]?.balls?.[6]||special,regular=draw.balls.slice(0,6).map(ball=>ball.number);let data={};if(board==='two_code')data={picks:[[special.zodiac,special.number],[prior.zodiac,prior.number]]};else if(board==='inside_code')data={numbers:[special.number,prior.number]};else data={groups:regular.map((_,offset)=>[regular[offset],regular[(offset+1)%6],regular[(offset+2)%6]]),open:regular};return {period:draw.period,data};});
+  const historyCount={two_code:8,inside_code:4,sixgroup:2}[board]||0,selected=draws.slice(-historyCount);return selected.map(draw=>{const special=draw.balls[6],position=draws.findIndex(item=>item.period===draw.period);let prior=special;for(let index=position-1;index>=0;index--){const candidate=draws[index]?.balls?.[6];if(candidate&&Number(candidate.number)!==Number(special.number)){prior=candidate;break;}}const regular=draw.balls.slice(0,6).map(ball=>ball.number);let data={};if(board==='two_code')data={picks:[[special.zodiac,special.number],[prior.zodiac,prior.number]]};else if(board==='inside_code')data={numbers:[special.number,prior.number]};else data={groups:regular.map((_,offset)=>[regular[offset],regular[(offset+1)%6],regular[(offset+2)%6]]),open:regular};return {period:draw.period,data};});
 }
 async function syncSpecialMaterialsFromHistory(env,lotteryType){
   lotteryType=validLotteryType(lotteryType);const draws=await historyDraws(env,lotteryType);if(draws.length<2)throw new Error('开奖记录不足');const latest=draws.at(-1),nextPeriod=latest.period+1,statements=[];
@@ -418,9 +418,9 @@ async function syncSpecialMaterialsFromHistory(env,lotteryType){
   await env.DB.batch(statements);await env.DB.prepare("INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value,updated_at=CURRENT_TIMESTAMP").bind('special_materials_history_sync_'+lotteryType,String(Date.now())).run();
 }
 async function ensureSpecialMaterialCoverage(env,lotteryType){
-  lotteryType=validLotteryType(lotteryType);await ensureSpecialMaterialsSchema(env);const version=await env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='special_materials_history_version' LIMIT 1").first(),last=await env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key=? LIMIT 1").bind('special_materials_history_sync_'+lotteryType).first(),force=version?.setting_value!=='draw-history-v1',stale=Date.now()-Number(last?.setting_value||0)>15*60*1000;
+  lotteryType=validLotteryType(lotteryType);await ensureSpecialMaterialsSchema(env);const version=await env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key='special_materials_history_version' LIMIT 1").first(),last=await env.DB.prepare("SELECT setting_value FROM site_settings WHERE setting_key=? LIMIT 1").bind('special_materials_history_sync_'+lotteryType).first(),force=version?.setting_value!=='draw-history-v2',stale=Date.now()-Number(last?.setting_value||0)>15*60*1000;
   if(force||stale){try{await syncSpecialMaterialsFromHistory(env,lotteryType);}catch(error){console.error('special_material_history_sync_failed',lotteryType,error?.message||error);}}
-  if(force)await env.DB.prepare("INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES('special_materials_history_version','draw-history-v1',CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value='draw-history-v1',updated_at=CURRENT_TIMESTAMP").run();
+  if(force)await env.DB.prepare("INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES('special_materials_history_version','draw-history-v2',CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value='draw-history-v2',updated_at=CURRENT_TIMESTAMP").run();
 }
 
 async function ensureMemberPostsSchema(env){
@@ -661,3 +661,4 @@ export default {async scheduled(controller,env,ctx){
     return json({success:false,message:isAdmin&&detail?'处理失败：'+detail:'服务器处理失败'},500);
   }
 }};
+
