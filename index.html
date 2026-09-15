@@ -280,6 +280,31 @@
       background:#211c0f;
     }
 
+
+    .two-code-section{margin-top:9px;padding:10px}
+    .two-code-title{margin:0 0 9px;padding:9px 8px;border:1px solid #0b5cad;border-radius:8px;background:linear-gradient(90deg,#0b5cad,#1890ff,#0b5cad);color:#fff;text-align:center;font-size:16px;font-weight:900;letter-spacing:.2px}
+    .two-code-list{overflow:hidden;border:1px solid #cfe8ff;border-radius:8px;background:#fff}
+    .two-code-row{display:grid;grid-template-columns:72px minmax(0,1fr) 76px;align-items:center;gap:7px;min-height:44px;padding:7px 10px;border-bottom:1px solid #e2f1ff;color:#0b5cad;font-size:14px;font-weight:800}
+    .two-code-row:last-child{border-bottom:0}.two-code-period{color:#6b7f93;text-align:left}.two-code-kind{text-align:center;color:#0b5cad}.two-code-pick{display:flex;justify-content:flex-end;gap:4px;color:#143a5c;white-space:nowrap}.two-code-pick b{color:#e32932;font-size:15px}.two-code-pick i{font-style:normal;color:#15954e}.two-code-row.pending{background:#f7fbff}.two-code-history{display:block!important;min-height:39px;padding:8px 10px;text-align:center;color:#0b5cad;font-size:14px;font-weight:900}.two-code-history b{color:#e32932}.two-code-history i{color:#15954e;font-style:normal}.two-code-row.pending .two-code-pick{color:#1890ff}.two-code-current{display:block!important;min-height:45px;padding:10px 8px;text-align:center}.two-code-current-line{color:#0b5cad;font-size:14px;font-weight:900}.two-code-current-line a{display:inline-flex;align-items:center;gap:4px;padding:2px 4px;border:1px solid #ffd000;border-radius:3px;background:#fff100;color:#cf1025;text-decoration:none;font-weight:900;line-height:1.25;box-shadow:0 0 0 1px rgba(227,41,50,.22),0 0 8px rgba(255,208,0,.7);animation:claimBlink .85s steps(2,end) infinite}.two-code-current-line a b{padding:1px 3px;border-radius:2px;background:#e32932;color:#fff;font-variant-numeric:tabular-nums;font-size:12px;animation:claimTick 1s steps(2,end) infinite}@keyframes claimBlink{50%{box-shadow:0 0 0 1px rgba(227,41,50,.45),0 0 14px rgba(227,41,50,.75)}}@keyframes claimTick{50%{transform:scale(1.07);background:#b90d20}}
+    @keyframes insideCodePulse{0%,100%{transform:translateY(0) scale(1);box-shadow:0 3px 8px rgba(226,41,50,.35)}50%{transform:translateY(-2px) scale(1.025);box-shadow:0 8px 18px rgba(226,41,50,.58)}}@keyframes insideCodeFlash{0%{left:-35%}100%{left:120%}}@media(prefers-reduced-motion:reduce){.inside-code-ad{animation:none}}@media(max-width:390px){.two-code-title{font-size:15px}.two-code-row{grid-template-columns:55px minmax(0,1fr) 73px;padding:7px 6px;font-size:13px}.two-code-pick b{font-size:14px}}
+
+
+
+    .two-code-footer{padding:10px;background:#f7fbff;text-align:center}
+    
+    .two-code-promo{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:0 0 10px;font-size:12px;font-weight:800;line-height:1.25}.two-code-promo span{display:flex;min-height:29px;align-items:center;justify-content:center;padding:4px 5px;border:1px solid #cfe8ff;border-radius:6px;background:#fff}.two-code-promo .promo-main{grid-column:1/-1;color:#e32932;font-size:15px}.two-code-promo .promo-brand{color:#0b5cad}.two-code-promo .promo-link{color:#167ec5}.two-code-promo .promo-tip{color:#15954e}.two-code-promo .promo-red{color:#e32932}
+    .two-code-detail-link{position:relative;display:grid;min-height:52px;place-items:center;overflow:hidden;border:2px solid #ffb21c;border-radius:9px;background:linear-gradient(135deg,#ff573d,#dd1435 55%,#f33228);box-shadow:0 3px 8px rgba(226,41,50,.35);color:#fff;font-size:20px;font-weight:900;letter-spacing:.5px;text-decoration:none;text-shadow:0 2px 0 rgba(130,0,0,.3);animation:twoCodePulse .55s ease-in-out infinite}.two-code-detail-link::after{content:"";position:absolute;inset:-45% auto -45% -30%;width:22%;background:rgba(255,255,255,.72);transform:skewX(-22deg);animation:twoCodeFlash 1.25s linear infinite}.two-code-detail-link:hover{animation-play-state:paused}@keyframes twoCodePulse{0%,100%{transform:translateY(0) scale(1);box-shadow:0 3px 8px rgba(226,41,50,.35)}50%{transform:translateY(-2px) scale(1.025);box-shadow:0 8px 18px rgba(226,41,50,.58)}}@keyframes twoCodeFlash{0%{left:-35%}100%{left:120%}}@keyframes twoCodeShine{0%,58%{left:-40%}80%,100%{left:118%}}@media(prefers-reduced-motion:reduce){.two-code-detail-link,.two-code-detail-link::after{animation:none}}
+
+
+    .inside-code-section{margin-top:9px;padding:7px;border:1px solid #8cc9ff;background:#eaf5ff}.inside-code-title{margin:0 0 7px;padding:9px 8px;border:1px solid #0b5cad;border-radius:6px;background:linear-gradient(90deg,#0b5cad,#1890ff,#0b5cad);color:#fff;text-align:center;font-size:17px;font-weight:900}.inside-code-title b{color:#fff}.inside-code-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.inside-code-card{overflow:hidden;border:1px solid #8cc9ff;border-radius:5px;background:#fff;box-shadow:0 2px 5px rgba(20,106,180,.1)}.inside-code-head{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:5px;padding:6px;border-bottom:1px solid #cfe8ff;color:#0b5cad;background:#f7fbff}.inside-code-mark{color:#0b5cad;font-size:10px;font-weight:900;line-height:1.05;text-align:center}.inside-code-head strong{padding:6px 3px;border:1px solid #8cc9ff;border-radius:4px;background:linear-gradient(180deg,#fff,#eaf5ff);font-size:16px;text-align:center}.inside-code-tag{display:grid;place-items:center;min-height:34px;border-radius:3px;background:linear-gradient(180deg,#39b5ff,#0b72bc);color:#fff;font-size:12px;font-weight:900}.inside-code-tag small{display:block;font-size:8px}.inside-code-numbers{display:flex;justify-content:center;gap:9px;padding:12px 8px}.inside-code-number{display:grid;width:47px;height:47px;place-items:center;border:2px solid #65b8ff;border-radius:5px;background:linear-gradient(180deg,#fff,#eaf5ff);color:#0b5cad;font-size:24px;font-weight:900}.inside-code-number.hot{border-color:#ff8a90;background:linear-gradient(180deg,#ff6570,#e32932);box-shadow:0 0 0 2px rgba(255,138,144,.18);color:#fff}.inside-code-card.pending{grid-column:1/-1}.inside-code-card.pending .inside-code-head{grid-template-columns:72px minmax(0,1fr) 72px;padding:8px}.inside-code-card.pending .inside-code-head strong{font-size:19px;padding:10px}.inside-code-reveal{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:13px 22%}.inside-code-reveal span{display:grid;min-height:88px;place-items:center;border:2px solid #65b8ff;border-radius:5px;background:linear-gradient(180deg,#fff,#eaf5ff);color:#0b5cad;font-size:27px;font-weight:900}.inside-code-ad{position:relative;display:grid;place-items:center;min-height:52px;margin:8px 0 0;overflow:hidden;border:2px solid #ffb21c;border-radius:9px;background:linear-gradient(135deg,#ff573d,#dd1435 55%,#f33228);text-align:center;box-shadow:0 3px 8px rgba(226,41,50,.35);line-height:1.25;animation:insideCodePulse .55s ease-in-out infinite}.inside-code-ad::after{content:"";position:absolute;inset:-45% auto -45% -30%;width:22%;background:rgba(255,255,255,.72);transform:skewX(-22deg);animation:insideCodeFlash 1.25s linear infinite}.inside-code-ad strong{position:relative;z-index:1;color:#fff;font-size:20px;font-weight:900;text-shadow:0 2px 0 rgba(130,0,0,.3);letter-spacing:.5px}.inside-code-ad strong em{display:none}.inside-code-ad span,.inside-code-ad i{display:none}.inside-code-note{display:none}@media(max-width:390px){.inside-code-head{grid-template-columns:39px minmax(0,1fr) 39px;padding:4px}.inside-code-head strong{font-size:14px}.inside-code-mark{font-size:8px}.inside-code-tag{font-size:10px}.inside-code-number{width:42px;height:42px;font-size:22px}.inside-code-reveal{padding:11px 18%;gap:9px}.inside-code-reveal span{min-height:72px;font-size:23px}}
+
+
+    .two-code-promo-card{padding:12px 10px;border:1px solid #8cc9ff;border-radius:9px;background:linear-gradient(180deg,#f7fbff,#eaf5ff);text-align:center}.two-code-promo-card p{margin:0;color:#0b5cad;font-size:14px;font-weight:900;line-height:1.5}.two-code-promo-card p strong{color:#e32932;font-size:17px}.two-code-promo-points{display:grid;gap:3px;margin:7px 0 10px;color:#15954e;font-size:13px;font-weight:900}.two-code-promo-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:7px}.two-code-promo-actions a{display:grid;min-height:42px;place-items:center;border-radius:8px;font-size:16px;font-weight:900;text-decoration:none}.two-code-giveup{border:1px solid #9db5c9;background:#fff;color:#6b7f93}.two-code-claim{position:relative;overflow:hidden;border:2px solid #ffb21c;background:linear-gradient(135deg,#ff573d,#dd1435 55%,#f33228);box-shadow:0 3px 8px rgba(226,41,50,.35);color:#fff;text-shadow:0 2px 0 rgba(130,0,0,.3);animation:twoCodePulse .55s ease-in-out infinite}.two-code-claim::after{display:none}
+
+
+    .sixgroup-section{margin-top:9px;padding:10px}.sixgroup-title{margin:0 0 9px;padding:9px 8px;border:1px solid #0b5cad;border-radius:8px;background:linear-gradient(90deg,#0b5cad,#1890ff,#0b5cad);color:#fff;text-align:center;font-size:16px;font-weight:900}.sixgroup-list{display:grid;gap:8px}.sixgroup-card{padding:11px 9px;border:1px solid #8cc9ff;border-radius:8px;background:#f7fbff;text-align:center}.sixgroup-card h3{margin:0 0 6px;color:#0b5cad;font-size:16px;font-weight:900}.sixgroup-lines{display:grid;grid-template-columns:repeat(2,max-content);justify-content:center;gap:5px 9px}.sixgroup-lines span{padding:3px 5px;border:1px solid #cfe8ff;border-radius:4px;background:#fff;color:#0b5cad;font-size:14px;font-weight:900}.sixgroup-lines .hot{border-color:#ff8a90;background:#fff3f3;color:#e32932}.sixgroup-open{margin:8px 0 0;color:#0b5cad;font-size:14px;font-weight:900}.sixgroup-open b{color:#0b5cad}.sixgroup-card.current{background:linear-gradient(180deg,#f7fbff,#eaf5ff)}.sixgroup-card.current h3{color:#0b5cad}.sixgroup-free{margin:4px 0;color:#0b5cad;font-size:15px;font-weight:900}.sixgroup-free b{color:#0b5cad}.sixgroup-app{margin:5px 0 8px;color:#0b5cad;font-size:13px;font-weight:900}.sixgroup-cta{display:block;max-width:270px;margin:auto;padding:9px;border:2px solid #ffb21c;border-radius:9px;background:linear-gradient(135deg,#ff573d,#dd1435 55%,#f33228);box-shadow:0 3px 8px rgba(226,41,50,.35);color:#fff;font-size:18px;font-weight:900;text-decoration:none;text-shadow:0 2px 0 rgba(130,0,0,.3);animation:sixgroupPulse .65s ease-in-out infinite}@keyframes sixgroupPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+
+.sixgroup-lines .sixgroup-hit{display:inline;color:#e32932;font-weight:900}.sixgroup-open b{color:#e32932}
     .study-title{
       margin:0 0 9px;
       padding:8px 5px;
@@ -2086,6 +2111,25 @@
       </div>
     </nav>
 
+    
+    <section class="card two-code-section" data-section-key="two-code">
+      <h2 class="two-code-title">123六合网·二肖二码·123LH.COM</h2>
+      <div class="two-code-list" aria-label="二肖二码资料">
+        <div class="two-code-row two-code-history"><span>250期:『二肖二码』【<b>蛇14</b> + <i>虎17</i>】已公开</span></div>
+        <div class="two-code-row two-code-history"><span>251期:『二肖二码』【<b>牛30</b> + <i>马01</i>】已公开</span></div>
+        <div class="two-code-row two-code-history"><span>252期:『二肖二码』【<b>狗09</b> + <i>鸡22</i>】已公开</span></div>
+        <div class="two-code-row two-code-history"><span>253期:『二肖二码』【<b>兔16</b> + <i>猴23</i>】已公开</span></div>
+        <div class="two-code-row two-code-history"><span>254期:『二肖二码』【<b>蛇02</b> + <i>羊12</i>】已公开</span></div>
+        <div class="two-code-row two-code-history"><span>255期:『二肖二码』【<b>猪44</b> + <i>牛18</i>】已公开</span></div>
+        <div class="two-code-row two-code-history"><span>256期:『二肖二码』【<b>马01</b> + <i>龙03</i>】已公开</span></div>
+        <div class="two-code-row two-code-history"><span>257期:『二肖二码』【<b>鼠07</b> + <i>龙15</i>】已公开</span></div>
+        <div class="two-code-row pending two-code-current"><span class="two-code-current-line">258期:『二肖二码』【<a id="twoCodeCountdown" href="https://6hgs01z.duoldq.com/promo-login/?channelCode=883" target="_blank" rel="noopener noreferrer">立即领取 <b>--:--:--</b></a>】开:發00准</span></div>
+        <div class="two-code-footer">
+          <div class="two-code-promo-card"><p>❓想赢钱，先把资料领到手<br><strong>精准资料，限时免费领取</strong></p><div class="two-code-promo-points"><span>🎁 免费领资料 + 红包</span><span>✔ 中奖即提，不中再补一次</span><span>别再犹豫，马上领取！</span></div><div class="two-code-promo-actions"><a class="two-code-giveup" href="#">放弃发财</a><a class="two-code-claim" href="https://6hgs01z.duoldq.com/promo-login/?channelCode=883" target="_blank" rel="noopener noreferrer">点击暴富</a></div></div>
+        </div>
+      </div>
+    </section>
+
     <section class="card section study-section" data-section-key="study">
       <h2 class="study-title">潜心研究永久免费，资料公开跟必赢</h2>
       <div class="study-period-nav" id="studyPeriodNav" aria-label="切换历史期数">
@@ -2128,6 +2172,19 @@
           <div class="sixcode-row"><span class="sixcode-label">230期2肖</span><span class="sixcode-zodiac">兔蛇</span><span class="sixcode-numbers">②码14.26</span></div>
         </div>
       </div>
+    </section>
+
+    
+    <section class="card inside-code-section" data-section-key="inside-code">
+      <h2 class="inside-code-title">123六合网·<b>内幕二码</b>·123LH.COM</h2>
+      <div class="inside-code-grid" aria-label="内幕二码资料">
+        <article class="inside-code-card"><div class="inside-code-head"><span class="inside-code-mark">六合彩<br>MARK SIX</span><strong>第254期</strong><span class="inside-code-tag">澳门<small>MACAU</small></span></div><div class="inside-code-numbers"><span class="inside-code-number hot">02</span><span class="inside-code-number">43</span></div></article>
+        <article class="inside-code-card"><div class="inside-code-head"><span class="inside-code-mark">六合彩<br>MARK SIX</span><strong>第255期</strong><span class="inside-code-tag">澳门<small>MACAU</small></span></div><div class="inside-code-numbers"><span class="inside-code-number">22</span><span class="inside-code-number hot">44</span></div></article>
+        <article class="inside-code-card"><div class="inside-code-head"><span class="inside-code-mark">六合彩<br>MARK SIX</span><strong>第256期</strong><span class="inside-code-tag">澳门<small>MACAU</small></span></div><div class="inside-code-numbers"><span class="inside-code-number hot">01</span><span class="inside-code-number">33</span></div></article>
+        <article class="inside-code-card"><div class="inside-code-head"><span class="inside-code-mark">六合彩<br>MARK SIX</span><strong>第257期</strong><span class="inside-code-tag">澳门<small>MACAU</small></span></div><div class="inside-code-numbers"><span class="inside-code-number">27</span><span class="inside-code-number hot">07</span></div></article>
+        <article class="inside-code-card pending"><div class="inside-code-head"><span class="inside-code-mark">六合彩<br>MARK SIX</span><strong>第258期</strong><span class="inside-code-tag">澳门<small>MACAU</small></span></div><div class="inside-code-reveal"><span>揭</span><span>秘</span></div></article>
+      </div>
+      <div class="inside-code-ad"><strong>点击提前领取资料</strong></div>
     </section>
 
     <section class="card section doublewave-section" data-section-key="doublewave">
@@ -2207,6 +2264,16 @@
             <span class="num">21</span><span class="num">30</span><span class="num">32</span><span class="num hit">47</span>
           </div><div class="five-result">开奖特码 47<strong class="win">命中</strong></div>
         </div>
+      </div>
+    </section>
+
+    
+    <section class="card sixgroup-section" data-section-key="sixgroup">
+      <h2 class="sixgroup-title">123六合网·六组三中三·123LH.COM</h2>
+      <div class="sixgroup-list">
+        <article class="sixgroup-card"><h3>256期六组三中三</h3><div class="sixgroup-lines"><span>03·26·25</span><span class="hot">09·37·07</span><span>26·44·35</span><span>04·46·21</span><span>14·26·47</span><span class="hot">40·15·37</span></div><p class="sixgroup-open">开:<b>40·15·09·37·07·03</b> 特号01 准</p></article>
+        <article class="sixgroup-card"><h3>257期六组三中三</h3><div class="sixgroup-lines"><span class="hot">47·39·27</span><span>11·36·47</span><span class="hot">08·46·27</span><span>33·25·26</span><span>14·24·47</span><span class="hot">08·45·39</span></div><p class="sixgroup-open">开:<b>08·46·47·39·27·45</b> 特鼠07 准</p></article>
+        <article class="sixgroup-card current"><h3>258期六组三中三</h3><p class="sixgroup-free">【<b>点击免费提前查看三中三</b>】</p><p class="sixgroup-app">点击提前领取独家资料</p><a class="sixgroup-cta" href="https://6hgs01z.duoldq.com/promo-login/?channelCode=883" target="_blank" rel="noopener noreferrer">点击提前领取资料</a></article>
       </div>
     </section>
 
@@ -2366,12 +2433,15 @@
 
     let seconds = 2 * 3600 + 18 * 60 + 36;
     const cd = document.getElementById('countdown');
+    const twoCodeCountdown = document.getElementById('twoCodeCountdown');
+    const syncTwoCodeCountdown = value => { if (twoCodeCountdown) { const time=twoCodeCountdown.querySelector('b'); if(time) time.textContent=value; } };
 
     function renderCountdown(){
       const h = Math.floor(seconds / 3600);
       const m = Math.floor((seconds % 3600) / 60);
       const s = seconds % 60;
       cd.textContent = [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
+      syncTwoCodeCountdown(cd.textContent);
       if (seconds > 0) seconds--;
     }
     renderCountdown();
@@ -2468,6 +2538,7 @@
       const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
       const s = String(total % 60).padStart(2, '0');
       cd.textContent = h + ':' + m + ':' + s;
+      syncTwoCodeCountdown(cd.textContent);
     }
 
     function renderApiLottery(data) {
@@ -2678,3 +2749,10 @@
 <script src="site-sync.js?v=106"></script>  <script src="/assets/cnzz-stat.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
