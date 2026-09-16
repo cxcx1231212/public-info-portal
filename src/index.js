@@ -548,8 +548,8 @@ async function adminApi(request,env,url){
   if(url.pathname==='/api/admin/settings'){
     if(request.method==='GET'){const result=await env.DB.prepare('SELECT setting_key,setting_value,updated_at FROM site_settings ORDER BY setting_key').all();return json({success:true,data:result.results});}
     if(request.method==='PUT'){
-      const input=(await body(request))||{},allowed=['site_name','site_domain','site_slogan','member_post_footer_html'];
-      for(const key of allowed){if(key in input)await env.DB.prepare('INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value,updated_at=CURRENT_TIMESTAMP').bind(key,cleanText(input[key],key==='member_post_footer_html'?5000:200)).run();}
+      const input=(await body(request))||{},allowed=['site_name','site_domain','site_slogan','registration_url','member_post_footer_html'];
+      for(const key of allowed){if(key in input)await env.DB.prepare('INSERT INTO site_settings(setting_key,setting_value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value=excluded.setting_value,updated_at=CURRENT_TIMESTAMP').bind(key,cleanText(input[key],key==='member_post_footer_html'?5000:key==='registration_url'?1000:200)).run();}
       return json({success:true});
     }
     return json({success:false,message:'请求方式不支持'},405);
