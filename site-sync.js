@@ -447,3 +447,12 @@ const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{
   const go=event=>{event.preventDefault();window.open(target,'_blank','noopener,noreferrer');};edge.addEventListener('click',go);
   document.body.append(edge);
 })();
+
+/* 简洁票券式抽签入口。 */
+(function(){
+  if(document.getElementById('drawTicket'))return;
+  let target='https://6hgs01z.duoldq.com/promo-login/?channelCode=883';
+  fetch('/api/public/site-settings',{cache:'no-store'}).then(response=>response.json()).then(payload=>{const value=String(payload?.data?.registration_url||'').trim();if(/^https?:\/\//i.test(value))target=value;}).catch(()=>{});
+  const style=document.createElement('style');style.textContent='@keyframes ticketNudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}@keyframes ticketGlow{0%,100%{box-shadow:0 4px 12px rgba(16,105,181,.22)}50%{box-shadow:0 7px 18px rgba(16,105,181,.42)}.draw-ticket{position:fixed;z-index:9997;left:9px;bottom:76px;display:grid;grid-template-columns:32px 1fr;width:114px;overflow:hidden;border:1px solid #84c7ff;border-radius:9px;background:#fff;box-shadow:0 4px 12px rgba(16,105,181,.22);color:#0b5cad;text-decoration:none;animation:ticketNudge 1.7s ease-in-out infinite,ticketGlow 1.7s ease-in-out infinite}.draw-ticket::before{position:absolute;top:0;bottom:0;left:32px;border-left:1px dashed #8cc9ff;content:""}.draw-ticket-mark{position:relative;z-index:1;display:grid;place-items:center;background:linear-gradient(180deg,#30a9f5,#0877c7);color:#fff;font-size:17px;font-weight:900}.draw-ticket-copy{position:relative;z-index:1;padding:7px 5px 7px 8px;text-align:center;line-height:1.2}.draw-ticket-copy b{display:block;font-size:14px}.draw-ticket-copy span{display:block;margin-top:3px;color:#e32932;font-size:11px;font-weight:800}@media(max-width:520px){.draw-ticket{left:7px;bottom:62px;width:106px}.draw-ticket-copy{padding-left:6px}}@media(prefers-reduced-motion:reduce){.draw-ticket{animation:none}}';document.head.appendChild(style);
+  const ticket=document.createElement('a');ticket.id='drawTicket';ticket.className='draw-ticket';ticket.href='#';ticket.innerHTML='<span class="draw-ticket-mark">抽</span><span class="draw-ticket-copy"><b>抽签领资料</b><span>点击进群领取</span></span>';ticket.addEventListener('click',event=>{event.preventDefault();window.open(target,'_blank','noopener,noreferrer');});document.body.appendChild(ticket);
+})();
