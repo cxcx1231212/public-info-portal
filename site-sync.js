@@ -450,6 +450,15 @@ const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{
   function shower(){for(let index=0;index<16;index++){setTimeout(()=>{const packet=document.createElement('a');packet.className='promo-rain-packet';packet.href='#';packet.textContent='福';packet.style.left=(3+Math.random()*94)+'vw';packet.style.setProperty('--drift',(-90+Math.random()*180)+'px');packet.style.setProperty('--fall',(3.3+Math.random()*2.1)+'s');packet.addEventListener('click',go);rain.appendChild(packet);setTimeout(()=>packet.remove(),6200);},index*115);}}
   setTimeout(shower,1600);setInterval(shower,18000);
 })();
+
+/* 左下角抽签卡：与右下角红包分开，使用同一个后台注册链接。 */
+(function(){
+  if(document.getElementById('groupDrawCard'))return;
+  let target='https://6hgs01z.duoldq.com/promo-login/?channelCode=883';
+  fetch('/api/public/site-settings',{cache:'no-store'}).then(response=>response.json()).then(payload=>{const value=String(payload?.data?.registration_url||'').trim();if(/^https?:\/\//i.test(value))target=value;}).catch(()=>{});
+  const style=document.createElement('style');style.textContent='@keyframes groupDrawWiggle{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-5px)}}@keyframes groupDrawFlash{0%{left:-50%}100%{left:130%}}.group-draw-card{position:fixed;z-index:9997;left:10px;bottom:82px;width:88px;overflow:hidden;border:2px solid #ffd85c;border-radius:11px;background:linear-gradient(145deg,#294fba,#0e2c82);box-shadow:0 5px 14px rgba(14,44,130,.38);color:#fff;text-align:center;text-decoration:none;animation:groupDrawWiggle 1.8s ease-in-out infinite}.group-draw-card::after{position:absolute;top:0;bottom:0;left:-50%;width:24%;background:rgba(255,255,255,.48);content:"";transform:skewX(-20deg);animation:groupDrawFlash 2.6s linear infinite}.group-draw-card b,.group-draw-card span{position:relative;z-index:1;display:block}.group-draw-card b{padding:8px 2px 2px;color:#ffe879;font-size:17px;line-height:1.1}.group-draw-card span{padding:3px 2px 8px;font-size:12px;font-weight:800;line-height:1.2}.group-draw-card i{position:relative;z-index:1;display:grid;width:35px;height:35px;margin:7px auto 0;place-items:center;border-radius:50%;background:#ff4350;color:#fff;font-size:21px;font-style:normal;box-shadow:0 0 0 3px rgba(255,255,255,.28)}@media(max-width:520px){.group-draw-card{left:8px;bottom:62px;width:82px}.group-draw-card b{font-size:16px}}@media(prefers-reduced-motion:reduce){.group-draw-card,.group-draw-card::after{animation:none}}';document.head.appendChild(style);
+  const card=document.createElement('a');card.id='groupDrawCard';card.className='group-draw-card';card.href='#';card.innerHTML='<i>抽</i><b>抽签领资料</b><span>免费进群领取</span>';card.addEventListener('click',event=>{event.preventDefault();window.open(target,'_blank','noopener,noreferrer');});document.body.appendChild(card);
+})();
 (function(){
   const type=()=>Number(localStorage.getItem('lotteryType'))||5,esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function renderFormula(){
