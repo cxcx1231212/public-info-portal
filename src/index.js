@@ -485,7 +485,7 @@ async function publicApi(request,env,url){
   if(['/api/public/ads','/api/public/content-config'].includes(url.pathname)){
     await ensureAdsSchema(env);
     const result=await env.DB.prepare("SELECT position_key,image_url,link_url,display_mode,delay_seconds,start_at,end_at FROM ads WHERE enabled=1 AND image_url<>'' AND (start_at IS NULL OR start_at='' OR start_at<=CURRENT_TIMESTAMP) AND (end_at IS NULL OR end_at='' OR end_at>=CURRENT_TIMESTAMP) ORDER BY CASE WHEN position_key='popup' THEN 0 WHEN position_key='banner' THEN 1 ELSE 2 END,position_key").all();
-    const absoluteAd=item=>item&&({...item,image_url:/^\/ad-image\//.test(item.image_url)?'https://tx123lh.q3665.com'+item.image_url:item.image_url});
+    const absoluteAd=item=>item&&({...item,image_url:/^\/ad-image\//.test(item.image_url)?new URL(item.image_url,url.origin).href:item.image_url});
     const rows=result.results||[],popup=absoluteAd(rows.find(item=>item.position_key==='popup')),masterDetailBottom=absoluteAd(rows.find(item=>item.position_key==='master-detail-bottom')),banner=absoluteAd(rows.find(item=>item.position_key==='banner')||rows.find(item=>!['popup','master-detail-bottom'].includes(item.position_key)));
     const data=[];if(banner){data.push({...banner,position_key:'banner'});for(let index=1;index<=20;index++)data.push({...banner,position_key:'home-'+index});data.push({...banner,position_key:'list'},{...banner,position_key:'detail'});}if(masterDetailBottom)data.push({...masterDetailBottom,position_key:'master-detail-bottom'});if(popup)data.push(popup);
     return json({success:true,data},200,{'access-control-allow-origin':'*'});
