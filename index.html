@@ -2747,7 +2747,24 @@
 
   </script>
 <script src="site-sync.js?v=107"></script>  <script src="/assets/cnzz-stat.js"></script>
-</body>
+<script id="registration-link-sync">
+(async function () {
+  try {
+    const response = await fetch('/api/public/site-settings', { cache: 'no-store' });
+    const payload = await response.json();
+    const target = String(payload?.data?.registration_url || '').trim();
+    if (!/^https?:\/\//i.test(target)) return;
+    document.querySelectorAll('#twoCodeCountdown, .two-code-claim, .sixgroup-cta').forEach((node) => { node.href = target; });
+    const inside = document.querySelector('.inside-code-ad');
+    if (inside) {
+      inside.setAttribute('role', 'link'); inside.tabIndex = 0; inside.style.cursor = 'pointer';
+      const open = () => window.open(target, '_blank', 'noopener,noreferrer');
+      inside.addEventListener('click', open);
+      inside.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
+    }
+  } catch (_) {}
+})();
+</script></body>
 </html>
 
 
