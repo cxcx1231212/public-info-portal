@@ -65,6 +65,15 @@ async function ensureAdsSchema(env){
   for(const [name,type] of additions)if(!columns.has(name))await env.DB.prepare('ALTER TABLE ads ADD COLUMN '+name+' '+type).run();
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS ad_stats (position_key TEXT PRIMARY KEY,impressions INTEGER NOT NULL DEFAULT 0,clicks INTEGER NOT NULL DEFAULT 0,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)').run();
 }
+async function ensureAdSyncSchema(env){
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS ad_sync_targets (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,receiver_url TEXT NOT NULL UNIQUE,sync_token TEXT NOT NULL,enabled INTEGER NOT NULL DEFAULT 1,last_status TEXT NOT NULL DEFAULT '',last_message TEXT NOT NULL DEFAULT '',last_synced_at TEXT,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+  await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_ad_sync_targets_enabled ON ad_sync_targets(enabled,id)').run();
+}
+const absoluteAdUrl=(value,origin)=>{const text=cleanText(value,2000);return text.startsWith('/ad-image/')?new URL(text,origin).href:text;};
+async function makeAdSyncPayload(env,origin){await ensureAdsSchema(env);const ads=await env.DB.prepare('SELECT id,position_key,image_url,link_url,display_mode,delay_seconds,start_at,end_at,enabled,updated_at FROM ads ORDER BY id').all();return {version:Date.now(),generated_at:new Date().toISOString(),ads:(ads.results||[]).map(ad=>({...ad,image_url:absoluteAdUrl(ad.image_url,origin)}))};}
+async function pushAdsToTarget(env,target,origin){const payload=await makeAdSyncPayload(env,origin),receiver=cleanText(target.receiver_url,1000);try{const response=await fetch(receiver,{method:'POST',headers:{'content-type':'application/json','x-ad-sync-token':target.sync_token},body:JSON.stringify(payload)}),result=await response.json().catch(()=>({})),ok=response.ok&&result.success!==false,message=cleanText(result.message||(ok?'同步完成':'接收站返回失败'),500);await env.DB.prepare('UPDATE ad_sync_targets SET last_status=?,last_message=?,last_synced_at=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(ok?'success':'failed',message,ok?new Date().toISOString():null,target.id).run();return {id:target.id,name:target.name,success:ok,message};}catch(error){const message=cleanText(error?.message||'无法连接接收站',500);await env.DB.prepare("UPDATE ad_sync_targets SET last_status='failed',last_message=?,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(message,target.id).run();return {id:target.id,name:target.name,success:false,message};}}
+async function pushAdsToTargets(env,origin,id=0){await ensureAdSyncSchema(env);let sql='SELECT * FROM ad_sync_targets WHERE enabled=1',binds=[];if(id){sql+=' AND id=?';binds=[id];}const result=await env.DB.prepare(sql+' ORDER BY id').bind(...binds).all();return Promise.all((result.results||[]).map(target=>pushAdsToTarget(env,target,origin)));}
+
 async function ensureTextAdsSchema(env){
   await env.DB.prepare("CREATE TABLE IF NOT EXISTS text_ads (id INTEGER PRIMARY KEY AUTOINCREMENT,ad_text TEXT NOT NULL,link_url TEXT NOT NULL DEFAULT '',text_color TEXT NOT NULL DEFAULT '#f2cf68',sort_order INTEGER NOT NULL DEFAULT 0,enabled INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_text_ads_sort ON text_ads(enabled,sort_order,id)').run();
@@ -537,6 +546,15 @@ async function adminApi(request,env,url){
     const types={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'};if(!types[file.type])return json({success:false,message:'只支持 JPG、PNG、WebP、GIF'},422);
     const key='ads/'+Date.now()+'-'+crypto.randomUUID()+'.'+types[file.type];await env.AD_IMAGES.put(key,await file.arrayBuffer(),{httpMetadata:{contentType:file.type},customMetadata:{uploadedAt:new Date().toISOString()}});return json({success:true,url:'/ad-image/'+key});
   }
+  if(url.pathname==='/api/admin/ad-sync-targets'){
+    await ensureAdSyncSchema(env);
+    if(request.method==='GET'){const result=await env.DB.prepare('SELECT id,name,receiver_url,enabled,last_status,last_message,last_synced_at,created_at,updated_at FROM ad_sync_targets ORDER BY id').all();return json({success:true,data:result.results||[]});}
+    if(request.method==='POST'){const input=(await body(request))||{},name=cleanText(input.name,100),receiver=cleanText(input.receiver_url,1000).replace(/\/$/,''),token=cleanText(input.sync_token,200);if(!name||!/^https?:\/\//i.test(receiver)||token.length<16)return json({success:false,message:'请填写站点名称、接收地址和至少 16 位同步密钥'},422);try{const saved=await env.DB.prepare('INSERT INTO ad_sync_targets(name,receiver_url,sync_token,enabled) VALUES(?,?,?,?)').bind(name,receiver,token,cleanInt(input.enabled,1)?1:0).run();return json({success:true,id:saved.meta.last_row_id});}catch{return json({success:false,message:'接收地址已经存在'},409);}}
+    return json({success:false,message:'请求方式不支持'},405);
+  }
+  const syncTargetMatch=url.pathname.match(/^\/api\/admin\/ad-sync-targets\/(\d+)(?:\/(push))?$/);
+  if(syncTargetMatch){await ensureAdSyncSchema(env);const id=cleanInt(syncTargetMatch[1]);if(syncTargetMatch[2]&&request.method==='POST'){const target=await env.DB.prepare('SELECT * FROM ad_sync_targets WHERE id=?').bind(id).first();if(!target)return json({success:false,message:'站点不存在'},404);const result=await pushAdsToTarget(env,target,url.origin);return json({success:result.success,data:result},result.success?200:502);}if(request.method==='PUT'){const input=(await body(request))||{},fields=[],values=[];if('name'in input){fields.push('name=?');values.push(cleanText(input.name,100));}if('receiver_url'in input){const receiver=cleanText(input.receiver_url,1000).replace(/\/$/,'');if(!/^https?:\/\//i.test(receiver))return json({success:false,message:'接收地址必须以 http:// 或 https:// 开头'},422);fields.push('receiver_url=?');values.push(receiver);}if('sync_token'in input&&cleanText(input.sync_token,200)){fields.push('sync_token=?');values.push(cleanText(input.sync_token,200));}if('enabled'in input){fields.push('enabled=?');values.push(cleanInt(input.enabled,1)?1:0);}if(!fields.length)return json({success:false,message:'没有可更新的内容'},400);values.push(id);await env.DB.prepare('UPDATE ad_sync_targets SET '+fields.join(',')+',updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(...values).run();return json({success:true});}if(request.method==='DELETE'){await env.DB.prepare('DELETE FROM ad_sync_targets WHERE id=?').bind(id).run();return json({success:true});}}
+  if(url.pathname==='/api/admin/ad-sync-targets/push-all'&&request.method==='POST'){const results=await pushAdsToTargets(env,url.origin);return json({success:true,data:results});}
   if(url.pathname==='/api/admin/dashboard'&&request.method==='GET'){
     const [content,masters,posts,ads,recent]=await Promise.all([
       env.DB.prepare("SELECT COUNT(*) total,SUM(CASE WHEN enabled=1 THEN 1 ELSE 0 END) enabled,SUM(CASE WHEN status='win' THEN 1 ELSE 0 END) wins FROM content_items").first(),
@@ -603,15 +621,15 @@ async function adminApi(request,env,url){
     if(match[1]==='ads'){
       if(!input.position_key)return json({success:false,message:'请选择广告位置'},422);const updates=fields.filter(field=>field!=='position_key');
       const sql='INSERT INTO ads ('+fields.join(',')+') VALUES ('+fields.map(()=>'?').join(',')+') ON CONFLICT(position_key) DO UPDATE SET '+updates.map(field=>field+'=excluded.'+field).join(',')+(updates.length?',':'')+'updated_at=CURRENT_TIMESTAMP';
-      const result=await env.DB.prepare(sql).bind(...fields.map(field=>input[field])).run(),saved=await env.DB.prepare('SELECT id FROM ads WHERE position_key=?').bind(input.position_key).first();return json({success:true,id:saved?.id||result.meta.last_row_id});
+      const result=await env.DB.prepare(sql).bind(...fields.map(field=>input[field])).run(),saved=await env.DB.prepare('SELECT id FROM ads WHERE position_key=?').bind(input.position_key).first();const syncResults=await pushAdsToTargets(env,url.origin);return json({success:true,id:saved?.id||result.meta.last_row_id,sync:syncResults});
     }
     const result=await env.DB.prepare('INSERT INTO '+resource.table+' ('+fields.join(',')+') VALUES ('+fields.map(()=>'?').join(',')+')').bind(...fields.map(field=>input[field])).run();return json({success:true,id:result.meta.last_row_id});
   }
   if(request.method==='PUT'&&id){
     const raw=(await body(request))||{};if(match[1]==='links'&&'site_url'in raw&&!/^https?:\/\//i.test(cleanText(raw.site_url)))return json({success:false,message:'网址必须以 http:// 或 https:// 开头'},422);const input=normalize(resource,raw);const fields=Object.keys(input);if(!fields.length)return json({success:false,message:'没有可更新的内容'},400);
-    await env.DB.prepare('UPDATE '+resource.table+' SET '+fields.map(field=>field+'=?').join(',')+',updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(...fields.map(field=>input[field]),id).run();return json({success:true});
+    await env.DB.prepare('UPDATE '+resource.table+' SET '+fields.map(field=>field+'=?').join(',')+',updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(...fields.map(field=>input[field]),id).run();const syncResults=match[1]==='ads'?await pushAdsToTargets(env,url.origin):[];return json({success:true,sync:syncResults});
   }
-  if(request.method==='DELETE'&&id){await env.DB.prepare('DELETE FROM '+resource.table+' WHERE id=?').bind(id).run();return json({success:true});}
+  if(request.method==='DELETE'&&id){await env.DB.prepare('DELETE FROM '+resource.table+' WHERE id=?').bind(id).run();const syncResults=match[1]==='ads'?await pushAdsToTargets(env,url.origin):[];return json({success:true,sync:syncResults});}
   return json({success:false,message:'请求方式不支持'},405);
 }
 
