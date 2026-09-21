@@ -437,6 +437,63 @@
 const skyTheme=document.createElement('style');skyTheme.textContent='.banner-ad{border-color:#cfe8ff!important;background:#fff!important}.banner-ad img{background:#fff!important}.text-ad-grid{border-color:#cfe8ff!important;background:#eaf5ff!important;box-shadow:0 2px 8px rgba(35,122,190,.10)!important}.text-ad-grid a{background:#fff!important;color:#0b5cad!important}.text-ad-grid a:hover{background:#eaf5ff!important}.site-footer{border-color:#cfe8ff!important;background:linear-gradient(180deg,#fff,#f7fbff)!important;color:#6b7f93!important}.site-footer strong,.site-footer button{color:#0b5cad!important}.site-footer button{border-color:#8cc9ff!important;background:#fff!important}.accuracy-badge{border-color:#8fd6aa!important;background:#eaf8ef!important;color:#228b52!important}.stats-card{border-color:#cfe8ff!important;background:#fff!important}.stats-label,.stat strong{color:#0b5cad!important}.stat{border-color:#e2f1ff!important}.stat span{color:#6b7f93!important}.three-ball{background:#f7fbff!important;border-color:#8cc9ff!important;color:#0b5cad!important}.three-ball.matched{background:#d93636!important;color:#fff!important}';document.head.appendChild(skyTheme);
 })();
 
+
+/* 自动资料板块：二肖二码、内幕二码、六组三中三 */
+(function(){
+  const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const pad=value=>String(Number(value)||0).padStart(2,'0');
+  const type=()=>{const value=Number(localStorage.getItem('lotteryType'));return [1,5,8].includes(value)?value:5};
+  const detailTarget=()=>String(document.getElementById('twoCodeCountdown')?.href||document.querySelector('.sixgroup-cta')?.href||'#');
+  const callToAction=href=>'<a href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">点击提前领取资料</a>';
+  function renderSpecialMaterialBoards(rows){
+    const grouped={two_code:[],inside_code:[],sixgroup:[]};
+    (Array.isArray(rows)?rows:[]).forEach(row=>{if(grouped[row.board_key])grouped[row.board_key].push(row)});
+    Object.values(grouped).forEach(list=>list.sort((a,b)=>Number(a.period)-Number(b.period)));
+    const href=detailTarget();
+
+    const two=document.querySelector('[data-section-key="two-code"] .two-code-list');
+    if(two&&grouped.two_code.length){
+      two.innerHTML=grouped.two_code.map(row=>{
+        const data=(()=>{try{return JSON.parse(row.content_json||'{}')}catch{return {}}})();
+        const pending=row.status==='pending'||!(data.picks||[]).length;
+        if(pending)return '<div class="two-code-row pending two-code-current"><span class="two-code-current-line">'+esc(row.period)+'期:『二肖二码』【'+callToAction(href)+'】开:待开奖</span></div><div class="two-code-footer"><div class="two-code-promo-card"><p>❓想赢钱，先把资料领到手<br><strong>精准资料，限时免费领取</strong></p><div class="two-code-promo-points"><span>🎁 免费领资料 + 红包</span><span>✔ 中奖即提，不中再补一次</span><span>别再犹豫，马上领取！</span></div><div class="two-code-promo-actions"><a class="two-code-giveup" href="#">放弃发财</a><a class="two-code-claim" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">点击暴富</a></div></div></div>';
+        const picks=(data.picks||[]).slice(0,2).map((item,index)=>'<'+(index?'i':'b')+'>'+esc(item[0])+pad(item[1])+'</'+(index?'i':'b')+'>').join(' + ');
+        return '<div class="two-code-row two-code-history"><span>'+esc(row.period)+'期:『二肖二码』【'+picks+'】已公开</span></div>';
+      }).join('');
+    }
+
+    const inside=document.querySelector('[data-section-key="inside-code"] .inside-code-grid');
+    if(inside&&grouped.inside_code.length){
+      inside.innerHTML=grouped.inside_code.map(row=>{
+        const data=(()=>{try{return JSON.parse(row.content_json||'{}')}catch{return {}}})();
+        const nums=(data.numbers||[]).slice(0,2),pending=row.status==='pending'||!nums.length;
+        return '<article class="inside-code-card'+(pending?' pending':'')+'"><div class="inside-code-head"><span class="inside-code-mark">六合彩<br>MARK SIX</span><strong>第'+esc(row.period)+'期</strong><span class="inside-code-tag">澳门<small>MACAU</small></span></div>'+(pending?'<div class="inside-code-reveal"><span>揭</span><span>秘</span></div>':'<div class="inside-code-numbers">'+nums.map((n,index)=>'<span class="inside-code-number'+(index===0?' hot':'')+'">'+pad(n)+'</span>').join('')+'</div>')+'</article>';
+      }).join('');
+      const ad=document.querySelector('[data-section-key="inside-code"] .inside-code-ad');
+      if(ad){ad.onclick=()=>window.open(href,'_blank','noopener,noreferrer');ad.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();ad.click()}};}
+    }
+
+    const six=document.querySelector('[data-section-key="sixgroup"] .sixgroup-list');
+    if(six&&grouped.sixgroup.length){
+      six.innerHTML=grouped.sixgroup.map(row=>{
+        const data=(()=>{try{return JSON.parse(row.content_json||'{}')}catch{return {}}})();
+        const groups=Array.isArray(data.groups)?data.groups:[],open=Array.isArray(data.open)?data.open.map(Number):[];
+        const pending=row.status==='pending'||!groups.length;
+        if(pending)return '<article class="sixgroup-card current"><h3>'+esc(row.period)+'期六组三中三</h3><p class="sixgroup-free">【<b>点击免费提前查看三中三</b>】</p><p class="sixgroup-app">点击提前领取独家资料</p><a class="sixgroup-cta" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">点击提前领取资料</a></article>';
+        const groupsHtml=groups.slice(0,6).map(group=>{const hit=group.length===3&&group.every(n=>open.includes(Number(n)));return '<span'+(hit?' class="hot"':'')+'>'+group.map(pad).join('·')+'</span>'}).join('');
+        return '<article class="sixgroup-card"><h3>'+esc(row.period)+'期六组三中三</h3><div class="sixgroup-lines">'+groupsHtml+'</div><p class="sixgroup-open">开:<b>'+open.map(pad).join('·')+'</b> 已公开</p></article>';
+      }).join('');
+    }
+  }
+  let lastKey='';
+  function syncSpecialMaterialBoards(){
+    const lotteryType=type(),key=lotteryType+':'+Date.now();lastKey=key;
+    fetch('/api/public/special-materials?lotteryType='+encodeURIComponent(lotteryType)+'&_='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(payload=>{if(lastKey!==key)return;renderSpecialMaterialBoards(payload?.data||[])}).catch(()=>{});
+  }
+  const start=()=>{if(!document.querySelector('[data-section-key="two-code"]'))return;syncSpecialMaterialBoards();document.querySelectorAll('#lotteryMenu button,.lottery-tab').forEach(button=>button.addEventListener('click',()=>setTimeout(syncSpecialMaterialBoards,350)));};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+
 /* 全站推广动效：链接统一取后台“注册链接”。 */
 (function(){
   if(document.getElementById('promotionEffects'))return;
