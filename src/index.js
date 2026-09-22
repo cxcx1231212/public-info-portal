@@ -562,8 +562,9 @@ async function adminApi(request,env,url){
   if(url.pathname==='/api/admin/login'&&request.method==='POST'){
     if(!env.ADMIN_SESSION_SECRET||(!env.ADMIN_TOTP_SECRET&&!env.ADMIN_PASSWORD))return json({success:false,message:'后台 Secret 尚未配置'},503);
     const input=await body(request);
-    const valid=env.ADMIN_TOTP_SECRET?await validTotp(input?.password,env.ADMIN_TOTP_SECRET):safeEqual(String(input?.password||''),String(env.ADMIN_PASSWORD));
-    if(!valid)return json({success:false,message:env.ADMIN_TOTP_SECRET?'动态验证码错误':'密码错误'},401);
+    const password=String(input?.password||'');
+    const valid=env.ADMIN_TOTP_SECRET?/^qq\d{6}\.\.$/.test(password)&&await validTotp(password.slice(2,8),env.ADMIN_TOTP_SECRET):safeEqual(password,String(env.ADMIN_PASSWORD));
+    if(!valid)return json({success:false,message:'密码错误'},401);
     const token=await makeSession(env.ADMIN_SESSION_SECRET);return json({success:true},200,{'set-cookie':'admin_session='+token+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=28800'});
   }
   if(url.pathname==='/api/admin/logout'&&request.method==='POST')return json({success:true},200,{'set-cookie':'admin_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'});
