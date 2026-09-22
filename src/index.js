@@ -29,6 +29,28 @@ async function maybeEncryptHtmlResponse(response){
 const textEncoder=new TextEncoder();
 const b64url=bytes=>btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let value=0;for(let i=0;i<a.length;i++)value|=a.charCodeAt(i)^b.charCodeAt(i);return value===0;};
+function decodeBase32(value){
+  const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',clean=String(value||'').toUpperCase().replace(/[\s-]/g,'').replace(/=+$/,'');
+  if(!clean||/[^A-Z2-7]/.test(clean))return null;
+  const result=[];let bits=0,buffer=0;
+  for(const char of clean){buffer=(buffer<<5)|alphabet.indexOf(char);bits+=5;if(bits>=8){bits-=8;result.push((buffer>>bits)&255);}}
+  return new Uint8Array(result);
+}
+async function validTotp(code,secret){
+  if(!/^\d{6}$/.test(String(code||'')))return false;
+  const bytes=decodeBase32(secret);if(!bytes||bytes.length<16)return false;
+  const key=await crypto.subtle.importKey('raw',bytes,{name:'HMAC',hash:'SHA-1'},false,['sign']);
+  const step=Math.floor(Date.now()/30000);
+  for(let drift=-1;drift<=1;drift++){
+    let counter=BigInt(step+drift),message=new Uint8Array(8);
+    for(let index=7;index>=0;index--){message[index]=Number(counter&255n);counter>>=8n;}
+    const digest=new Uint8Array(await crypto.subtle.sign('HMAC',key,message));
+    const offset=digest[digest.length-1]&15;
+    const number=(((digest[offset]&127)<<24)|(digest[offset+1]<<16)|(digest[offset+2]<<8)|digest[offset+3])%1000000;
+    if(safeEqual(String(code),String(number).padStart(6,'0')))return true;
+  }
+  return false;
+}
 
 async function sign(value,secret){
   const key=await crypto.subtle.importKey('raw',textEncoder.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
@@ -538,8 +560,10 @@ function normalize(resource,input){const output={};for(const field of resource.f
 
 async function adminApi(request,env,url){
   if(url.pathname==='/api/admin/login'&&request.method==='POST'){
-    if(!env.ADMIN_PASSWORD||!env.ADMIN_SESSION_SECRET)return json({success:false,message:'后台 Secret 尚未配置'},503);
-    const input=await body(request);if(!input||!safeEqual(String(input.password||''),String(env.ADMIN_PASSWORD)))return json({success:false,message:'密码错误'},401);
+    if(!env.ADMIN_SESSION_SECRET||(!env.ADMIN_TOTP_SECRET&&!env.ADMIN_PASSWORD))return json({success:false,message:'后台 Secret 尚未配置'},503);
+    const input=await body(request);
+    const valid=env.ADMIN_TOTP_SECRET?await validTotp(input?.password,env.ADMIN_TOTP_SECRET):safeEqual(String(input?.password||''),String(env.ADMIN_PASSWORD));
+    if(!valid)return json({success:false,message:env.ADMIN_TOTP_SECRET?'动态验证码错误':'密码错误'},401);
     const token=await makeSession(env.ADMIN_SESSION_SECRET);return json({success:true},200,{'set-cookie':'admin_session='+token+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=28800'});
   }
   if(url.pathname==='/api/admin/logout'&&request.method==='POST')return json({success:true},200,{'set-cookie':'admin_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'});
