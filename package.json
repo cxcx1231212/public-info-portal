@@ -8,7 +8,7 @@
     "deploy": "wrangler deploy",
     "db:local": "wrangler d1 execute DB --local --file=./schema.sql",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/crypto.test.ts",
+    "test": "node --test tests/crypto.test.ts tests/formula-gateway.test.js",
     "build:browser": "node scripts/build-browser.mjs",
     "build": "pnpm run typecheck && pnpm run test && pnpm run build:browser && wrangler deploy --dry-run --keep-vars --outdir dist"
   },

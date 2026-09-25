@@ -16,6 +16,6 @@
   "services": [
     {"binding":"LIUHE_CHAT","service":"xinshui-chat-api"},
     {"binding":"KING_SITE","service":"liuhe-king-site"},
-    {"binding":"FORMULA_SITE","service":"liuhe-formula-poster"}
+    {"binding":"FORMULA_SITE","service":"liuhe-formula-poster","entrypoint":"FormulaInternalApi"}
   ]
 }

@@ -1,6 +1,7 @@
 import {encryptJsonPayload} from './aes-gcm.ts';
 
 const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store',...headers}});
+export const rewriteFormulaLinks=html=>html.replaceAll('https://txgs888.q3665.com/api/formula-recommendations/thumbnail','/api/public/formula-thumbnail').replaceAll('href="https://txgs888.q3665.com/"','href="/api/public/formula-open"');
 const isBusinessError=payload=>payload&&typeof payload==='object'&&(payload.success===false||payload.ok===false||(typeof payload.code==='number'&&![0,10000].includes(payload.code))||(typeof payload.status==='number'&&payload.status!==0));
 async function maybeEncryptJsonResponse(request,response){
   const url=new URL(request.url);
@@ -495,9 +496,31 @@ async function publicApi(request,env,url){
   }
   if(url.pathname==='/api/public/king-forecasts'&&request.method==='GET')return kingForecasts(env,cleanInt(url.searchParams.get('lotteryType'),5));
   if(url.pathname==='/api/public/king-thirty-raw'&&request.method==='GET')return kingThirtyRaw(env,cleanInt(url.searchParams.get('lotteryType'),5));
+  if(url.pathname==='/api/public/formula-open'&&request.method==='GET'){
+    if(!env.FORMULA_SITE)return new Response('Formula service unavailable',{status:503});
+    try{
+      const token=await env.FORMULA_SITE.issueEntryTicket();
+      const target=new URL('https://txgs888.q3665.com/open');
+      target.searchParams.set('t',token);
+      return new Response(null,{status:302,headers:{location:target.toString(),'cache-control':'private, no-store','referrer-policy':'no-referrer'}});
+    }catch(error){console.error('formula_entry_ticket_failed',error?.message||error);return new Response('Formula service unavailable',{status:502});}
+  }
+  if(url.pathname==='/api/public/formula-thumbnail'&&request.method==='GET'){
+    const lotteryType=validLotteryType(url.searchParams.get('lotteryType'));
+    const board=url.searchParams.get('board')||'',category=url.searchParams.get('category')||'';
+    if(!['pingte','tema','zodiac','fushi','danshuang','wave','wuxing','jiaye','kill','size','tail','head'].includes(board)||!/^[-a-z0-9]{0,16}$/i.test(category))return new Response('Invalid request',{status:400});
+    if(!env.FORMULA_SITE)return new Response('Formula service unavailable',{status:503});
+    try{
+      const endpoint=new URL('https://liuhe-formula-poster/api/formula-recommendations/thumbnail');
+      endpoint.search=new URLSearchParams({lotteryType,board,category}).toString();
+      const response=await env.FORMULA_SITE.fetch(new Request(endpoint,{headers:{accept:'image/svg+xml'}}));
+      if(!response.ok)return new Response('Thumbnail unavailable',{status:response.status});
+      return new Response(response.body,{headers:{'content-type':'image/svg+xml; charset=utf-8','cache-control':'private, no-store','x-content-type-options':'nosniff'}});
+    }catch(error){console.error('formula_thumbnail_failed',error?.message||error);return new Response('Thumbnail unavailable',{status:502});}
+  }
   if((url.pathname==='/api/public/formula-recommendations'||url.pathname==='/api/public/f'||url.pathname==='/api/public/c'||url.pathname==='/fdata.html'||url.pathname==='/cards.json')&&request.method==='GET'){
     const lotteryType=validLotteryType(url.searchParams.get('lotteryType'));
-    try{const endpoint='https://liuhe-formula-poster/api/formula-recommendations?lotteryType='+lotteryType;const response=env.FORMULA_SITE?await env.FORMULA_SITE.fetch(new Request(endpoint,{headers:{accept:'application/json'}})):await fetch('https://txgs888.q3665.com/api/formula-recommendations?lotteryType='+lotteryType,{headers:{accept:'application/json'}});if(!response.ok)throw new Error('HTTP '+response.status);return new Response(response.body,{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});}catch(error){console.error('formula_recommendations_failed',error?.message||error);return json({success:false,data:[]},502);}
+    try{if(!env.FORMULA_SITE)throw new Error('Formula service binding unavailable');const endpoint='https://liuhe-formula-poster/api/formula-recommendations?lotteryType='+lotteryType;const response=await env.FORMULA_SITE.fetch(new Request(endpoint,{headers:{accept:'application/json'}}));if(!response.ok)throw new Error('HTTP '+response.status);return new Response(response.body,{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});}catch(error){console.error('formula_recommendations_failed',error?.message||error);return json({success:false,data:[]},502);}
   }
   if(url.pathname==='/api/public/content'){
     await ensureFixedThreePeriodGroups(env);
@@ -695,7 +718,7 @@ export default {async scheduled(controller,env,ctx){
       }catch(error){console.error('member_detail_snapshot_failed',error?.message||error);}
     }
     if(request.method==='GET'&&(url.pathname==='/'||url.pathname==='/index.html')&&asset.ok){
-      try{const initial=await homepageInitialData(env),serialized=JSON.stringify(initial).replace(/</g,'\\u003c');let html=await asset.clone().text();html=html.replace(/<script src="backend-sync\.js\?v=[^"]+"><\/script>/,'<script id="initialBackendData" type="application/json">'+serialized+'</script>$&');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));}catch(error){console.error('homepage_initial_data_failed',error?.message||error);}
+      try{const initial=await homepageInitialData(env),serialized=JSON.stringify(initial).replace(/</g,'\\u003c');let html=rewriteFormulaLinks(await asset.clone().text());html=html.replace(/<script src="backend-sync\.js\?v=[^"]+"><\/script>/,'<script id="initialBackendData" type="application/json">'+serialized+'</script>$&');const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(html,{status:asset.status,headers}));}catch(error){console.error('homepage_initial_data_failed',error?.message||error);const headers=new Headers(asset.headers);headers.set('content-type','text/html; charset=utf-8');headers.set('cache-control','no-store');return maybeEncryptHtmlResponse(new Response(rewriteFormulaLinks(await asset.text()),{status:asset.status,headers}));}
     }
     if(request.method==='GET'&&(url.pathname==='/admin'||url.pathname==='/admin.html')&&asset.ok){
       let html=await asset.text();
