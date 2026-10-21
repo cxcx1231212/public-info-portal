@@ -295,8 +295,22 @@
   function loadAds(){
     fetch('/api/public/ads',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(data=>{
       const ads={};(data.data||[]).forEach(item=>{ads[item.position_key]={image:item.image_url,link:item.link_url,displayMode:item.display_mode,delaySeconds:item.delay_seconds};});
-      document.querySelectorAll('.banner-ad[data-ad-position]').forEach(ad=>{const item=ads.banner||ads[ad.dataset.adPosition];if(!item)return;const image=ad.querySelector('img');image.addEventListener('load',()=>sendAdEvent('banner','view'),{once:true});image.src=item.image;ad.dataset.active='1';if(item.link){ad.href=item.link;ad.target='_blank';ad.rel='noopener noreferrer';}else ad.removeAttribute('href');
-        ad.addEventListener('click',()=>sendAdEvent('banner','click'));
+      const banners=(Array.isArray(data.banners)&&data.banners.length?data.banners:[data.data?.find(item=>item.position_key==='banner')]).filter(Boolean);
+      document.querySelectorAll('.banner-ad[data-ad-position]:not([data-banner-slide])').forEach(ad=>{
+        const list=banners.length?banners:[ads[ad.dataset.adPosition]].filter(Boolean);
+        ad.parentElement?.querySelectorAll('.banner-ad[data-banner-slide][data-ad-position="'+ad.dataset.adPosition+'"]').forEach(old=>old.remove());
+        if(!list.length)return;
+        let previous=ad;
+        list.forEach((item,index)=>{
+          const slide=index?ad.cloneNode(true):ad;
+          const image=slide.querySelector('img');
+          if(index)image.removeAttribute('src');
+          if(index){slide.dataset.bannerSlide='1';previous.after(slide);previous=slide;}
+          image.addEventListener('load',()=>sendAdEvent(item.position_key||'banner','view'),{once:true});
+          image.src=item.image||item.image_url;slide.dataset.active='1';
+          if(item.link||item.link_url){slide.href=item.link||item.link_url;slide.target='_blank';slide.rel='noopener noreferrer';}else slide.removeAttribute('href');
+          slide.addEventListener('click',()=>sendAdEvent(item.position_key||'banner','click'));
+        });
       });
       const file=location.pathname.split('/').pop()||'index.html';if(file==='index.html')showPopupAd(ads.popup);
     }).catch(()=>{});
@@ -314,14 +328,15 @@
       // 文字广告必须跟随当期普通资料，不能把该分组的结束期误当成当前期数。
       const current=lotteryPayload?.data||{},officialPeriod=Number(current.nextLotteryNumber||current.nextIntLotteryNumber||0),plausible=value=>lotteryType===5||value<200,periods=(contentPayload.data||[]).filter(item=>item.section_key!=='threeperiod'&&plausible(Number(item.period))).map(item=>Number(item.period)||0).filter(Boolean),fallback=[...document.querySelectorAll('[data-section-key]:not([data-section-key="threeperiod"]) [class*="period"]')].map(node=>Number((node.textContent.match(/\d{1,3}/)||[])[0])||0).filter(plausible),period=officialPeriod||Math.max(0,...periods,...fallback);
       const fill=value=>String(value||'').replaceAll('{期数}',period?String(period):'').replaceAll('{彩种}',fullNames[lotteryType]||'澳门六合彩').replaceAll('{彩种简称}',lotteryNames[lotteryType]||'澳门');
-      document.querySelectorAll('.banner-ad[data-ad-position]').forEach((banner,sectionIndex)=>{
-        if(banner.nextElementSibling?.classList.contains('text-ad-grid'))banner.nextElementSibling.remove();
+      document.querySelectorAll('.banner-ad[data-ad-position]:not([data-banner-slide])').forEach((banner,sectionIndex)=>{
+        let lastBanner=banner;while(lastBanner.nextElementSibling?.matches('.banner-ad[data-banner-slide]'))lastBanner=lastBanner.nextElementSibling;
+        if(lastBanner.nextElementSibling?.classList.contains('text-ad-grid'))lastBanner.nextElementSibling.remove();
         const count=10,grid=document.createElement('div');grid.className='text-ad-grid';grid.dataset.count=String(count);grid.setAttribute('aria-label','文字广告');
         for(let offset=0;offset<count;offset++){
           const item=textPool[(sectionIndex*count+offset)%textPool.length],domain=domainPool.length?domainPool[(sectionIndex*count+offset)%domainPool.length]:null,link=document.createElement('a');link.textContent=fill(item.ad_text);link.style.color='#0b5cad';
           if(domain?.domain_url){link.href=fill(domain.domain_url);link.target='_blank';link.rel='noopener noreferrer';}else link.href='#';grid.appendChild(link);
         }
-        banner.after(grid);
+        lastBanner.after(grid);
       });
     }).catch(()=>{});
   }
